@@ -1,20 +1,4 @@
-/*!
 
-=========================================================
-* Argon Dashboard React - v1.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 
 // reactstrap components
@@ -30,53 +14,36 @@ import {
   InputGroupText,
   InputGroup,
   Row,
-  Col
+  Col,
+  CardFooter,
 } from "reactstrap";
 
 class Login extends React.Component {
+
+  state = {
+    UserEmail: '',
+    Password: ''
+  }
+
+  onChange = (state, text) => {
+    this.setState({ [`${state}`]: text })
+    // console.log("UserEmailChange:-", [this.state.UserEmail])
+    // console.log("UserPasswordChange:-", [this.state.Password])
+  }
+
+  submitHandler = (event) => {
+    event.preventDefault();
+    console.log("Signed in:-", this.state.UserEmail, this.state.Password)
+  }
+
   render() {
     return (
       <>
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
-            <CardHeader className="bg-transparent pb-5">
-              <div className="text-muted text-center mt-2 mb-3">
-                <small>Sign in with</small>
-              </div>
-              <div className="btn-wrapper text-center">
-                <Button
-                  className="btn-neutral btn-icon"
-                  color="default"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={require("../../assets/img/icons/common/github.svg")}
-                    />
-                  </span>
-                  <span className="btn-inner--text">Github</span>
-                </Button>
-                <Button
-                  className="btn-neutral btn-icon"
-                  color="default"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={require("../../assets/img/icons/common/google.svg")}
-                    />
-                  </span>
-                  <span className="btn-inner--text">Google</span>
-                </Button>
-              </div>
-            </CardHeader>
             <CardBody className="px-lg-5 py-lg-5">
-              <div className="text-center text-muted mb-4">
-                <small>Or sign in with credentials</small>
+              <div className="text-center mb-4">
+                <h2 className="txt-dark disable-hover"> Sign in </h2>
               </div>
               <Form role="form">
                 <FormGroup className="mb-3">
@@ -86,7 +53,14 @@ class Login extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" autoComplete="new-email"/>
+                    <Input
+                      placeholder="Email"
+                      type="email"
+                      autoComplete="new-email"
+                      className="txt-dark"
+                      value={this.state.UserEmail}
+                      onChange={(event) => { this.onChange("UserEmail", event.target.value, event) }}
+                    />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -96,7 +70,14 @@ class Login extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Password" type="password" autoComplete="new-password"/>
+                    <Input
+                      placeholder="Password"
+                      type="password"
+                      value={this.state.Password}
+                      className="txt-dark"
+                      onChange={(event) => { this.onChange("Password", event.target.value) }}
+                      autoComplete="new-password"
+                    />
                   </InputGroup>
                 </FormGroup>
                 <div className="custom-control custom-control-alternative custom-checkbox">
@@ -113,33 +94,63 @@ class Login extends React.Component {
                   </label>
                 </div>
                 <div className="text-center">
-                  <Button className="my-4" color="primary" type="button">
+                  <Button
+                    className="my-4 pl-6 pr-6 br-lg"
+                    color="primary"
+                    type="button"
+                    onClick={(event) => this.submitHandler(event)}
+                  >
                     Sign in
                   </Button>
                 </div>
+                <div className="text-center">
+                  <a
+                    className="txt-lt-dark"
+                    href="#pablo"
+                    onClick={e => e.preventDefault()}
+                  >
+                    <small>Forgot password?</small>
+                  </a>
+                </div>
               </Form>
             </CardBody>
+            <CardFooter className="bg-transparent pb-5">
+              <div className="text-muted text-center mt-2 mb-3">
+                <small>Sign in with</small>
+              </div>
+              <div className="btn-wrapper text-center">
+                <Button
+                  className="btn-neutral btn-icon mt-2 mb-2"
+                  color="default"
+                  href="#pablo"
+                  onClick={e => e.preventDefault()}
+                >
+                  <span className="btn-inner--icon">
+                    <img
+                      alt="..."
+                      src={require("../../assets/img/icons/common/facebook.svg")}
+                    />
+                  </span>
+                  <span className="btn-inner--text">Facebook</span>
+                </Button>
+
+                <Button
+                  className="btn-neutral btn-icon  mt-2 mb-2"
+                  color="default"
+                  href="#pablo"
+                  onClick={e => e.preventDefault()}
+                >
+                  <span className="btn-inner--icon">
+                    <img
+                      alt="..."
+                      src={require("../../assets/img/icons/common/google.svg")}
+                    />
+                  </span>
+                  <span className="btn-inner--text">Google</span>
+                </Button>
+              </div>
+            </CardFooter>
           </Card>
-          <Row className="mt-3">
-            <Col xs="6">
-              <a
-                className="text-light"
-                href="#pablo"
-                onClick={e => e.preventDefault()}
-              >
-                <small>Forgot password?</small>
-              </a>
-            </Col>
-            <Col className="text-right" xs="6">
-              <a
-                className="text-light"
-                href="#pablo"
-                onClick={e => e.preventDefault()}
-              >
-                <small>Create new account</small>
-              </a>
-            </Col>
-          </Row>
         </Col>
       </>
     );

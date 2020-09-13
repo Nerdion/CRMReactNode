@@ -1,0 +1,60 @@
+/* Custom Bootstrap 
+    border-radius
+*/
+
+.br-xs{
+    border-radius: 0.200rem !important ;
+  }
+
+.br-sm{
+    border-radius: 0.400rem !important;
+}
+
+.br-md{
+border-radius: 1rem !important;
+}
+
+.br-lg{
+    border-radius: 2rem !important;
+}
+
+.br-xl{
+    border-radius: 3rem !important;
+}
+
+.bg-linear-Prime{
+    background: linear-gradient(87deg, #648fce 0, #355baf 100%) !important;
+}
+
+.bg-Prime{
+    background-color: #38668f !important;
+}
+
+.txt-light{
+    color: #dce8f2 !important;
+}
+
+.txt-light:hover{
+    color: #161f2e  !important;
+}
+
+.txt-dark{
+    color: #294b5f !important;
+}
+
+.txt-dark:hover{
+    color: #38668f !important;
+}
+
+.txt-lt-dark{
+    color: #3f708b !important;
+}
+
+.txt-lt-dark:hover{
+    color: #284e63 !important;
+}
+
+.disable-hover, .txt-dark:hover{
+    text-decoration: none !important;
+    color: unset !important;
+}
