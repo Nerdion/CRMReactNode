@@ -2,7 +2,7 @@ const mongo = require('../models/Model')
 module.exports = class User {
     constructor() { }
 
-    async login(bodyInfo) {
+    login = async () => {
         let email = bodyInfo.email;
         let password = bodyInfo.password;
 
@@ -13,13 +13,35 @@ module.exports = class User {
             return { 'Success': false, 'Message': "User is authenticated Un-successfully" };
         }
     }
-    async register(bodyInfo) {
+    register = async () => {
         let email = bodyInfo.email;
         let password = bodyInfo.password;
         let userData = {
             email :email,
             password : password
         }
-        await mongo.appscountry.collection().insertOne(userData)
+        await mongo.appscountry.collection().insertOne(userData);
+        return { 'Success': true, 'Message': "User is registerd Successfully" };
+    }
+     encryptData = async(data, tokenkey) =>{
+        try {
+            var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenkey).toString();
+            // return {"data": strenc};
+            return strenc
+    
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    
+     decryptData=async(data, tokenkey) => {
+        try {
+            var bytes = CryptoJS.AES.decrypt(data, tokenkey)
+            var originalText = bytes.toString(CryptoJS.enc.Utf8);
+    
+            return JSON.parse(originalText);
+        } catch (e) {
+            console.log(e);
+        }
     }
 }
