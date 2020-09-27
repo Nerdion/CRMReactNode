@@ -1,15 +1,7 @@
 var nodemailer = require('nodemailer');
-const { resolve } = require('path');
-var Imap = require('imap'),
-    inspect = require('util').inspect;
-const simpleParser = require('mailparser').simpleParser;
-var fs = require('fs'), fileStream;
-
 class Mail {
 
-    constructor() { 
-        
-    }
+    constructor() { }
 
     sendMail = async () => {
         // Generate test SMTP service account from ethereal.email
