@@ -58,3 +58,27 @@ border-radius: 1rem !important;
     text-decoration: none !important;
     color: unset !important;
 }
+
+.pos-r{
+    position: relative !important;
+}
+
+.ht-xs{
+    height: 5rem !important;
+}
+
+.ht-s{
+    height: 8rem !important;
+}
+
+.ht-m{
+    height: 12rem !important;
+}
+
+.ht-l{
+    height: 18rem !important;
+}
+
+.ht-xl{
+    height: 22rem !important;
+}

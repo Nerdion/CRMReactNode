@@ -16,12 +16,13 @@
 
 */
 import Index from "./views/Index";
-import Profile from "./views/examples/Profile";
-import Maps from "./views/examples/Maps";
-import Register from "./views/examples/Register";
-import Login from "./views/examples/Login";
-import Tables from "./views/examples/Tables";
-import Icons from "./views/examples/Icons";
+import Profile from "./views/authViews/Profile";
+import Maps from "./views/authViews/Maps";
+import Register from "./views/authViews/Register";
+import Login from "./views/authViews/Login";
+import Tables from "./views/authViews/Tables";
+import Icons from "./views/authViews/Icons";
+import CreateTaskTest from './views/CreateTaskTest';
 
 var routes = [
   {
@@ -29,6 +30,13 @@ var routes = [
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
     component: Index,
+    layout: "/admin"
+  },
+  {
+    path: "/CreateTaskTest",
+    name: "CreateTask",
+    icon: "ni ni-tv-2 text-primary",
+    component: CreateTaskTest,
     layout: "/admin"
   },
   {
