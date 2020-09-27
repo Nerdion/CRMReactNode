@@ -1,11 +1,9 @@
 
 import React from "react";
-
 // reactstrap components
 import {
   Button,
   Card,
-  CardHeader,
   CardBody,
   FormGroup,
   Form,
@@ -13,16 +11,22 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Row,
   Col,
   CardFooter,
+  Alert
 } from "reactstrap";
+
+//API's
+import { VerifyUserLogin } from '../CRM_Apis';
 
 class Login extends React.Component {
 
   state = {
     UserEmail: '',
-    Password: ''
+    Password: '',
+    Alert_open_close: false,
+    title: '',
+    message: ''
   }
 
   onChange = (state, text) => {
@@ -31,15 +35,70 @@ class Login extends React.Component {
     // console.log("UserPasswordChange:-", [this.state.Password])
   }
 
-  submitHandler = (event) => {
-    event.preventDefault();
-    console.log("Signed in:-", this.state.UserEmail, this.state.Password)
+  onDismissAlert = () => {
+    this.setState({ Alert_open_close: false });
   }
 
+  submitLoginHandler = async (event) => {
+    event.preventDefault();
+    const title = "Error";
+    console.log("Signed in:-", this.state.UserEmail, this.state.Password);
+    try {
+      if (this.state.UserEmail !== "" && this.state.Password !== "") {
+        const UserLoginApiCall = await fetch(VerifyUserLogin, {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            useremail: this.state.UserEmail,
+            password: this.state.Password,
+          })
+        });
+        const responseData = await UserLoginApiCall.json();
+        console.log(responseData, 'UserLoginApiCallData')
+        console.log(UserLoginApiCall, 'UserLoginApiCall');
+
+        if (responseData.status === "200") {
+          console.log("User Loggedin");
+          localStorage.setItem('CRM_Token_Value', responseData.token);
+          this.props.history.push("/admin/index");
+        }
+        else {
+          const message = "Invalid Email & Password";
+          this.setState({ title, message, Alert_open_close: true });
+        }
+      } else {
+        const message = "Please Enter Email & Password";
+        this.setState({ title, message, Alert_open_close: true });
+      }
+    }
+    catch (err) {
+      console.log("Error fetching data-----------", err);
+      this.setState({ title, message: err, Alert_open_close: true });
+    }
+  }
+
+
   render() {
+    const { title, message, Alert_open_close } = this.state;
+    const AlertError =
+      (
+        <div>
+          <Alert isOpen={Alert_open_close} toggle={() => this.onDismissAlert()} color="danger" >
+            <h4 className="alert-heading">
+              {title}
+            </h4>
+            {message}
+          </Alert>
+        </div>
+      );
+
     return (
       <>
         <Col lg="5" md="7">
+          {AlertError}
           <Card className="bg-secondary shadow border-0">
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center mb-4">
@@ -98,7 +157,7 @@ class Login extends React.Component {
                     className="my-4 pl-6 pr-6 br-lg"
                     color="primary"
                     type="button"
-                    onClick={(event) => this.submitHandler(event)}
+                    onClick={(event) => this.submitLoginHandler(event)}
                   >
                     Sign in
                   </Button>
