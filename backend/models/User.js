@@ -1,4 +1,5 @@
 const mongo = require('../models/Model')
+var CryptoJS = require("crypto-js");
 module.exports = class User {
     constructor() { }
 
@@ -17,28 +18,29 @@ module.exports = class User {
         let email = bodyInfo.email;
         let password = bodyInfo.password;
         let userData = {
-            email :email,
-            password : password
+            email: email,
+            password: password
         }
         await mongo.appscountry.collection().insertOne(userData);
         return { 'Success': true, 'Message': "User is registerd Successfully" };
     }
-     encryptData = async(data, tokenkey) =>{
+
+    encryptData = async (data, key) => {
         try {
-            var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenkey).toString();
+            var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
             // return {"data": strenc};
             return strenc
-    
+
         } catch (e) {
             console.log(e);
         }
     }
-    
-     decryptData=async(data, tokenkey) => {
+
+    decryptData = async (data, key) => {
         try {
-            var bytes = CryptoJS.AES.decrypt(data, tokenkey)
+            var bytes = CryptoJS.AES.decrypt(data, key)
             var originalText = bytes.toString(CryptoJS.enc.Utf8);
-    
+
             return JSON.parse(originalText);
         } catch (e) {
             console.log(e);
