@@ -1,5 +1,6 @@
 const mongo = require('../models/Model')
-var CryptoJS = require("crypto-js");
+const CryptoJS = require("crypto-js");
+const tokenKey = require('../config').key
 module.exports = class User {
     constructor() { }
 
@@ -9,7 +10,11 @@ module.exports = class User {
 
         let checkUser = await mongo.appscountry.collection().find({ 'email': email }).toArray();
         if (checkUser.length == 1) {
-            if (password == checkUser[0].password) return { 'Success': true, 'Message': "User is authenticated Successfully" };
+            if (password == checkUser[0].password) {
+                let jwtData = await this.generatetoken(email, checkUser[0].userId);
+                console.log(jwtData)
+                return { 'Success': true, 'Message': "User is authenticated Successfully", token: jwtData }
+            };
         } else {
             return { 'Success': false, 'Message': "User is authenticated Un-successfully" };
         }
@@ -25,9 +30,9 @@ module.exports = class User {
         return { 'Success': true, 'Message': "User is registerd Successfully" };
     }
 
-    encryptData = async (data, key) => {
+    encryptData = async (data) => {
         try {
-            var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
+            var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
             // return {"data": strenc};
             return strenc
 
@@ -36,14 +41,33 @@ module.exports = class User {
         }
     }
 
-    decryptData = async (data, key) => {
+    decryptData = async (data) => {
         try {
-            var bytes = CryptoJS.AES.decrypt(data, key)
+            var bytes = CryptoJS.AES.decrypt(data, tokenKey)
             var originalText = bytes.toString(CryptoJS.enc.Utf8);
 
             return JSON.parse(originalText);
         } catch (e) {
             console.log(e);
         }
+    }
+    generatetoken = async (email, userId) => {
+        var token_string = {
+            userid: userId.toString(),
+            email: email
+        }
+        var jwt = nJwt.create(token_string, tokenKey);
+        jwt.setExpiration(new Date().getTime() + (28800000))
+        var token = jwt.compact();
+        //refrestokenu
+        var res_token = {
+            userid: userId.toString(),
+            email: email
+        }
+        var refreshToken = nJwt.create(res_token, tokenKey);
+        var rToken = refreshToken.compact();
+
+
+        return { "Token": token, "RefreshToken": rToken }
     }
 }
