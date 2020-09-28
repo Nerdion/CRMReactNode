@@ -44,7 +44,15 @@ class Login extends React.Component {
     const title = "Error";
     console.log("Signed in:-", this.state.UserEmail, this.state.Password);
     try {
-      if (this.state.UserEmail !== "" && this.state.Password !== "") {
+      if (this.state.UserEmail === "") {
+        const message = "Please Enter Your Email Address";
+        this.setState({ title, message, Alert_open_close: true });
+      }
+      else if (this.state.Password === "") {
+        const message = "Please Enter Your Password";
+        this.setState({ title, message, Alert_open_close: true });
+      }
+      else if (this.state.UserEmail !== "" && this.state.Password !== "") {
         const UserLoginApiCall = await fetch(VerifyUserLogin, {
           method: "POST",
           headers: {
@@ -115,7 +123,7 @@ class Login extends React.Component {
                     <Input
                       placeholder="Email"
                       type="email"
-                      autoComplete="new-email"
+                      autoComplete="email"
                       className="txt-dark"
                       value={this.state.UserEmail}
                       onChange={(event) => { this.onChange("UserEmail", event.target.value, event) }}
