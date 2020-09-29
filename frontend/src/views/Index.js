@@ -49,7 +49,7 @@ import {
 import Header from "../components/Headers/Header.js";
 
 class Index extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       activeNav: 1,

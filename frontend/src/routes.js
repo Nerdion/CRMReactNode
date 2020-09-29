@@ -23,6 +23,7 @@ import Login from "./views/authViews/Login";
 import Tables from "./views/authViews/Tables";
 import Icons from "./views/authViews/Icons";
 import CreateTaskTest from './views/CreateTaskTest';
+import Users from './views/Users';
 
 var routes = [
   {
@@ -35,8 +36,15 @@ var routes = [
   {
     path: "/CreateTaskTest",
     name: "CreateTask",
-    icon: "ni ni-tv-2 text-primary",
+    icon: "ni archive-2 text-primary",
     component: CreateTaskTest,
+    layout: "/admin"
+  },
+  {
+    path: "/users",
+    name: "Users",
+    icon: "ni ni-single-02 text-primary",
+    component: Users,
     layout: "/admin"
   },
   {

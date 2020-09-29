@@ -43,10 +43,10 @@ class CreateTaskTest extends React.Component {
                 <Header />
                 {/* Page content */}
                 <Container className="mt--7" fluid>
-                    <Col >
+                    <Col className="mb-5 mb-xl-0" xl="8">
                         <div>
                             <div className="bg-white mb-4 align-items-centeer">
-                                <Editor     
+                                <Editor
                                     editorState={editorState}
                                     wrapperClassName=""
                                     editorClassName="p-3 ht-l"
