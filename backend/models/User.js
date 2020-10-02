@@ -13,7 +13,7 @@ module.exports = class User {
             if (password == checkUser[0].password) {
                 let jwtData = await this.generatetoken(email, checkUser[0].userId);
                 console.log(jwtData)
-                return { 'Success': true, 'Message': "User is authenticated Successfully", token: jwtData }
+                return { 'Success': true, 'Message': "User is authenticated Successfully", jwtToken: jwtData }
             };
         } else {
             return { 'Success': false, 'Message': "User is authenticated Un-successfully" };

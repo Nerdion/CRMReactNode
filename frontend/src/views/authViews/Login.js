@@ -1,6 +1,7 @@
 
 import React from "react";
 // reactstrap components
+import CryptoJS from 'crypto-js';
 import {
   Button,
   Card,
@@ -85,6 +86,29 @@ class Login extends React.Component {
     catch (err) {
       console.log("Error fetching data-----------", err);
       this.setState({ title, message: err, Alert_open_close: true });
+    }
+  }
+  encryptData = async (data) => {
+    try {
+      let tokenKey='crmfrontendbackend'
+      var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
+      // return {"data": strenc};
+      return strenc
+
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  decryptData = async (data) => {
+    try {
+      let tokenKey='crmfrontendbackend'
+      var bytes = CryptoJS.AES.decrypt(data, tokenKey)
+      var originalText = bytes.toString(CryptoJS.enc.Utf8);
+
+      return JSON.parse(originalText);
+    } catch (e) {
+      console.log(e);
     }
   }
 
