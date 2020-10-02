@@ -6,4 +6,4 @@ export const VerifyUserLogin = `${DomainURL}/auth/login`;
 
 export const VerifyUserRegister = `${DomainURL}/auth/register`;
 
-export const VerifyUserInvite = "Invite";
+export const VerifyUserInvite = `${DomainURL}/api/inviteuser`;
