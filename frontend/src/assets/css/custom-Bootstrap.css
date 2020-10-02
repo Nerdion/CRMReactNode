@@ -82,3 +82,9 @@ border-radius: 1rem !important;
 .ht-xl{
     height: 22rem !important;
 }
+
+.footer-end{
+    left: 0;
+    bottom: 0;
+    
+}

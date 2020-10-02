@@ -1,7 +1,9 @@
 // API's
 
-export const VerifyUserLogin = 'hiii';
+export const DomainURL = 'http://localhost:3000';
 
-export const VerifyUserRegister = 'heello';
+export const VerifyUserLogin = `${DomainURL}/auth/login`;
+
+export const VerifyUserRegister = `${DomainURL}/auth/register`;
 
 export const VerifyUserInvite = "Invite";

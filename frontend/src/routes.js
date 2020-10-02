@@ -36,7 +36,7 @@ var routes = [
   {
     path: "/CreateTaskTest",
     name: "CreateTask",
-    icon: "ni archive-2 text-primary",
+    icon: "ni ni-archive-2 text-red",
     component: CreateTaskTest,
     layout: "/admin"
   },
