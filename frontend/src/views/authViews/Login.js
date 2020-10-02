@@ -54,24 +54,25 @@ class Login extends React.Component {
         this.setState({ title, message, Alert_open_close: true });
       }
       else if (this.state.UserEmail !== "" && this.state.Password !== "") {
+        let authData = {
+          email: this.state.UserEmail,
+          password: this.state.Password,
+        }
+        let encAuthData = this.encryptData(authData);
         const UserLoginApiCall = await fetch(VerifyUserLogin, {
           method: "POST",
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            useremail: this.state.UserEmail,
-            password: this.state.Password,
-          })
+          body: JSON.stringify(encAuthData)
         });
         const responseData = await UserLoginApiCall.json();
         console.log(responseData, 'UserLoginApiCallData')
         console.log(UserLoginApiCall, 'UserLoginApiCall');
-
         if (responseData.status === "200") {
           console.log("User Loggedin");
-          localStorage.setItem('CRM_Token_Value', responseData.token);
+          //localStorage.setItem('CRM_Token_Value', responseData.token);
           this.props.history.push("/admin/index");
         }
         else {
@@ -93,7 +94,7 @@ class Login extends React.Component {
       let tokenKey='crmfrontendbackend'
       var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
       // return {"data": strenc};
-      return strenc
+      return {data:strenc}
 
     } catch (e) {
       console.log(e);
