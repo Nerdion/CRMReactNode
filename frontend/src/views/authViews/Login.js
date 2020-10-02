@@ -55,10 +55,10 @@ class Login extends React.Component {
       }
       else if (this.state.UserEmail !== "" && this.state.Password !== "") {
         let authData = {
-          email: this.state.UserEmail,
+          useremail: this.state.UserEmail,
           password: this.state.Password,
         }
-        let encAuthData = this.encryptData(authData);
+        let encAuthData = await this.encryptData(authData);
         const UserLoginApiCall = await fetch(VerifyUserLogin, {
           method: "POST",
           headers: {
@@ -70,7 +70,7 @@ class Login extends React.Component {
         const responseData = await UserLoginApiCall.json();
         console.log(responseData, 'UserLoginApiCallData')
         console.log(UserLoginApiCall, 'UserLoginApiCall');
-        if (responseData.status === "200") {
+        if (responseData.status === 200) {
           console.log("User Loggedin");
           //localStorage.setItem('CRM_Token_Value', responseData.token);
           this.props.history.push("/admin/index");

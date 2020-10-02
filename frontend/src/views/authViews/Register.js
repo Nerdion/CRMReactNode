@@ -1,6 +1,6 @@
 
 import React from "react";
-
+import CryptoJS from 'crypto-js';
 // reactstrap components
 import {
   Button,
@@ -54,6 +54,12 @@ class Register extends React.Component {
     event.preventDefault();
     const title = "Error";
     let message = "";
+    let registerData = {
+      username:UserName,
+      useremail: UserEmail,
+      password: Password,
+    }
+    let encregisterData = await this.encryptData(registerData)
     console.log("Signed in:-", UserEmail, Password);
     try {
       if (UserName === "" && Password !== "" && UserEmail !== "") {
@@ -95,18 +101,15 @@ class Register extends React.Component {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              useremail: UserEmail,
-              password: Password,
-            })
+            body: JSON.stringify(encregisterData)
           });
           const responseData = await UserRegisterApiCall.json();
           console.log(responseData, 'UserRegisterApiCallData')
           console.log(UserRegisterApiCall, 'UserRegisterApiCall');
 
-          if (responseData.status === "200") {
+          if (responseData.status === 200) {
             console.log("User Loggedin");
-            localStorage.setItem('CRM_Token_Value', responseData.token);
+            //localStorage.setItem('CRM_Token_Value', responseData.token);
             this.props.history.push("/auth/Login");
           }
           else {
@@ -122,6 +125,18 @@ class Register extends React.Component {
     catch (err) {
       console.log("Error fetching data-----------", err);
       this.setState({ title, message: err, Alert_open_close: true });
+    }
+  }
+
+  encryptData = async (data) => {
+    try {
+      let tokenKey='crmfrontendbackend'
+      var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
+      // return {"data": strenc};
+      return {data:strenc}
+
+    } catch (e) {
+      console.log(e);
     }
   }
 

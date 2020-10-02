@@ -76,14 +76,14 @@ class Users extends React.Component {
     SendInviteHandle = async () => {
         const title = "Error";
         const message = '';
-        var CRM_Token = await localStorage.getItem('CRM_Token_Value');
+        //var CRM_Token = await localStorage.getItem('CRM_Token_Value');
         try {
             const UserInviteFetch = await fetch(VerifyUserInvite, {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `JWT ${CRM_Token}`
+                    'Content-Type': 'application/json'
+                    //'Authorization': `JWT ${CRM_Token}`
                 },
                 body: JSON.stringify({
                     useremail: this.state.UserEmail

@@ -3,35 +3,48 @@ const CryptoJS = require("crypto-js");
 const tokenKey = require('../config').key
 const nJwt = require('njwt')
 module.exports = class User {
-    constructor() { 
+    constructor() {
         this.User = 'User'
     }
 
     login = async (bodyInfo) => {
         let authData = await this.decryptData(bodyInfo)
-        let email = authData.email;
+        let email = authData.useremail;
         let password = authData.password;
 
         let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': email }).toArray();
         if (checkUser.length == 1) {
             if (password == checkUser[0].password) {
-                let jwtData = await this.generatetoken(email, checkUser[0].userId);
-                console.log(jwtData)
-                return { 'success': true, 'status':200, 'message': "User is authenticated Successfully", jwtToken: jwtData }
+                let jwtData = await this.generatetoken(email, checkUser[0]._id.toString());
+                return { 'success': true, 'status': 200, 'message': "User is authenticated Successfully", jwtToken: jwtData }
             };
         } else {
-            return { 'success': false, 'status':400, 'message': "User is authenticated Un-successfully" };
+            return { 'success': false, 'status': 400, 'message': "User is authenticated Un-successfully" };
         }
     }
-    register = async () => {
-        let email = bodyInfo.email;
-        let password = bodyInfo.password;
+    register = async (bodyInfo) => {
+        let registerData = await this.decryptData(bodyInfo)
+        let email = registerData.useremail;
+        let password = registerData.password;
+        let name = registerData.username
         let userData = {
+            name: name,
             email: email,
             password: password
         }
-        await mongo.appscountry.collection().insertOne(userData);
-        return { 'Success': true, 'Message': "User is registerd Successfully" };
+        let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': email }).toArray();
+        try {
+            if (checkUser.length == 0) {
+                await mongo.usacrm.collection(this.User).insertOne(userData);
+                return { 'success': true, status : 200,'message': "User is registerd Successfully" };
+            } else {
+                return { 'success': false, status : 400, 'message': "User is already exits" };
+            }
+
+        } catch (e) {
+            return { 'success': false, status : 400, 'message': e.toString() };
+        }
+
     }
 
     encryptData = async (data) => {
