@@ -1,0 +1,39 @@
+user
+	_id
+	role-employee:1 | manager: 2
+	email
+	mobile
+	password
+	salt
+	orgID
+	verified- unverified:1 | verified:2
+
+organisation
+	_id
+	name
+	userID:manager
+	email
+	workspaceIDs:Array
+	viewable- 1:public | 2:private
+
+workspace (orgid, creationUserID, name, userIDs)
+	_id
+	name
+	orgID
+	managerID
+	userIDs:Array
+	tasksIDs:Array
+
+task (workspaceid, orgid, creationUserID, assignTo:array)
+	_id
+	title
+	blob:{JSONObject}
+	deadline
+	status
+	creationUserID
+	userIDs:Array
+	
+blob
+	WSIWYG
+	images:blob
+	videoSRC
