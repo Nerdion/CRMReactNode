@@ -86,5 +86,59 @@ border-radius: 1rem !important;
 .footer-end{
     left: 0;
     bottom: 0;
-    
+}
+.mar-1{
+    margin: 0.30rem !important;
+}
+
+.mar-3{
+    margin: 0.50rem !important;
+}
+
+.mar-5{
+    margin: 1rem !important;
+}
+
+.mar-b-2{
+    margin-bottom: 2rem !important;
+}
+
+.min-wd-100{
+    min-width: 100px !important;
+}
+
+.min-wd-120{
+    min-width: 120px !important;
+}
+
+.min-wd-200{
+    min-width: 200px !important;
+}
+
+.width-f{
+    width: 100% !important;
+}
+
+.wd-30{
+    width: 30px !important;
+}
+
+.ht-30{
+    height: 30px !important;
+}
+
+.flex-1{
+    flex: 1 !important;
+}
+
+.padd-2{
+    padding: 0.20rem !important;
+}
+
+.pos-relative{
+    position: relative !important;
+}
+
+.outline-border{
+    outline-width: 0ch !important;
 }
