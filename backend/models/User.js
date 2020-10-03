@@ -87,4 +87,22 @@ module.exports = class User {
 
         return { "Token": token, "RefreshToken": rToken }
     }
+
+    
+    async verifyUser(token, res) {
+        try {
+            let decoded = nJwt.verify(token, process.env.SECRET_KEY)
+
+            let reAuth = await mongo.usacrm.collection(this.User).findOne({_id:decoded._id}).toArray()
+
+            if(!reAuth) {
+                res.json({Success:false, message:'Not authorised'})
+                return false
+            }
+            return decoded._id
+        } catch(e) {
+            res.json({Success:false, message:'Not authorised, malformed key, no session'})
+            return false
+        }
+    }
 }
