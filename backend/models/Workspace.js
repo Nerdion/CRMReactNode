@@ -10,6 +10,7 @@ class Workspace {
     workspaceAction = async () => {
         if (bodyInfo.action == 1) { //create a workspace
             try {
+                //check managerId 
                 let workspaceData = bodyInfo.workspaceData;
                 let workspace = {
                     title: workspaceData.title,
@@ -29,6 +30,8 @@ class Workspace {
         } else if (bodyInfo.action == 2) { //update a workspace
             try {
                 let workspaceId = bodyInfo.workspaceId;
+                //lastmodified
+                //
                 let updatedWorkSpaceData = bodyInfo.updatedWorkSpaceData;
                 let updatedWorkSpaceDataKeys = Object.keys(updatedWorkSpaceData);
                 let workspaceData = await mongo.usacrm.collection(this.workspace).findOne({ _id: new ObjectId(taskId) }).toArray();
@@ -56,7 +59,7 @@ class Workspace {
                         taskId: tasksIDs[i]
                     }
                     let deleteTaskResult = await new task().taskAction(taskBody);
-                    if (deleteResult.success == true) {
+                    if (deleteTaskResult.success == true) {
                         deletedTasks.push(tasksIDs[i])
                     } else {
                         failedDeleteTask.push(tasksIDs[i])
@@ -79,7 +82,7 @@ class Workspace {
                         }
                     }
                 ]
-
+                //deleted user
                 let deletedWorkspaceData = await mongo.usacrm.collection(this.workspace).aggregate(deleteFilter).toArray()
                 let deleteResult = deletedWorkspaceData[0]
                 deleteResult['status'] = 4
@@ -89,8 +92,6 @@ class Workspace {
                 } else {
                     return { 'success': false, 'error': error.toString(), 'message': "workspace is deleted Un-successfully" };
                 }
-
-
             } catch (error) {
                 return { 'success': false, 'error': error.toString(), 'message': "workspace is deleted Un-successfully" };
             }

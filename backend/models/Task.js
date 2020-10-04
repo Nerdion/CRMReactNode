@@ -19,7 +19,6 @@ class Task {
                     lastModified: new Date(),
                     lastModifiedUser: taskData.lastModifiedUser,
                     creationUserID: bodyInfo.creationUserID,
-                    status: bodyInfo.status,
                     userIDs: bodyInfo.userIDs
                 }
                 let insert = await mongo.usacrm.collection(this.task).insertOne(task)
@@ -30,6 +29,7 @@ class Task {
             }
         } else if (bodyInfo.action == 2) { // update task
             try {
+                //single update
                 let taskId = bodyInfo.taskId;
                 let updatedTaskData = bodyInfo.updatedTaskData;
                 let updatedTaskDataKeys = Object.keys(updatedTaskData);
@@ -61,6 +61,7 @@ class Task {
                     }
                 }
             ]
+            //deletedUser id
             let deletedTaskData = await mongo.usacrm.collection(this.task).aggregate(deleteFilter).toArray()
             let deleteResult = deletedTaskData[0]
             deleteResult['status'] = 4
