@@ -3,6 +3,9 @@ const CryptoJS = require("crypto-js");
 const tokenKey = require('../config').key
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
+const Mail = require('./Mail')
+const siteName = require('../config').siteName
+
 module.exports = class User {
     constructor() {
         this.User = 'User'
@@ -95,6 +98,27 @@ module.exports = class User {
             console.log(e)
             res.json({success:false, message:'Not authorised, malformed key, no session', error:e})
             return false
+        }
+    }
+
+    async inviteNewUser(newMailID, inviterID) {
+        try {
+            console.log(await inviterID)
+            await mongo.usacrm.collection(this.User).insertOne({email: newMailID, status: -1})
+
+            let mail = new Mail()
+
+            const mailOptions = {
+                toMail : newMailID,
+                subject: `${inviterID.email} has invited you on MYTASK`,
+                text: `${inviterID.email} has invited you on MYTASK,
+                    go to this link to accept invitation - 
+                    ${siteName}?mail=${newMailID}`
+            }
+
+            await mail.sendMail(mailOptions)
+        } catch(err) {
+            return {success:false, message:'', error:err}
         }
     }
 }

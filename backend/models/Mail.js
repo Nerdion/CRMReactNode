@@ -19,7 +19,7 @@ class Mail {
         });
     }
 
-    sendMail = (options, res) => {
+    sendMail = (options) => {
 
         const mailOptions = {
             from: '"DevLinkLabs" <devlinklabs@gmail.com>',
@@ -29,11 +29,7 @@ class Mail {
         };
 
         this.transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                res.json({ "success": false, "error": error.toString(), "Payload": [] })
-            } else {
-                res.json({ "sucess": true, "message": info.response})
-            }
+            if(error) console.log(error)
         });
     }
 }
