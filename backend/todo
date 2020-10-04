@@ -16,14 +16,17 @@ organisation
 	workspaceIDs:Array
 	viewable- 1:public | 2:private
 
+{
 workspace (orgid, creationUserID, name, userIDs)
 	_id
-	name
+	title
 	orgID
 	managerID
 	userIDs:Array
 	tasksIDs:Array
+}
 
+{
 task (workspaceid, orgid, creationUserID, assignTo:array)
 	_id
 	title
@@ -31,9 +34,31 @@ task (workspaceid, orgid, creationUserID, assignTo:array)
 	deadline
 	status
 	creationUserID
+	status:0
 	userIDs:Array
+	0:new { }
+	1:on going { }
+	2:complete { }
+	3:review	{ }
+	4:delete { }
+
+	{Add userId,Terminate,edit JSONObject}
+}
 	
 blob
 	WSIWYG
 	images:blob
 	videoSRC
+
+neel{
+	userid invite
+	organisation edit and set
+	register
+}
+shriyash{
+	crud function
+	task all task
+	workspace all fuc
+	user search
+
+}

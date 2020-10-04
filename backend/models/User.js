@@ -30,19 +30,20 @@ module.exports = class User {
         let userData = {
             name: name,
             email: email,
-            password: password
+            password: password,
         }
+
         let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': email }).toArray();
         try {
             if (checkUser.length == 0) {
                 await mongo.usacrm.collection(this.User).insertOne(userData);
-                return { 'success': true, status : 200,'message': "User is registerd Successfully" };
+                return { 'success': true, status: 200, 'message': "User is registerd Successfully" };
             } else {
-                return { 'success': false, status : 400, 'message': "User is already exits" };
+                return { 'success': false, status: 400, 'message': "User is already exits" };
             }
 
         } catch (e) {
-            return { 'success': false, status : 400, 'message': e.toString() };
+            return { 'success': false, status: 400, 'message': e.toString() };
         }
 
     }
