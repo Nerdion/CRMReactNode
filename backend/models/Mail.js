@@ -20,8 +20,6 @@ class Mail {
     }
 
     sendMail = (options, res) => {
-        
-        let response;
 
         const mailOptions = {
             from: '"DevLinkLabs" <devlinklabs@gmail.com>',
