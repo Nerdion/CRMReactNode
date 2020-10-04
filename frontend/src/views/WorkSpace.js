@@ -32,7 +32,7 @@ import {
 
 // core components
 import Header from "../components/Headers/Header.js";
-import W_Tasks from '../components/Cards/W_Tasks';
+import WorkSpaceTasksCard from '../components/Cards/WorkSpaceTasksCard';
 import DialogBox from '../components/DialogBox/DialogBox';
 
 class WorkSpace extends React.Component {
@@ -157,7 +157,7 @@ class WorkSpace extends React.Component {
                     </Row>
                     <Row className=" mt-2 justify-content-around">
                         {TaskCardData.map((data, index) => (
-                            <W_Tasks key={index} TaskCardData={data} />
+                            <WorkSpaceTasksCard key={index} TaskCardData={data} />
                         ))}
                     </Row>
                 </Container>
@@ -199,7 +199,7 @@ class WorkSpace extends React.Component {
                             <FormLabel className="m-0">
                                 <span className="text-default">  Description(Optional) </span>
                             </FormLabel>
-                            <TextField                            
+                            <TextField
                                 margin="dense"
                                 id="name"
                                 label="Description"

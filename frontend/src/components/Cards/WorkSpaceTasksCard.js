@@ -27,7 +27,7 @@ import {
 import { Tooltip } from '@material-ui/core';
 
 const ITEM_HEIGHT = 48;
-export class W_Tasks extends Component {
+export class WorkSpaceTasksCard extends Component {
     state = {
         openMenu: null,
         options: [
@@ -37,14 +37,6 @@ export class W_Tasks extends Component {
             { "option": "Delete", "icon": Delete, "color": "#c4416a" },
         ]
     }
-    handleMenuClick = (event) => {
-        this.setState({ openMenu: event })
-    };
-
-    handleMenuClose = () => {
-        this.setState({ openMenu: null })
-    };
-
     handleopen = () => {
         this.setState((prevState) => ({ openMenu: !prevState.openMenu }))
     }
@@ -124,4 +116,4 @@ export class W_Tasks extends Component {
     }
 }
 
-export default W_Tasks
+export default WorkSpaceTasksCard

@@ -177,6 +177,11 @@ border-radius: 1rem !important;
     box-shadow: 1px 1px 15px #b2bed3 !important;
 }
 
+.card-shadow-lt-white{
+    box-shadow: 1px 1px 15px #dce1e9 !important;
+}
+
+
 .cursor-point{
     cursor: pointer !important;
 }
@@ -196,3 +201,9 @@ border-radius: 1rem !important;
 .card-hover-view:hover{
     background-color: #c1cfe74f !important;
 }
+
+@media (min-width: 768px) {
+    .text-white-to-default{
+        color: #ffffff  !important;
+    }
+ }
