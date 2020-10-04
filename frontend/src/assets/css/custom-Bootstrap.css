@@ -54,9 +54,14 @@ border-radius: 1rem !important;
     color: #284e63 !important;
 }
 
+.txt-darker{
+    color: #0f4366 !important;
+}
+
 .disable-hover, .txt-dark:hover{
     text-decoration: none !important;
     color: unset !important;
+    cursor:default;
 }
 
 .pos-r{
@@ -127,12 +132,37 @@ border-radius: 1rem !important;
     height: 30px !important;
 }
 
+.min-ht-1{
+    min-height: 1rem !important;
+}
+
 .flex-1{
     flex: 1 !important;
 }
 
+.overflow-h{
+    overflow:hidden !important;
+}
+
+.txt-overflow{
+    text-overflow: ellipsis !important;
+}
+
+.line-ht{
+    /* line-height: 1.2rem !important; */
+    -webkit-line-clamp: 1 !important;
+}
+
+.display-inlineblock{
+    display: inline-block !important;
+}
+
 .padd-2{
     padding: 0.20rem !important;
+}
+
+.d-inline{
+    display: inline !important;
 }
 
 .pos-relative{
@@ -141,4 +171,28 @@ border-radius: 1rem !important;
 
 .outline-border{
     outline-width: 0ch !important;
+}
+
+.card-shadow-white{
+    box-shadow: 1px 1px 15px #b2bed3 !important;
+}
+
+.cursor-point{
+    cursor: pointer !important;
+}
+
+/* .zindex-1{
+    z-index: 1 !important;
+}
+
+.zindex-100{
+    z-index: 100 !important;
+} */
+
+/* .card-hover-view{
+    background-color: #161f2e4f !important;
+} */
+
+.card-hover-view:hover{
+    background-color: #c1cfe74f !important;
 }

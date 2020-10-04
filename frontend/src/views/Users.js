@@ -202,6 +202,7 @@ class Users extends React.Component {
                     onClose={this.handleClose}
                     onOpen={Dialog_open_close}
                     OnClick_Bt1={this.handleClose}
+                    Variant={"text"}
                     OnClick_Bt2={UserEmail.length < 1 ? () => this.onInviteSend("danger") : () => this.onInviteSend("success", "close")}
                 >
                     <TextField
