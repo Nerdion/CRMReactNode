@@ -97,12 +97,12 @@ module.exports = class User {
             let reAuth = await mongo.usacrm.collection(this.User).findOne({_id:decoded._id}).toArray()
 
             if(!reAuth) {
-                res.json({Success:false, message:'Not authorised'})
+                res.json({success:false, message:'Not authorised'})
                 return false
             }
             return decoded._id
         } catch(e) {
-            res.json({Success:false, message:'Not authorised, malformed key, no session'})
+            res.json({success:false, message:'Not authorised, malformed key, no session'})
             return false
         }
     }

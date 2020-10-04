@@ -5,7 +5,7 @@ class Task {
         this.task = 'task'
     }
 
-    createTask = async (bodyInfo) => {
+    task = async (bodyInfo) => {
         try {
             let task = {
                 title: bodyInfo.title,
