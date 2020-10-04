@@ -1,4 +1,4 @@
-const mongo = require('../models/Model')
+const mongo = require('./Model')
 const CryptoJS = require("crypto-js");
 const tokenKey = require('../config').key
 const nJwt = require('njwt')
