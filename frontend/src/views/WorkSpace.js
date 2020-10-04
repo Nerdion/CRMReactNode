@@ -50,15 +50,15 @@ class WorkSpace extends React.Component {
                     "activityStatus": "published",
                     "Completion": 10,
                     "Completion_Text": "10%",
-                    "onClick": () => { this.props.history.push("/admin/index") }
+                    "onClick": () => { this.props.history.push("/admin/CreateTaskTest") }
                 },
                 {
                     "header": "Dev Link new Set",
                     "desc": "you have to create a data related to a perticular matrix",
                     "activityStatus": "unpublished",
-                    "Completion": 60,
-                    "Completion_Text": "60%",
-                    "onClick": () => { this.props.history.push("/admin/index") }
+                    "Completion": 80,
+                    "Completion_Text": "80%",
+                    "onClick": () => { this.props.history.push("/admin/CreateTaskTest") }
                 },
                 {
                     "header": "Best Project",
@@ -66,15 +66,15 @@ class WorkSpace extends React.Component {
                     "activityStatus": "published",
                     "Completion": 50,
                     "Completion_Text": "50%",
-                    "onClick": () => { this.props.history.push("/admin/index") }
+                    "onClick": () => { this.props.history.push("/admin/CreateTaskTest") }
                 },
                 {
                     "header": "Good Project",
                     "desc": "Make it new",
                     "activityStatus": "unpublished",
-                    "Completion": 30,
-                    "Completion_Text": "30%",
-                    "onClick": () => { this.props.history.push("/admin/index") }
+                    "Completion": 0,
+                    "Completion_Text": "0%",
+                    "onClick": () => { this.props.history.push("/admin/CreateTaskTest") }
                 }
             ],
             workSpaces: [
@@ -199,8 +199,7 @@ class WorkSpace extends React.Component {
                             <FormLabel className="m-0">
                                 <span className="text-default">  Description(Optional) </span>
                             </FormLabel>
-                            <TextField
-                                autoFocus
+                            <TextField                            
                                 margin="dense"
                                 id="name"
                                 label="Description"

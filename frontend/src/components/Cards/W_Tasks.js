@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 
 // reactstrap components
 import {
-    Button,
     Card,
     CardHeader,
     CardBody,
     Progress,
-    Container,
     Row,
     Col,
     ButtonDropdown,
@@ -26,6 +24,7 @@ import {
     Delete
 } from '@material-ui/icons';
 
+import { Tooltip } from '@material-ui/core';
 
 const ITEM_HEIGHT = 48;
 export class W_Tasks extends Component {
@@ -62,20 +61,22 @@ export class W_Tasks extends Component {
                                     {TaskCardData.header}
                                 </h3>
                             </div>
-                            <div className="text-right">
-                                <ButtonDropdown className="" direction="left" isOpen={openMenu} toggle={() => this.handleopen()}>
-                                    <DropdownToggle size="sm" className="br-lg outline-border">
-                                        <MoreVert />
-                                    </DropdownToggle>
-                                    <DropdownMenu>
-                                        {
-                                            options.map((options, index) => (
-                                                <DropdownItem key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
-                                            ))
-                                        }
-                                    </DropdownMenu>
-                                </ButtonDropdown>
-                            </div>
+                            <Tooltip title="More Options" arrow>
+                                <div className="text-right">
+                                    <ButtonDropdown className="" direction="left" isOpen={openMenu} toggle={() => this.handleopen()}>
+                                        <DropdownToggle size="sm" className="br-lg outline-border">
+                                            <MoreVert />
+                                        </DropdownToggle>
+                                        <DropdownMenu>
+                                            {
+                                                options.map((options, index) => (
+                                                    <DropdownItem key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
+                                                ))
+                                            }
+                                        </DropdownMenu>
+                                    </ButtonDropdown>
+                                </div>
+                            </Tooltip>
                         </Row>
                     </CardHeader>
                     <div className="card-hover-view cursor-point" onClick={TaskCardData.onClick}>
