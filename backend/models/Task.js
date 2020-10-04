@@ -17,7 +17,7 @@ class Task {
                     status: taskData.status,
                     createdDate: new Date(),
                     lastModified: new Date(),
-                    lastModifiedUser:taskData.lastModifiedUser,
+                    lastModifiedUser: taskData.lastModifiedUser,
                     creationUserID: bodyInfo.creationUserID,
                     status: bodyInfo.status,
                     userIDs: bodyInfo.userIDs
@@ -57,13 +57,13 @@ class Task {
                     {
                         "title": 1,
                         "taskId": '$_id',
-                        "_id":0
+                        "_id": 0
                     }
                 }
             ]
             let deletedTaskData = await mongo.usacrm.collection(this.task).aggregate(deleteFilter).toArray()
             let deleteResult = deletedTaskData[0]
-            deleteResult['status']=4
+            deleteResult['status'] = 4
             let updateResult = await mongo.usacrm.collection(this.task).replaceOne({ _id: new ObjectId(taskId) }, deleteResult)
         }
     }

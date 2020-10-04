@@ -44,25 +44,25 @@ class Workspace {
         } else if (bodyInfo.action == 3) { //delete a workspace
             try {
                 let workspaceId = bodyInfo.workspaceId;
-                let workspaceData = await mongo.usacrm.collection(this.workspace).findOne({workspaceId:new ObjectId(workspaceId)}).toArray();
+                let workspaceData = await mongo.usacrm.collection(this.workspace).findOne({ workspaceId: new ObjectId(workspaceId) }).toArray();
                 workspaceData = workspaceData[0];
                 let tasksIDs = workspaceData.tasksIDs;
                 let taskBody;
                 let deletedTasks = []
                 let failedDeleteTask = []
-                for(let i=0;i<tasksIDs.length;i++){
+                for (let i = 0; i < tasksIDs.length; i++) {
                     taskBody = {
-                        action:3,
-                        taskId:tasksIDs[i]
+                        action: 3,
+                        taskId: tasksIDs[i]
                     }
                     let deleteTaskResult = await new task().taskAction(taskBody);
-                    if(deleteResult.success==true){
+                    if (deleteResult.success == true) {
                         deletedTasks.push(tasksIDs[i])
-                    }else{
+                    } else {
                         failedDeleteTask.push(tasksIDs[i])
                     }
                 }
-                
+
                 let deleteFilter = [
                     {
                         "$match":
@@ -83,15 +83,16 @@ class Workspace {
                 let deletedWorkspaceData = await mongo.usacrm.collection(this.workspace).aggregate(deleteFilter).toArray()
                 let deleteResult = deletedWorkspaceData[0]
                 deleteResult['status'] = 4
-                if(failedDeleteTask.length == 0){
+                if (failedDeleteTask.length == 0) {
                     let updateResult = await mongo.usacrm.collection(this.workspace).replaceOne({ _id: new ObjectId(taskId) }, deleteResult)
-                }else{
-                    return false;
+                    return { 'success': true, 'message': "Workspace is deleted successfully" }
+                } else {
+                    return { 'success': false, 'error': error.toString(), 'message': "workspace is deleted Un-successfully" };
                 }
 
 
             } catch (error) {
-                return false
+                return { 'success': false, 'error': error.toString(), 'message': "workspace is deleted Un-successfully" };
             }
         }
 
