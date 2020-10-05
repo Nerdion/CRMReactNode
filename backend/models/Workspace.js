@@ -31,13 +31,13 @@ class Workspace {
             try {
                 let workspaceId = bodyInfo.workspaceId;
                 //lastmodified
-                //
                 let updatedWorkSpaceData = bodyInfo.updatedWorkSpaceData;
                 let updatedWorkSpaceDataKeys = Object.keys(updatedWorkSpaceData);
                 let workspaceData = await mongo.usacrm.collection(this.workspace).findOne({ _id: new ObjectId(taskId) }).toArray();
                 for (let i = 0; i < updatedWorkSpaceDataKeys.length; i++) {
                     workspaceData[updatedWorkSpaceDataKeys[i]] = updatedWorkSpaceData[i];
                 }
+                workspaceData['lastModified'] = new Date()
                 let updateResult = await mongo.usacrm.collection(this.workspace).replaceOne({ _id: new ObjectId(workspaceId) }, workspaceData)
                 return { 'success': true, 'message': "Workspace is updated successfully" }
 
