@@ -132,7 +132,23 @@ border-radius: 1rem !important;
     height: 30px !important;
 }
 
-.min-ht-1{
+.wd-100{
+    width: 100px !important;
+}
+
+.wd-120{
+    width: 120px !important;
+}
+
+.wd-150{
+    width: 150px !important;
+}
+
+.wd-100p{
+    width: 100% !important;
+}
+
+.min-ht-1-rem{
     min-height: 1rem !important;
 }
 
@@ -207,3 +223,54 @@ border-radius: 1rem !important;
         color: #ffffff  !important;
     }
  }
+
+ .min-ht-20-px{
+     height: 20px !important;
+     min-height: 20px !important;
+ }
+
+ .min-ht-1{
+    height: 1rem !important;
+    min-height:1rem !important;
+}
+
+.min-ht-40-px{
+    height: 40px !important;
+    min-height: 40px !important;
+}
+
+.text-clamp{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; 
+    -webkit-box-orient: vertical;
+}
+
+.d-fr-direction{
+    flex-direction: row !important;
+}
+
+.min-dn-ht{
+    /* height: fit-content; */
+    max-height: 347px;
+    /* min-height: 45vh; */
+    overflow:scroll;
+}
+
+/* .min-dn-ht{
+    height: auto;
+    height: 347px;
+    min-height: 45vh;
+    overflow:scroll;
+} */
+
+
+.hide-scroll-ind::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hide-scroll-ind {
+    -ms-overflow-style: none;  
+    scrollbar-width: none; 
+  }

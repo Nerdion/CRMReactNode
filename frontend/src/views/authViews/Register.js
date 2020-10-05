@@ -55,7 +55,7 @@ class Register extends React.Component {
     const title = "Error";
     let message = "";
     let registerData = {
-      username:UserName,
+      username: UserName,
       useremail: UserEmail,
       password: Password,
     }
@@ -130,10 +130,10 @@ class Register extends React.Component {
 
   encryptData = async (data) => {
     try {
-      let tokenKey='crmfrontendbackend'
+      let tokenKey = 'crmfrontendbackend'
       var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
       // return {"data": strenc};
-      return {data:strenc}
+      return { data: strenc }
 
     } catch (e) {
       console.log(e);
@@ -260,6 +260,15 @@ class Register extends React.Component {
                   <Button onClick={(event) => { this.submitRegisterHandler(event) }} className="mt-4" color="primary" type="button">
                     Create account
                   </Button>
+                </div>
+                <div className="text-center mt-2 mb-0">
+                  <a
+                    className="txt-lt-dark"
+                    href="#pablo"
+                    onClick={() => this.props.history.push("/auth/login")}
+                  >
+                    <h5>Sign in</h5>
+                  </a>
                 </div>
               </Form>
             </CardBody>
