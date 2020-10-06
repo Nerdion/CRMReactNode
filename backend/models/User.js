@@ -81,23 +81,20 @@ module.exports = class User {
         return { "Token": token }
     }
 
-
-    async verifyUser(token, res) {
+    
+    async verifyUser(token) {
         try {
             let decoded = await jwt.verify(token, tokenKey)
 
             let decodedInformation = await mongo.usacrm.collection(this.User).findOne({_id:new ObjectId(decoded.userid)})
 
             if(!decodedInformation) {
-                res.json({success:false, message:'Not authorised'})
-                return false
+                return {success:false, message:'Not authorised'}
             } else {
-                return decodedInformation
+                return {success:true, message:decodedInformation}
             }
         } catch(e) {
-            console.log(e)
-            res.json({success:false, message:'Not authorised, malformed key, no session', error:e})
-            return false
+            return {success:false, message:'Not authorised, malformed key, no session', error:e}
         }
     }
 
