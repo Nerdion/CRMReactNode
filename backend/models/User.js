@@ -32,7 +32,7 @@ module.exports = class User {
 
         let userData = {
             name: registerData.username,
-            email:  registerData.useremail,
+            email: registerData.useremail,
             password: registerData.password,
         }
 
@@ -52,9 +52,7 @@ module.exports = class User {
     encryptData = async (data) => {
         try {
             var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
-            // return {"data": strenc};
             return strenc
-
         } catch (e) {
             console.log(e);
         }
@@ -64,7 +62,6 @@ module.exports = class User {
         try {
             var bytes = CryptoJS.AES.decrypt(authData.data, tokenKey)
             var originalText = bytes.toString(CryptoJS.enc.Utf8);
-
             return JSON.parse(originalText);
         } catch (e) {
             console.log(e);
@@ -76,37 +73,37 @@ module.exports = class User {
             email: email
         }
         let token = jwt.sign(token_string, tokenKey, {
-                expiresIn:'1h'
+            expiresIn: '1h'
         });
         return { "Token": token }
     }
 
-    
+
     async verifyUser(token) {
         try {
             let decoded = await jwt.verify(token, tokenKey)
 
-            let decodedInformation = await mongo.usacrm.collection(this.User).findOne({_id:new ObjectId(decoded.userid)})
+            let decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) })
 
-            if(!decodedInformation) {
-                return {success:false, message:'Not authorised'}
+            if (!decodedInformation) {
+                return { success: false, message: 'Not authorised' }
             } else {
-                return {success:true, message:decodedInformation}
+                return { success: true, message: decodedInformation }
             }
-        } catch(e) {
-            return {success:false, message:'Not authorised, malformed key, no session', error:e}
+        } catch (e) {
+            return { success: false, message: 'Not authorised, malformed key, no session', error: e }
         }
     }
 
     async inviteNewUser(newMailID, inviterID) {
         try {
             console.log(await inviterID)
-            await mongo.usacrm.collection(this.User).insertOne({email: newMailID, status: -1})
+            await mongo.usacrm.collection(this.User).insertOne({ email: newMailID, status: -1 })
 
             let mail = new Mail()
 
             const mailOptions = {
-                toMail : newMailID,
+                toMail: newMailID,
                 subject: `${inviterID.email} has invited you on MYTASK`,
                 text: `${inviterID.email} has invited you on MYTASK,
                     go to this link to accept invitation - 
@@ -114,8 +111,8 @@ module.exports = class User {
             }
 
             await mail.sendMail(mailOptions)
-        } catch(err) {
-            return {success:false, message:'', error:err}
+        } catch (err) {
+            return { success: false, message: '', error: err }
         }
     }
 }

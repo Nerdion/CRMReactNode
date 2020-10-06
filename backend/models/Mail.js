@@ -6,7 +6,7 @@ class Mail {
 
     constructor() {
         this.auth = {
-            user: 'devlinklabs@gmail.com', 
+            user: 'devlinklabs@gmail.com',
             pass: 'L3FQRGVieXN1Tk1Pdz09',
         }
         this.host = 'smtp.gmail.com'
@@ -29,7 +29,7 @@ class Mail {
         };
 
         this.transporter.sendMail(mailOptions, (error, info) => {
-            if(error) console.log(error)
+            if (error) console.log(error)
         });
     }
 }

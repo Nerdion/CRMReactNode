@@ -12,45 +12,45 @@ class Organization {
 
     async getMyOrganization(userID) {
         try {
-            if(await this.ifUserHasOrganization(userID)) {
-                let result = await mongo.usacrm.collection(this.organization).findOne({userID:userID})
-                return  {sucess:true, orgName:await result.orgName}
+            if (await this.ifUserHasOrganization(userID)) {
+                let result = await mongo.usacrm.collection(this.organization).findOne({ userID: userID })
+                return { sucess: true, orgName: await result.orgName }
             }
-        } catch(err) {
-            return {sucess:false, error:err}
+        } catch (err) {
+            return { sucess: false, error: err }
         }
     }
 
-    async createOrganization(organizationName, userInformation) {       
+    async createOrganization(organizationName, userInformation) {
         try {
-            if(await this.ifOrgExists(organizationName)) return {sucess:false, message: 'Organization already exists'}
-            if(await this.ifUserHasOrganization(userInformation._id)) return {sucess:false, message: 'Already part of an organization'}
-        
-            await mongo.usacrm.collection(this.organization).insertOne({orgName:organizationName, userID:userInformation._id})
-            return await {success:true, message:'Organization created successfully'}
-        } catch(e) {
-            return {sucess:false, error:e}
+            if (await this.ifOrgExists(organizationName)) return { sucess: false, message: 'Organization already exists' }
+            if (await this.ifUserHasOrganization(userInformation._id)) return { sucess: false, message: 'Already part of an organization' }
+
+            await mongo.usacrm.collection(this.organization).insertOne({ orgName: organizationName, userID: userInformation._id })
+            return await { success: true, message: 'Organization created successfully' }
+        } catch (e) {
+            return { sucess: false, error: e }
         }
     }
 
     async updateOrganizationName(userInformation, updatedName) {
         try {
             let userID = userInformation._id
-            if(await this.ifUserHasOrganization(userID)) {
-                await mongo.usacrm.collection(this.organization).findOneAndUpdate({userID: userID}, {$set: {orgName: updatedName}})
+            if (await this.ifUserHasOrganization(userID)) {
+                await mongo.usacrm.collection(this.organization).findOneAndUpdate({ userID: userID }, { $set: { orgName: updatedName } })
             }
-        } catch(err) {
-            return {success:false, error:err}
+        } catch (err) {
+            return { success: false, error: err }
         }
     }
 
     async ifOrgExists(organizationName) {
-        if(await mongo.usacrm.collection(this.organization).findOne({orgName:organizationName})) return true
+        if (await mongo.usacrm.collection(this.organization).findOne({ orgName: organizationName })) return true
         else return false
     }
 
     async ifUserHasOrganization(userid) {
-        if(await mongo.usacrm.collection(this.organization).findOne({userID: userid})) return true
+        if (await mongo.usacrm.collection(this.organization).findOne({ userID: userid })) return true
         else return false
     }
 

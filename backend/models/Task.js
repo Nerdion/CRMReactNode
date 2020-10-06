@@ -37,7 +37,7 @@ class Task {
                 for (let i = 0; i < updatedTaskDataKeys.length; i++) {
                     taskData[updatedTaskDataKeys[i]] = updatedTaskData[i];
                 }
-                taskData['lastModified']=new Date()
+                taskData['lastModified'] = new Date()
                 let updateResult = await mongo.usacrm.collection(this.task).replaceOne({ _id: new ObjectId(taskId) }, taskData)
                 return { 'success': true, 'message': "Task is updated successfully" }
             } catch (error) {

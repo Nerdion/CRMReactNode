@@ -33,8 +33,8 @@ module.exports.manageUser = async function (req, res) {
         let bodyInfo = req.body
         let legitUser = await user.verifyUser(request.headers.authorization)
 
-        if(legitUser.success) {
-            if(bodyInfo.method='invite') {
+        if (legitUser.success) {
+            if (bodyInfo.method = 'invite') {
                 res.send(await user.inviteNewUser(bodyInfo.newMailID, legitUser.message))
             }
         } else {

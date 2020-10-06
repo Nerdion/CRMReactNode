@@ -5,7 +5,7 @@ class Workspace {
 
     constructor() {
         this.task = 'task',
-            this.workspace = 'workspace'
+        this.workspace = 'workspace'
     }
     workspaceAction = async () => {
         if (bodyInfo.action == 1) { //create a workspace
@@ -14,7 +14,7 @@ class Workspace {
                 let workspaceData = bodyInfo.workspaceData;
                 let workspace = {
                     title: workspaceData.title,
-                    orgID: workspaceData.orgID,
+                    orgID: workspaceData.orgID,//{backend} jwt
                     managerID: workspaceData.managerID,
                     createdDate: new Date(),
                     lastModified: new Date(),
@@ -38,6 +38,7 @@ class Workspace {
                     workspaceData[updatedWorkSpaceDataKeys[i]] = updatedWorkSpaceData[i];
                 }
                 workspaceData['lastModified'] = new Date()
+                //lastmodifieduser jwt
                 let updateResult = await mongo.usacrm.collection(this.workspace).replaceOne({ _id: new ObjectId(workspaceId) }, workspaceData)
                 return { 'success': true, 'message': "Workspace is updated successfully" }
 
