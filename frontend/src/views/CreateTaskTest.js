@@ -73,6 +73,7 @@ class CreateTaskTest extends React.Component {
                     "userName": "Molly Kal",
                     "imageUrl": "https://i.pinimg.com/originals/be/ac/96/beac96b8e13d2198fd4bb1d5ef56cdcf.jpg"
                 },
+                
             ],
             enableEditor: false,
             setAddUsersBol: false
@@ -188,16 +189,8 @@ class CreateTaskTest extends React.Component {
                                         Team Members
                                     </span>
                                 </div>
-                                <Col className="mt-2 min-dn-ht hide-scroll-ind">
-                                    {
-                                        users.map((item, index) => (
-                                            <UserTaskCard
-                                                userName={item.userName}
-                                                imageUrl={item.imageUrl}
-                                            />
-                                        ))
-                                    }
-                                    <Button
+                                <Col className="mb-2 min-dn-ht hide-scroll-ind">
+                                <Button
                                         variant="contained"
                                         color="primary"
                                         size="medium"
@@ -207,6 +200,15 @@ class CreateTaskTest extends React.Component {
                                     >
                                         Add Users
                                         </Button>
+                                    {
+                                        users.map((item, index) => (
+                                            <UserTaskCard
+                                                userName={item.userName}
+                                                imageUrl={item.imageUrl}
+                                            />
+                                        ))
+                                    }
+                                   
                                 </Col>
                             </Col>
                         </Col>
