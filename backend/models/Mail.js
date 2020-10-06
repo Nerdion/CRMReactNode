@@ -1,48 +1,35 @@
 var nodemailer = require('nodemailer');
+
+//var smtpTransport = require('nodemailer-smtp-transport');
+
 class Mail {
 
-    constructor() { }
+    constructor() {
+        this.auth = {
+            user: 'devlinklabs@gmail.com', 
+            pass: 'L3FQRGVieXN1Tk1Pdz09',
+        }
+        this.host = 'smtp.gmail.com'
+        this.service = 'gmail'
 
-    sendMail = async () => {
-        // Generate test SMTP service account from ethereal.email
-        // Only needed if you don't have a real mail account for testing
-        // create reusable transporter object using the default SMTP transport
-        let transporter = nodemailer.createTransport({
-            host: "smtp.mail.yahoo.com",
-            service: 'yahoo',
-            secure: false,
-            port: 465,
-            auth: {
-                user: 'shriyashshingare@yahoo.com', // generated ethereal user
-                pass: 'ricbssvuwttkubxt', // generated ethereal password
-            },
-            debug: true,
-            logger: true
+        this.transporter = nodemailer.createTransport({
+            host: this.host,
+            service: this.service,
+            auth: this.auth,
         });
+    }
 
-
-        // send mail with defined transport object
-        let info = await transporter.sendMail({
-            from: '"Shriyash Shingare" <devlinklabs@gmail.com>', // sender address
-            to: "neel99khalade@gmail.com, shriyashshingare@gmail.com", // list of receivers
-            subject: "Hello ✔", // Subject line
-            text: "Hello world?", // plain text body
-            html: "<b>Hello world?</b>", // html body
-        });
+    sendMail = (options) => {
 
         const mailOptions = {
-            from: 'ShriyashShingare <shriyashshingare@yahoo.com>',
-            to: 'neel99khalade@gmail.com, shriyashshingare@gmail.com',
-            subject: 'Invoices due',
-            text: 'Dudes, we really need your money.'
+            from: '"DevLinkLabs" <devlinklabs@gmail.com>',
+            to: options.toMail,
+            subject: options.subject,
+            text: options.text,
         };
 
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
+        this.transporter.sendMail(mailOptions, (error, info) => {
+            if(error) console.log(error)
         });
     }
 }

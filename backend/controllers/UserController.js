@@ -26,3 +26,21 @@ module.exports.register = async function (req, res) {
         res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
     }
 };
+
+module.exports.manageUser = async function (req, res) {
+    try {
+        let user = new User()
+        let bodyInfo = req.body
+        let legitUser = await user.verifyUser(request.headers.authorization)
+
+        if(legitUser.success) {
+            if(bodyInfo.method='invite') {
+                res.send(await user.inviteNewUser(bodyInfo.newMailID, legitUser.message))
+            }
+        } else {
+            res.send(legitUser)
+        }
+    } catch (e) {
+        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+    }
+}

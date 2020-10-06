@@ -2,9 +2,15 @@ const Mail = require('../models/Mail')
 module.exports.sendMail = async function (req, res) {
     try {
         var bodyInfo = req.body
-        if (1) {
-            var response = await new Mail().sendMail();
-            res.send(response)
+        if (req.body.toMail) {
+            
+            const options = {
+                toMail : req.body.toMail,
+                subject : req.body.subject,
+                text : req.body.text
+            }
+
+            new Mail().sendMail(options, res);
         } else {
             res.send({ "Success": true, "Error": error, "Payload": [] })
         }
