@@ -25,6 +25,7 @@ import Icons from "./views/authViews/Icons";
 import CreateTaskTest from './views/CreateTaskTest';
 import WorkSpace from './views/WorkSpace';
 import Users from './views/Users';
+import UserInfo from "./views/UserInfo";
 
 var routes = [
   {
@@ -32,70 +33,100 @@ var routes = [
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
     component: Index,
-    layout: "/admin"
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
   },
   {
     path: "/WorkSpace",
     name: "WorkSpace",
     icon: "ni ni-briefcase-24 text-info",
     component: WorkSpace,
-    layout: "/admin"
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
   },
   {
     path: "/CreateTaskTest",
     name: "Create Task",
     icon: "ni ni-archive-2 text-red",
     component: CreateTaskTest,
-    layout: "/admin"
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
   },
   {
     path: "/users",
     name: "Users",
     icon: "ni ni-single-02 text-primary",
     component: Users,
-    layout: "/admin"
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
   },
   {
     path: "/icons",
     name: "Icons",
     icon: "ni ni-planet text-blue",
     component: Icons,
-    layout: "/admin"
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
   },
   {
     path: "/maps",
     name: "Maps",
     icon: "ni ni-pin-3 text-orange",
     component: Maps,
-    layout: "/admin"
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
   },
   {
     path: "/user-profile",
     name: "User Profile",
     icon: "ni ni-single-02 text-yellow",
     component: Profile,
-    layout: "/admin"
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
   },
   {
     path: "/tables",
     name: "Tables",
     icon: "ni ni-bullet-list-67 text-red",
     component: Tables,
-    layout: "/admin"
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
+  },
+  {
+    path: "/userinfo/:token?",
+    name: "UserInfo",
+    icon: "ni ni-circle-08 text-pink",
+    component: UserInfo,
+    layout: "/auth",
+    showRoute: true,
+    exactLink: true
   },
   {
     path: "/login",
     name: "Login",
     icon: "ni ni-key-25 text-info",
     component: Login,
-    layout: "/auth"
+    layout: "/auth",
+    showRoute: true,
+    exactLink: false
   },
   {
     path: "/register",
     name: "Register",
     icon: "ni ni-circle-08 text-pink",
     component: Register,
-    layout: "/auth"
-  }
+    layout: "/auth",
+    showRoute: true,
+    exactLink: false
+  },
+
 ];
 export default routes;
