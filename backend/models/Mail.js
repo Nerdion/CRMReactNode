@@ -22,7 +22,7 @@ class Mail {
     sendMail = (options) => {
 
         const mailOptions = {
-            from: '"DevLinkLabs" <devlinklabs@gmail.com>',
+            from: '"Smart Note" <devlinklabs@gmail.com>',
             to: options.toMail,
             subject: options.subject,
             text: options.text,

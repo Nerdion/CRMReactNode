@@ -6,7 +6,7 @@ module.exports.manage = async (req, res) => {
     try {
         const oragnization = new Organization()
 
-        let legitUser = await new User().verifyUser(request.headers.authorization)
+        let legitUser = await new User().verifyUser(req.headers.authorization)
         if (legitUser.success) {
             if (req.body.method == 0) res.json(await oragnization.getMyOrganization(legitUser.message._id))
             if (req.body.method == 1) res.json(await oragnization.createOrganization(req.body.orgName, legitUser.message))

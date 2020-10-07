@@ -20,7 +20,7 @@ module.exports = class User {
         if (checkUser.length == 1) {
             if (password == checkUser[0].password) {
                 let jwtData = await this.generatetoken(email, checkUser[0]._id.toString());
-                return { 'success': true, 'status': 200, 'message': "User is authenticated Successfully", jwtToken: jwtData }
+                return { 'success': true, 'status': 200, 'message': "User is authenticated Successfully", jwtData }
             };
         } else {
             return { 'success': false, 'status': 400, 'message': "User is authenticated Un-successfully" };
@@ -84,7 +84,7 @@ module.exports = class User {
         try {
             let decoded = await jwt.verify(token, tokenKey)
 
-            let decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) })
+            let decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }) //password : 0
 
             if (!decodedInformation) {
                 return { success: false, message: 'Not authorised' }
@@ -99,10 +99,10 @@ module.exports = class User {
     async inviteNewUser(newMailID, inviterID) {
         try {
             console.log(await inviterID)
-            let inviterData = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(inviterID.userid) }).toArray()
+            let inviterData = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(inviterID._id) })
             let newUser = { email: newMailID, status: -1, orgId: inviterData.orgId }
             await mongo.usacrm.collection(this.User).insertOne(newUser)
-            let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailID }).toArray()
+            let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailID })
             let jwtData = await this.generatetoken(newUser.email, newUserData._id.toString());
             let encData = await this.encryptData(jwtData)
             let mail = new Mail()
