@@ -34,6 +34,37 @@ import {
 import Header from "../components/Headers/Header.js";
 import WorkSpaceTasksCard from '../components/Cards/WorkSpaceTasksCard';
 import DialogBox from '../components/DialogBox/DialogBox';
+import WorkSpaceTable from "../components/Tables/WorkSpaceTable.js";
+
+
+const WorkspaceData = [
+    {
+        "WorkspaceName": "DevLab Setup",
+        "Permissions": "Admin",
+        "Role": "Designer",
+        "Completion_Text": "60%",
+        "Completion": 60,
+        "last_active": "2 minute ago"
+    },
+    {
+        "WorkspaceName": "New Location",
+        "Permissions": "Organizer",
+        "Role": "Backend Manager",
+        "Completion_Text": "30%",
+        "Completion": 30,
+        "last_active": "5 minute ago"
+    },
+
+]
+
+const HeaderData = [
+    { "Header": "WorkSpace Name" },
+    { "Header": "Permissions" },
+    { "Header": "Role" },
+    { "Header": "Completion" },
+    { "Header": "last active" },
+    { "Header": "Menu" },
+];
 
 class WorkSpace extends React.Component {
     constructor(props) {
@@ -117,7 +148,7 @@ class WorkSpace extends React.Component {
                 {/* Page content */}
                 <Container className="mt--7" fluid>
                     <Row className="mb-3 align-items-center">
-                        <Col xs="12" md="6" lg="6" xl="6">
+                        {/* <Col xs="12" md="6" lg="6" xl="6">
                             <FormControl className="min-wd-200 width-f bg-info p-2 br-sm">
                                 <InputLabel className="text-white mar-1" id="demo-simple-select-helper-label">WorkSpace</InputLabel>
                                 <Select
@@ -153,6 +184,15 @@ class WorkSpace extends React.Component {
                                      </Button>
                                 </Col>
                             </Row>
+                        </Col> */}
+                        <Col className="justify-content-center" xl="12">
+                            <WorkSpaceTable
+                                Header={'WorkSpace'}
+                                onClickHeaderButton={() => this.onClickOpenAddWorkSpace()}
+                                HeaderButtonName={'Add WorkSpace'}
+                                userData={WorkspaceData}
+                                tHeader={HeaderData}
+                            />
                         </Col>
                     </Row>
                     <Row className=" mt-2 justify-content-around">
