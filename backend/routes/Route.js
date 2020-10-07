@@ -20,5 +20,8 @@ api.use('/api/workspaceAction', workspaceController.workspaceAction);
 
 api.use('/api/taskAction', taskController.taskAction);
 
+api.use('/api/inviteuser', userController.manageUser);
+
+
 
 module.exports = api;

@@ -103,14 +103,14 @@ class Users extends React.Component {
     }
 
     GetUserData = async () => {
-        //const CRM_Token = await localStorage.getItem('CRM_Token_Value');
+        const CRM_Token = await localStorage.getItem('CRM_Token_Value');
         try {
             const GetAvailUser = await fetch(GetUserAvail, {
                 method: "POST",
                 headers: {
-                    //'Accept': 'application/json',
-                    //'Content-Type': 'application/json',
-                    //'Authorization': `JWT ${CRM_Token}`
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `JWT ${CRM_Token}`
                 },
             });
             const responseData = await GetAvailUser.json();
@@ -128,16 +128,17 @@ class Users extends React.Component {
     SendInviteHandle = async () => {
         const title = "Error";
         const message = '';
-        //var CRM_Token = await localStorage.getItem('CRM_Token_Value');
+        let CRM_Token = await localStorage.getItem('CRM_Token_Value');
         try {
             const UserInviteFetch = await fetch(VerifyUserInvite, {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    //'Authorization': `JWT ${CRM_Token}`
+                    'Authorization': `JWT ${CRM_Token}`
                 },
                 body: JSON.stringify({
+                    method:'invite',
                     useremail: this.state.UserEmail
                 })
             });
@@ -145,7 +146,7 @@ class Users extends React.Component {
             console.log(responseData, 'UserInviteFetchData')
             console.log(UserInviteFetch, 'UserInviteFetch');
 
-            if (responseData.status === "200") {
+            if (responseData.success) {
                 console.log("User Invited");
             }
             else {

@@ -34,6 +34,7 @@ module.exports = class User {
             name: registerData.username,
             email: registerData.useremail,
             password: registerData.password,
+            statusId: 0
         }
 
         let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': userData.email }).toArray();
@@ -98,16 +99,20 @@ module.exports = class User {
     async inviteNewUser(newMailID, inviterID) {
         try {
             console.log(await inviterID)
-            await mongo.usacrm.collection(this.User).insertOne({ email: newMailID, status: -1 })
-
+            let inviterData = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(inviterID.userid) }).toArray()
+            let newUser = { email: newMailID, status: -1, orgId: inviterData.orgId }
+            await mongo.usacrm.collection(this.User).insertOne(newUser)
+            let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailID }).toArray()
+            let jwtData = await this.generatetoken(newUser.email, newUserData._id.toString());
+            let encData = await this.encryptData(jwtData)
             let mail = new Mail()
 
             const mailOptions = {
                 toMail: newMailID,
-                subject: `${inviterID.email} has invited you on MYTASK`,
-                text: `${inviterID.email} has invited you on MYTASK,
+                subject: `${inviterID.email} has invited you on smart note`,
+                text: `${inviterID.email} has invited you on smart note,
                     go to this link to accept invitation - 
-                    ${siteName}?mail=${newMailID}`
+                    ${siteName}?mail=${encData}`
             }
 
             await mail.sendMail(mailOptions)
