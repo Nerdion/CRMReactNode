@@ -10,12 +10,6 @@ import {
 // reactstrap components
 import {
     Container,
-    Row,
-    Col,
-    Card,
-    CardHeader,
-    Table,
-    Progress,
     Alert
 } from "reactstrap";
 
@@ -23,9 +17,44 @@ import {
 
 import Header from "../components/Headers/Header.js";
 import DialogBox from '../components/DialogBox/DialogBox';
+import UsersTable from "../components/Tables/UsersTable.js";
+
 
 //API's
-import { VerifyUserInvite } from './CRM_Apis';
+import { VerifyUserInvite, GetUserAvail } from './CRM_Apis';
+
+//Temp Data
+
+const UserData = [
+    {
+        "UserName": "Nishad Patil",
+        "Permissions": "Admin",
+        "Team": "Meta",
+        "Role": "Designer",
+        "Completion_Text": "60%",
+        "Completion": 60,
+        "last_active": "2 minute ago"
+    },
+    {
+        "UserName": "Neel Khalade",
+        "Permissions": "Organizer",
+        "Team": "Meta",
+        "Role": "Backend Manager",
+        "Completion_Text": "30%",
+        "Completion": 30,
+        "last_active": "5 minute ago"
+    },
+
+]
+
+const HeaderData = [
+    { "Header": "User Name" },
+    { "Header": "Permissions" },
+    { "Header": "Team" },
+    { "Header": "Role" },
+    { "Header": "Completion" },
+    { "Header": "last active" },
+];
 
 class Users extends React.Component {
     constructor(props) {
@@ -73,6 +102,29 @@ class Users extends React.Component {
         }
     }
 
+    GetUserData = async () => {
+        //const CRM_Token = await localStorage.getItem('CRM_Token_Value');
+        try {
+            const GetAvailUser = await fetch(GetUserAvail, {
+                method: "POST",
+                headers: {
+                    //'Accept': 'application/json',
+                    //'Content-Type': 'application/json',
+                    //'Authorization': `JWT ${CRM_Token}`
+                },
+            });
+            const responseData = await GetAvailUser.json();
+            console.log(responseData, 'GetAvailUser')
+            console.log(GetAvailUser, 'GetAvailUserHeader');
+            this.setState({
+                TotalCount: responseData.count,
+                UserData: responseData.results.userData,
+            })
+        } catch (err) {
+            console.log("Error fetching data-----------", err);
+        }
+    }
+
     SendInviteHandle = async () => {
         const title = "Error";
         const message = '';
@@ -82,7 +134,7 @@ class Users extends React.Component {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                     //'Authorization': `JWT ${CRM_Token}`
                 },
                 body: JSON.stringify({
@@ -132,83 +184,13 @@ class Users extends React.Component {
                 <Container className="mt--7" fluid>
                     <div className="col-md-12 justify-content-center">
                         {AlertError}
-                        <Col className="mb-12 mb-xl-0" md='12' xl="12">
-                            <Card className="shadow">
-                                <CardHeader className="border-0">
-                                    <Row className="align-items-center">
-                                        <div className="col">
-                                            <h3 className="mb-0">Users</h3>
-                                        </div>
-                                        <div className="col text-right">
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                                onClick={this.handleClickOpen}
-                                            >
-                                                Invite User
-                                                </Button>
-                                        </div>
-                                    </Row>
-                                </CardHeader>
-                                <Table className="align-items-center table-flush" responsive>
-                                    <thead className="thead-light">
-                                        <tr>
-                                            <th scope="col">User Name</th>
-                                            <th scope="col">Permissions</th>
-                                            <th scope="col">Team</th>
-                                            <th scope="col">Role</th>
-                                            <th scope="col">completion</th>
-                                            <th scope="col">last active</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">Nishad Patil</th>
-                                            <td>Admin</td>
-                                            <td>Meta</td>
-                                            <td>Designer</td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span className="mr-2">60%</span>
-                                                    <div>
-                                                        <Progress
-                                                            max="100"
-                                                            value="60"
-                                                            barClassName="bg-gradient-success"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                2 minute ago
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Neel Khalade</th>
-                                            <td>Organizer</td>
-                                            <td>Meta</td>
-                                            <td>Backend Manager</td>
-                                            <td>
-                                                <div className="d-flex align-items-center">
-                                                    <span className="mr-2">30%</span>
-                                                    <div>
-                                                        <Progress
-                                                            max="100"
-                                                            value="30"
-                                                            barClassName="bg-gradient-danger"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                5 minute ago
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </Card>
-                        </Col>
+                        <UsersTable
+                            Header={'Users'}
+                            onClickHeaderButton={() => this.handleClickOpen()}
+                            HeaderButtonName={'Invite User'}
+                            userData={UserData}
+                            tHeader={HeaderData}
+                        />
                     </div>
                 </Container>
                 <DialogBox
@@ -220,6 +202,7 @@ class Users extends React.Component {
                     onClose={this.handleClose}
                     onOpen={Dialog_open_close}
                     OnClick_Bt1={this.handleClose}
+                    Variant={"text"}
                     OnClick_Bt2={UserEmail.length < 1 ? () => this.onInviteSend("danger") : () => this.onInviteSend("success", "close")}
                 >
                     <TextField

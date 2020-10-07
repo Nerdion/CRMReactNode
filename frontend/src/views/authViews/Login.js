@@ -91,10 +91,10 @@ class Login extends React.Component {
   }
   encryptData = async (data) => {
     try {
-      let tokenKey='crmfrontendbackend'
+      let tokenKey = 'crmfrontendbackend'
       var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
       // return {"data": strenc};
-      return {data:strenc}
+      return { data: strenc }
 
     } catch (e) {
       console.log(e);
@@ -103,7 +103,7 @@ class Login extends React.Component {
 
   decryptData = async (data) => {
     try {
-      let tokenKey='crmfrontendbackend'
+      let tokenKey = 'crmfrontendbackend'
       var bytes = CryptoJS.AES.decrypt(data, tokenKey)
       var originalText = bytes.toString(CryptoJS.enc.Utf8);
 
@@ -202,6 +202,15 @@ class Login extends React.Component {
                     onClick={e => e.preventDefault()}
                   >
                     <small>Forgot password?</small>
+                  </a>
+                </div>
+                <div className="text-center mt-2">
+                  <a
+                    className="txt-lt-dark"
+                    href="#pablo"
+                    onClick={() => this.props.history.push("/auth/register")}
+                  >
+                    <small>Sign up</small>
                   </a>
                 </div>
               </Form>
