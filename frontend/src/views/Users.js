@@ -1,4 +1,3 @@
-
 import React from "react";
 
 //Material UI
@@ -98,6 +97,7 @@ class Users extends React.Component {
         const message = type === "success" ? "Invitition has been sent to the user" : "User's Email is invalid";
         this.setState({ title, message, Alert_open_close: true, AlertColor: type });
         if (this.state.invalidEmail === false && type === "success") {
+            this.SendInviteHandle()
             this.handleClose();
         }
     }
@@ -126,8 +126,8 @@ class Users extends React.Component {
     }
 
     SendInviteHandle = async () => {
-        const title = "Error";
-        const message = '';
+        let title = "Error";
+        let message = '';
         let CRM_Token = await localStorage.getItem('CRM_Token_Value');
         try {
             const UserInviteFetch = await fetch(VerifyUserInvite, {
@@ -135,14 +135,14 @@ class Users extends React.Component {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': `JWT ${CRM_Token}`
+                    'Authorization': `${CRM_Token}`
                 },
                 body: JSON.stringify({
-                    method:'invite',
+                    method: 'invite',
                     useremail: this.state.UserEmail
                 })
             });
-            const responseData = await UserInviteFetch.json();
+            let responseData = await UserInviteFetch.json();
             console.log(responseData, 'UserInviteFetchData')
             console.log(UserInviteFetch, 'UserInviteFetch');
 
@@ -216,7 +216,7 @@ class Users extends React.Component {
                         required={true}
                         helperText={invalidEmail ? "Incorrect entry." : null}
                         value={UserEmail}
-                        autocomplete="section-blue shipping address-level2"
+                        autoComplete="section-blue shipping address-level2"
                         onChange={(e) => this.onChangeText(e.target.value)}
                         fullWidth
                     />

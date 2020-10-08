@@ -70,9 +70,9 @@ class Login extends React.Component {
         const responseData = await UserLoginApiCall.json();
         console.log(responseData, 'UserLoginApiCallData')
         console.log(UserLoginApiCall, 'UserLoginApiCall');
-        if (responseData.status === 200) {
+        if (responseData.success) {
           console.log("User Loggedin");
-          //localStorage.setItem('CRM_Token_Value', responseData.token);
+          localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
           this.props.history.push("/admin/index");
         }
         else {

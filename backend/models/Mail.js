@@ -29,7 +29,12 @@ class Mail {
         };
 
         this.transporter.sendMail(mailOptions, (error, info) => {
-            if (error) console.log(error)
+            if (error) {
+                console.log(error)
+                return { 'success': false };
+            } else {
+                return { 'success': true };
+            }
         });
     }
 }

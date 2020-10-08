@@ -100,22 +100,32 @@ module.exports = class User {
         try {
             console.log(await inviterID)
             let inviterData = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(inviterID._id) })
-            let newUser = { email: newMailID, status: -1, orgId: inviterData.orgId }
-            await mongo.usacrm.collection(this.User).insertOne(newUser)
-            let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailID })
-            let jwtData = await this.generatetoken(newUser.email, newUserData._id.toString());
-            let encData = await this.encryptData(jwtData)
-            let mail = new Mail()
+            let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': newMailID }).toArray();
+            if (checkUser.length == 0) {
+                let newUser = { email: newMailID, statusId: -1, orgId: inviterData.orgId }
+                await mongo.usacrm.collection(this.User).insertOne(newUser)
+                let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailID })
+                let jwtData = await this.generatetoken(newUser.email, newUserData._id.toString());
+                let encData = await this.encryptData(jwtData)
+                let mail = new Mail()
 
-            const mailOptions = {
-                toMail: newMailID,
-                subject: `${inviterID.email} has invited you on smart note`,
-                text: `${inviterID.email} has invited you on smart note,
+                const mailOptions = {
+                    toMail: newMailID,
+                    subject: `${inviterID.email} has invited you on smart note`,
+                    text: `${inviterID.email} has invited you on smart note,
                     go to this link to accept invitation - 
-                    ${siteName}?mail=${encData}`
-            }
+                    ${siteName}/auth/userinfo?auth=${encData}`
+                }
+                let isSend = await mail.sendMail(mailOptions)
+                if (isSend.success) {
+                    return { 'success': true, 'message': "User is invited successfully via mail" };
+                } else {
+                    return { 'success': false, 'message': "User is invited Un-successfully" };
+                }
 
-            await mail.sendMail(mailOptions)
+            } else {
+                return { 'success': false, 'message': "User is already exits" };
+            }
         } catch (err) {
             return { success: false, message: '', error: err }
         }
