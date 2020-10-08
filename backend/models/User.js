@@ -83,7 +83,6 @@ module.exports = class User {
     async verifyUser(token) {
         try {
             let decoded = await jwt.verify(token, tokenKey)
-
             let decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }) //password : 0
 
             if (!decodedInformation) {
@@ -104,32 +103,46 @@ module.exports = class User {
             if (checkUser.length == 0) {
                 let newUser = { email: newMailID, statusId: -1, orgId: inviterData.orgId }
                 await mongo.usacrm.collection(this.User).insertOne(newUser)
-                let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailID })
-                let jwtData = await this.generatetoken(newUser.email, newUserData._id.toString());
-                let encData = await this.encryptData(jwtData)
-                let mail = new Mail()
+            }
+            let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailID })
+            let jwtData = await this.generatetoken(newMailID, newUserData._id.toString());
+            let encData = await this.encryptData(jwtData)
+            encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+            let mail = new Mail()
 
-                const mailOptions = {
-                    toMail: newMailID,
-                    subject: `${inviterID.email} has invited you on smart note`,
-                    text: `${inviterID.email} has invited you on smart note,
+            const mailOptions = {
+                toMail: newMailID,
+                subject: `${inviterID.email} has invited you on smart note`,
+                text: `${inviterID.email} has invited you on smart note,
                     go to this link to accept invitation - 
-                    ${siteName}/auth/userinfo?auth=${encData}`
-                }
-                let isSend = await mail.sendMail(mailOptions)
-                // if (isSend) {
-                //     return { 'success': true, 'message': "User is invited successfully via mail" };
-                // } else {
-                //     return { 'success': false, 'message': "User is invited Un-successfully" };
-                // }
-                console.log(isSend)
-                return true
-
+                    ${siteName}/auth/userinfo/${encData}`
+            }
+            let isSend = await mail.sendMail(mailOptions)
+            if (isSend) {
+                return { 'success': true, 'message': "User is invited successfully via mail" };
             } else {
-                return { 'success': false, 'message': "User is already exits" };
+                return { 'success': false, 'message': "User is invited Un-successfully" };
             }
         } catch (err) {
             return { success: false, message: '', error: err }
         }
+    }
+    async authorizeUser(bodyInfo, userData) {
+        try {
+            let authData = await this.decryptData(bodyInfo)
+            let password = authData.password;
+            let name = authData.name
+            let checkUser = await mongo.usacrm.collection(this.User).findOne({ 'email': userData.email })
+            let updateResult = await mongo.usacrm.collection(this.User).updateOne({ "email": userData.email },
+                {
+                    $set: { "name": name, password: password }
+                })
+
+            return { success: true, message: 'User is authorized successfully' }
+        } catch (err) {
+            return { success: false, message: 'User is authorized Un-successfully' }
+        }
+
+
     }
 }

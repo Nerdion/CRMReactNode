@@ -44,3 +44,19 @@ module.exports.manageUser = async function (req, res) {
         res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
     }
 }
+
+module.exports.authorizeUser = async function (req, res) {
+    try {
+        let user = new User()
+        let bodyInfo = req.body
+        let legitUser = await user.verifyUser(req.headers.authorization)
+        if (legitUser.success) {
+            var response = await user.authorizeUser(bodyInfo,legitUser.message);
+            res.send(response)
+        } else {
+            res.send({ "Success": true, "Error": error, "Payload": [] })
+        }
+    } catch (e) {
+        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+    }
+};

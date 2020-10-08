@@ -30,8 +30,6 @@ class Mail {
                 secure: false,
                 port: this.port,
                 auth: this.auth,
-                debug: true,
-                logger: true
             });
 
             this.transporter.sendMail(mailOptions, function(error, info){

@@ -2,4 +2,4 @@
 exports.DB_UCRM = "USA_CRM";
 exports.URL = 'mongodb://localhost:27017';
 exports.key = 'crmfrontendbackend'
-exports.siteName = 'http://localhost:3001'
+exports.siteName = 'http://localhost:4200'

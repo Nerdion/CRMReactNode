@@ -147,6 +147,9 @@ class Users extends React.Component {
             console.log(UserInviteFetch, 'UserInviteFetch');
 
             if (responseData.success) {
+                message = responseData.message;
+                title 
+                this.setState({ title, message, Alert_open_close: true });
                 console.log("User Invited");
             }
             else {
