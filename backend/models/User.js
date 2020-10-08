@@ -117,11 +117,13 @@ module.exports = class User {
                     ${siteName}/auth/userinfo?auth=${encData}`
                 }
                 let isSend = await mail.sendMail(mailOptions)
-                if (isSend.success) {
-                    return { 'success': true, 'message': "User is invited successfully via mail" };
-                } else {
-                    return { 'success': false, 'message': "User is invited Un-successfully" };
-                }
+                // if (isSend) {
+                //     return { 'success': true, 'message': "User is invited successfully via mail" };
+                // } else {
+                //     return { 'success': false, 'message': "User is invited Un-successfully" };
+                // }
+                console.log(isSend)
+                return true
 
             } else {
                 return { 'success': false, 'message': "User is already exits" };
