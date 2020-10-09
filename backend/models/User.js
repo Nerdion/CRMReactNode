@@ -16,14 +16,19 @@ module.exports = class User {
         let email = authData.useremail;
         let password = authData.password;
 
-        let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': email }).toArray();
-        if (checkUser.length == 1) {
-            if (password == checkUser[0].password) {
-                let jwtData = await this.generatetoken(email, checkUser[0]._id.toString());
-                return { 'success': true, 'status': 200, 'message': "User is authenticated Successfully", jwtData }
-            };
+        let checkUser = await mongo.usacrm.collection(this.User).findOne({ 'email': email})
+        if (checkUser.email) {
+            if(checkUser.statusId == 1){
+                if (password == checkUser.password) {
+                    let jwtData = await this.generatetoken(email, checkUser._id.toString());
+                    return { 'success': true, 'message': "User is authenticated Successfully", jwtData }
+                };
+            }else{
+                return { 'success': false, 'message': "to login please verify your email first" };
+            }
+            
         } else {
-            return { 'success': false, 'status': 400, 'message': "User is authenticated Un-successfully" };
+            return { 'success': false, 'message': "User is authenticated Un-successfully" };
         }
     }
 
@@ -132,10 +137,9 @@ module.exports = class User {
             let authData = await this.decryptData(bodyInfo)
             let password = authData.password;
             let name = authData.name
-            let checkUser = await mongo.usacrm.collection(this.User).findOne({ 'email': userData.email })
             let updateResult = await mongo.usacrm.collection(this.User).updateOne({ "email": userData.email },
                 {
-                    $set: { "name": name, password: password }
+                    $set: { name: name, password: password ,statusId:1}
                 })
 
             return { success: true, message: 'User is authorized successfully' }
