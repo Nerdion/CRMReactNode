@@ -184,7 +184,7 @@ module.exports = class User {
             toMail: email,
             subject: `Verify Email Address`,
             text: `Please click the given link below to verify your email
-                ${siteName}/auth/emailVerification/${encData}`
+                ${siteName}/auth/login/${encData}`
         }
         let isSend = await mail.sendMail(mailOptions)
         if (isSend) {
