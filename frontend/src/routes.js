@@ -110,7 +110,7 @@ var routes = [
     exactLink: true
   },
   {
-    path: "/login",
+    path: "/login/:token?",
     name: "Login",
     icon: "ni ni-key-25 text-info",
     component: Login,

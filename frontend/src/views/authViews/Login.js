@@ -18,7 +18,9 @@ import {
 } from "reactstrap";
 
 //API's
-import { VerifyUserLogin } from '../CRM_Apis';
+import { VerifyUserLogin, VerifyEmailUser } from '../CRM_Apis';
+
+let token = null;
 
 class Login extends React.Component {
 
@@ -28,6 +30,13 @@ class Login extends React.Component {
     Alert_open_close: false,
     title: '',
     message: ''
+  }
+
+  componentDidMount() {
+    token = this.props.match.params.token;
+    if (token != null) {
+        
+    }
   }
 
   onChange = (state, text) => {
@@ -42,7 +51,13 @@ class Login extends React.Component {
 
   submitLoginHandler = async (event) => {
     event.preventDefault();
-    const title = "Error";
+    let title = "Error";
+    let token = this.props.match.params.token;
+
+    let originalToken = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
+    console.log(token);
+    let crmToken = await this.decryptData(originalToken);
+    var jwtToken = Object.values(crmToken)[0]
     console.log("Signed in:-", this.state.UserEmail, this.state.Password);
     try {
       if (this.state.UserEmail === "") {
@@ -59,18 +74,21 @@ class Login extends React.Component {
           password: this.state.Password,
         }
         let encAuthData = await this.encryptData(authData);
-        const UserLoginApiCall = await fetch(VerifyUserLogin, {
+        let fetchUrl = token != null ? VerifyUserLogin : VerifyEmailUser;
+
+        const UserLoginApiCall = await fetch(fetchUrl, {
           method: "POST",
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': `${jwtToken}`
           },
           body: JSON.stringify(encAuthData)
         });
         const responseData = await UserLoginApiCall.json();
         console.log(responseData, 'UserLoginApiCallData')
         console.log(UserLoginApiCall, 'UserLoginApiCall');
-        if (responseData.success) {
+        if (responseData.success === true) {
           console.log("User Loggedin");
           localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
           this.props.history.push("/admin/index");
