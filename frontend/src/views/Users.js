@@ -148,7 +148,7 @@ class Users extends React.Component {
 
             if (responseData.success) {
                 message = responseData.message;
-                title 
+                //title 
                 this.setState({ title, message, Alert_open_close: true });
                 console.log("User Invited");
             }

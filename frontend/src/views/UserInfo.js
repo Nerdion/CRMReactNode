@@ -53,15 +53,16 @@ class UserInfo extends React.Component {
 
         let { name, password, Alert_open_close } = this.state;
         let token = this.props.match.params.token;
-        token = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
+        let originalToken = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
         console.log(token);
-        const crmToken = this.decryptData(token);
-        console.log("TokenData--->", token);
+        let crmToken = await this.decryptData(originalToken);
+        var jwtToken = Object.values(crmToken)[0]
+        console.log("TokenData--->", jwtToken);
         let title = "Error";
         let message = "";
         let registerData = {
             name: name,
-            password: password,
+            password: password
         }
         let encregisterData = await this.encryptData(registerData)
         console.log("Signed in:-", name, password);
@@ -84,7 +85,7 @@ class UserInfo extends React.Component {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        'Authorization': `${token}`
+                        'Authorization': `${jwtToken}`
 
                     },
                     body: JSON.stringify(encregisterData)
@@ -95,9 +96,9 @@ class UserInfo extends React.Component {
 
                 if (responseData.success) {
                     console.log("User Loggedin");
-                    localStorage.setItem('CRM_Token_Value', responseData.token);
+                    localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);                    
                     this.setState({ setActivityIndicator: true })
-                    this.checkUserAuthResponse();
+                    this.props.history.push("/admin/index");
                 }
                 else {
                     message = "Invalid Email & Password";
@@ -111,48 +112,47 @@ class UserInfo extends React.Component {
         }
     }
 
-    checkUserAuthResponse = async () => {
-        let title = "Error";
-        try {
-            // let encAuthData = await this.encryptData(authData);
-            const UserLoginApiCall = await fetch(AuthUserResponse, {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                // body: JSON.stringify(encAuthData)
-            });
-            const responseData = await UserLoginApiCall.json();
-            console.log(responseData, 'UserLoginApiCallData')
-            console.log(UserLoginApiCall, 'UserLoginApiCall');
-            if (responseData.status === 200) {
-                console.log("User Loggedin");
-                title = "Success";
-                const message = "User is Authorized";
-                this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
-                //localStorage.setItem('CRM_Token_Value', responseData.token);
-                setTimeout(() => {
-                    this.props.history.push("/admin/index");
-                }, 1000);
+    // checkUserAuthResponse = async () => {
+    //     let title = "Error";
+    //     try {
+    //         // let encAuthData = await this.encryptData(authData);
+    //         const UserLoginApiCall = await fetch(AuthUserResponse, {
+    //             method: "POST",
+    //             headers: {
+    //                 'Accept': 'application/json',
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             // body: JSON.stringify(encAuthData)
+    //         });
+    //         const responseData = await UserLoginApiCall.json();
+    //         console.log(responseData, 'UserLoginApiCallData')
+    //         console.log(UserLoginApiCall, 'UserLoginApiCall');
+    //         if (responseData.status === 200) {
+    //             console.log("User Loggedin");
+    //             title = "Success";
+    //             const message = "User is Authorized";
+    //             this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
+    //             //localStorage.setItem('CRM_Token_Value', responseData.token);
+    //             setTimeout(() => {
+    //                 this.props.history.push("/admin/index");
+    //             }, 1000);
 
 
-            }
-            else {
-                const message = "Invalid Data";
-                this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
-            }
-        } catch (err) {
-            console.log("Error fetching data-----------", err);
-            this.setState({ title, message: err, Alert_open_close: true, setActivityIndicator: false });
-        }
-    }
+    //         }
+    //         else {
+    //             const message = "Invalid Data";
+    //             this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
+    //         }
+    //     } catch (err) {
+    //         console.log("Error fetching data-----------", err);
+    //         this.setState({ title, message: err, Alert_open_close: true, setActivityIndicator: false });
+    //     }
+    // }
 
     encryptData = async (data) => {
         try {
             let tokenKey = 'crmfrontendbackend'
             var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
-            // return {"data": strenc};
             return { data: strenc }
 
         } catch (e) {
