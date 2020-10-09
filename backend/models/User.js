@@ -16,17 +16,17 @@ module.exports = class User {
         let email = authData.useremail;
         let password = authData.password;
 
-        let checkUser = await mongo.usacrm.collection(this.User).findOne({ 'email': email})
+        let checkUser = await mongo.usacrm.collection(this.User).findOne({ 'email': email })
         if (checkUser.email) {
-            if(checkUser.statusId == 1){
+            if (checkUser.statusId == 1) {
                 if (password == checkUser.password) {
                     let jwtData = await this.generatetoken(email, checkUser._id.toString());
                     return { 'success': true, 'message': "User is authenticated Successfully", jwtData }
                 };
-            }else{
+            } else {
                 return { 'success': false, 'message': "to login please verify your email first" };
             }
-            
+
         } else {
             return { 'success': false, 'message': "User is authenticated Un-successfully" };
         }
@@ -46,6 +46,7 @@ module.exports = class User {
         try {
             if (checkUser.length == 0) {
                 await mongo.usacrm.collection(this.User).insertOne(userData);
+                await this.emailVerification(userData.email)
                 return { 'success': true, 'message': "User is registerd Successfully" };
             } else {
                 return { 'success': false, 'message': "User is already exits" };
@@ -139,7 +140,7 @@ module.exports = class User {
             let name = authData.name
             let updateResult = await mongo.usacrm.collection(this.User).updateOne({ "email": userData.email },
                 {
-                    $set: { name: name, password: password ,statusId:1}
+                    $set: { name: name, password: password, statusId: 1 }
                 })
 
             return { success: true, message: 'User is authorized successfully' }
@@ -147,6 +148,27 @@ module.exports = class User {
             return { success: false, message: 'User is authorized Un-successfully' }
         }
 
+
+    }
+
+    async emailVerification(email) {
+        let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: email })
+        let jwtData = await this.generatetoken(email, newUserData._id.toString());
+        let encData = await this.encryptData(jwtData)
+        encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+        let mail = new Mail()
+        const mailOptions = {
+            toMail: email,
+            subject: `Verify Email Address`,
+            text: `Please click the given link below to verify your email
+                ${siteName}/auth/emailVerification/${encData}`
+        }
+        let isSend = await mail.sendMail(mailOptions)
+        if (isSend) {
+            return { 'success': true, 'message': "Verificatio link sent successfully" };
+        } else {
+            return { 'success': false, 'message': "Verificatio link sent Un-successfully" };
+        }
 
     }
 }
