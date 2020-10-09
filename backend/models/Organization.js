@@ -2,32 +2,34 @@ const mongo = require('./Model')
 
 const tokenKey = require('../config').key
 const jwt = require('jsonwebtoken')
-const { ObjectId } = require('mongodb')
+const { ObjectId, Db } = require('mongodb')
 
 class Organization {
 
     constructor() {
-        this.organization = 'organizations'
+        this.organization = 'Organizations'
     }
 
-    async getMyOrganization(userID) {
+    async getMembers(userInformation) {
         try {
-            if (await this.ifUserHasOrganization(userID)) {
-                let result = await mongo.usacrm.collection(this.organization).findOne({ userID: userID })
-                return { sucess: true, orgName: await result.orgName }
-            }
-        } catch (err) {
-            return { sucess: false, error: err }
+            let members = await mongo.usacrm.collection(this.organization).find({}, {}).toArray()
+            return { success: true, message: 'Users inside organization', data:members}
+        } catch(e) {
+            return { sucess: false, error: e.toString() }
         }
     }
 
     async createOrganization(organizationName, userInformation) {
         try {
+            if(!organizationName) return { success:false, message: 'Please enter organization name'}
             if (await this.ifOrgExists(organizationName)) return { sucess: false, message: 'Organization already exists' }
             if (await this.ifUserHasOrganization(userInformation._id)) return { sucess: false, message: 'Already part of an organization' }
 
-            await mongo.usacrm.collection(this.organization).insertOne({ orgName: organizationName, userID: userInformation._id })
-            return await { success: true, message: 'Organization created successfully' }
+            await mongo.usacrm.collection(this.organization).insertOne({ orgName: organizationName, managerId: userInformation._id })
+            
+            let orgId = await mongo.usacrm.collection(this.organization).findOne({orgName: organizationName})
+
+            return { success: true, message: 'Organization created successfully', orgId : orgId._id}
         } catch (e) {
             return { sucess: false, error: e }
         }
@@ -35,9 +37,9 @@ class Organization {
 
     async updateOrganizationName(userInformation, updatedName) {
         try {
-            let userID = userInformation._id
-            if (await this.ifUserHasOrganization(userID)) {
-                await mongo.usacrm.collection(this.organization).findOneAndUpdate({ userID: userID }, { $set: { orgName: updatedName } })
+            let userId = userInformation._id
+            if (await this.ifUserHasOrganization(userId)) {
+                await mongo.usacrm.collection(this.organization).findOneAndUpdate({ userId: userId }, { $set: { orgName: updatedName } })
             }
         } catch (err) {
             return { success: false, error: err }
@@ -50,10 +52,28 @@ class Organization {
     }
 
     async ifUserHasOrganization(userid) {
-        if (await mongo.usacrm.collection(this.organization).findOne({ userID: userid })) return true
+        if (await mongo.usacrm.collection(this.organization).findOne({ userId: userid })) return true
         else return false
     }
+    
+    async getOrganizationNames(orgName) {
+        try {
+            let regexp = new RegExp(`^${orgName}`, 'gm')
+            let data = await mongo.usacrm.collection(this.organization).find({orgName: {$regex:regexp}}).toArray()
+            return { sucess: true, orgName: data}
+        } catch(e) {
+            return { sucess: false, error: e.toString() }
+        }
+    }
 
+    async getOrganizationDetails(orgId) {
+        try {
+            let orgDetails = await mongo.usacrm.collection(this.organization).findOne({_id: new ObjectId(orgId)})
+            return { success: true, message: 'Organization details', data: orgDetails}
+        } catch (e) {
+            return { success :false, error: e.toString() }
+        }
+    }
 }
 
 module.exports = Organization

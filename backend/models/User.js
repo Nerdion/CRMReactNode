@@ -11,7 +11,7 @@ module.exports = class User {
         this.User = 'User'
     }
 
-    login = async (bodyInfo) => {
+    async login(bodyInfo) {
         let authData = await this.decryptData(bodyInfo)
         let email = authData.useremail;
         let password = authData.password;
@@ -32,7 +32,7 @@ module.exports = class User {
         }
     }
 
-    register = async (bodyInfo) => {
+    async register (bodyInfo) {
         let registerData = await this.decryptData(bodyInfo)
 
         let userData = {
@@ -54,8 +54,16 @@ module.exports = class User {
             return { 'success': false, 'message': e.toString() };
         }
     }
+    
+    async getMyOrganization() {
+        try {
+                return { sucess: true, orgName: await this.decodedInformation.orgId }
+        } catch (err) {
+            return { sucess: false, error: err }
+        }
+    }
 
-    encryptData = async (data) => {
+    async encryptData  (data) {
         try {
             var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
             return strenc
@@ -64,7 +72,7 @@ module.exports = class User {
         }
     }
 
-    decryptData = async (authData) => {
+    async decryptData (authData) {
         try {
             var bytes = CryptoJS.AES.decrypt(authData.data, tokenKey)
             var originalText = bytes.toString(CryptoJS.enc.Utf8);
@@ -73,7 +81,8 @@ module.exports = class User {
             console.log(e);
         }
     }
-    generatetoken = async (email, userId) => {
+
+    async generatetoken(email, userId) {
         var token_string = {
             userid: userId.toString(),
             email: email
@@ -84,54 +93,51 @@ module.exports = class User {
         return { "Token": token }
     }
 
-
     async verifyUser(token) {
         try {
             let decoded = await jwt.verify(token, tokenKey)
-            let decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }) //password : 0
+            this.decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }) //password : 0
 
-            if (!decodedInformation) {
+            if (!this.decodedInformation) {
                 return { success: false, message: 'Not authorised' }
             } else {
-                return { success: true, message: decodedInformation }
+                return { success: true, message: this.decodedInformation }
             }
         } catch (e) {
             return { success: false, message: 'Not authorised, malformed key, no session', error: e }
         }
     }
 
-    async inviteNewUser(newMailID, inviterID) {
+    async inviteNewUser(newMailId, inviterId) {
         try {
-            console.log(await inviterID)
-            let inviterData = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(inviterID._id) })
-            let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': newMailID }).toArray();
+            if(inviterId.email == newMailId) return { sucess: false, message: "Cannot invite yourself !!"}
+            let inviterData = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(inviterId._id) })
+            let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': newMailId }).toArray();
             if (checkUser.length == 0) {
-                let newUser = { email: newMailID, statusId: -1, orgId: inviterData.orgId }
+                let newUser = { email: newMailId, statusId: -1, orgId: inviterData.orgId }
                 await mongo.usacrm.collection(this.User).insertOne(newUser)
             }
-            let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailID })
-            let jwtData = await this.generatetoken(newMailID, newUserData._id.toString());
+            let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailId })
+            let jwtData = await this.generatetoken(newMailId, newUserData._id.toString());
             let encData = await this.encryptData(jwtData)
             encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
             let mail = new Mail()
 
             const mailOptions = {
-                toMail: newMailID,
-                subject: `${inviterID.email} has invited you on smart note`,
-                text: `${inviterID.email} has invited you on smart note,
+                toMail: newMailId,
+                subject: `${inviterId.email} has invited you on smart note`,
+                text: `${inviterId.email} has invited you on smart note,
                     go to this link to accept invitation - 
                     ${siteName}/auth/userinfo/${encData}`
             }
             let isSend = await mail.sendMail(mailOptions)
-            if (isSend) {
-                return { 'success': true, 'message': "User is invited successfully via mail" };
-            } else {
-                return { 'success': false, 'message': "User is invited Un-successfully" };
-            }
+            if (isSend) return { 'success': true, 'message': "User is invited successfully via mail" };
+            else return { 'success': false, 'message': "User is invited Un-successfully" };
         } catch (err) {
             return { success: false, message: '', error: err }
         }
     }
+
     async authorizeUser(bodyInfo, userData) {
         try {
             let authData = await this.decryptData(bodyInfo)
@@ -146,7 +152,24 @@ module.exports = class User {
         } catch (err) {
             return { success: false, message: 'User is authorized Un-successfully' }
         }
+    }
 
+    async setOrgID(orgId) {
+        try {
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({_id: new ObjectId(this.decodedInformation._id)}, { $set: {orgId: orgId}})
+        } catch(e) {
+            return { success: false, message: '', error: e.toString() }
+        }
+    }
 
+    async getMyOrganizationMembers() {
+        try {
+            let data = await mongo.usacrm.collection(this.User).find({orgId:this.decodedInformation.orgId}).project({orgId:0, password:0, statusId:0}).toArray()
+
+            return { success: true, message: 'Users inside this organization', data: data}
+        } catch(e) {
+            return { success: false, message: '', error: e.toString() }
+        }
+        
     }
 }
