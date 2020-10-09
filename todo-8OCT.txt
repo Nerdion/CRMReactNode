@@ -10,7 +10,9 @@ neel
 
 3.remove members organization
 
-4.search organization
+4.search organization - done
+
+5. user profile
 
 nishad
 
