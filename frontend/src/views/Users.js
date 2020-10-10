@@ -143,17 +143,15 @@ class Users extends React.Component {
                 })
             });
             let responseData = await UserInviteFetch.json();
-            console.log(responseData, 'UserInviteFetchData')
-            console.log(UserInviteFetch, 'UserInviteFetch');
 
             if (responseData.success) {
                 message = responseData.message;
                 title = 'Success'
                 this.setState({ title, message, Alert_open_close: true });
-                console.log("User Invited");
             }
             else {
-                message = "User's Email is invalid";
+                message = responseData.message;
+                title = 'Error'
                 this.setState({ title, message, Alert_open_close: true });
             }
         }

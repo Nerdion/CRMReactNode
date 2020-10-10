@@ -57,7 +57,6 @@ class UserInfo extends React.Component {
         console.log(token);
         let crmToken = await this.decryptData(originalToken);
         var jwtToken = Object.values(crmToken)[0]
-        console.log("TokenData--->", jwtToken);
         let title = "Error";
         let message = "";
         let registerData = {
@@ -65,7 +64,6 @@ class UserInfo extends React.Component {
             password: password
         }
         let encregisterData = await this.encryptData(registerData)
-        console.log("Signed in:-", name, password);
         try {
             if (name === "" && password === "") {
                 message = "Please Enter Your Name & Password";
@@ -91,11 +89,8 @@ class UserInfo extends React.Component {
                     body: JSON.stringify(encregisterData)
                 });
                 const responseData = await UserRegisterApiCall.json();
-                console.log(responseData, 'UserRegisterApiCallData')
-                console.log(UserRegisterApiCall, 'UserRegisterApiCall');
 
                 if (responseData.success) {
-                    console.log("User Loggedin");
                     localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);                    
                     this.setState({ setActivityIndicator: true })
                     this.props.history.push("/admin/index");

@@ -32,10 +32,15 @@ class Login extends React.Component {
     message: ''
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     token = this.props.match.params.token;
-    if (token != null) {
-        
+    console.log(token)
+    if (token) {
+      let originalToken = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
+      console.log(token);
+      let crmToken = await this.decryptData(originalToken);
+      this.jwtToken = Object.values(crmToken)[0]
+      await this.getLoggedIn(VerifyEmailUser)
     }
   }
 
@@ -54,10 +59,7 @@ class Login extends React.Component {
     let title = "Error";
     let token = this.props.match.params.token;
 
-    let originalToken = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
-    console.log(token);
-    let crmToken = await this.decryptData(originalToken);
-    var jwtToken = Object.values(crmToken)[0]
+    
     console.log("Signed in:-", this.state.UserEmail, this.state.Password);
     try {
       if (this.state.UserEmail === "") {
@@ -69,34 +71,14 @@ class Login extends React.Component {
         this.setState({ title, message, Alert_open_close: true });
       }
       else if (this.state.UserEmail !== "" && this.state.Password !== "") {
+
         let authData = {
           useremail: this.state.UserEmail,
           password: this.state.Password,
         }
         let encAuthData = await this.encryptData(authData);
-        let fetchUrl = token != null ? VerifyUserLogin : VerifyEmailUser;
 
-        const UserLoginApiCall = await fetch(fetchUrl, {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `${jwtToken}`
-          },
-          body: JSON.stringify(encAuthData)
-        });
-        const responseData = await UserLoginApiCall.json();
-        console.log(responseData, 'UserLoginApiCallData')
-        console.log(UserLoginApiCall, 'UserLoginApiCall');
-        if (responseData.success === true) {
-          console.log("User Loggedin");
-          localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
-          this.props.history.push("/admin/index");
-        }
-        else {
-          const message = "Invalid Email & Password";
-          this.setState({ title, message, Alert_open_close: true });
-        }
+        await this.getLoggedIn(VerifyUserLogin, encAuthData)
       } else {
         const message = "Please Enter Email & Password";
         this.setState({ title, message, Alert_open_close: true });
@@ -128,6 +110,31 @@ class Login extends React.Component {
       return JSON.parse(originalText);
     } catch (e) {
       console.log(e);
+    }
+  }
+  
+  getLoggedIn = async (whichAPI, encAuthData) => {
+    const UserLoginApiCall = await fetch(whichAPI, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `${this.jwtToken}`
+      },
+      body: JSON.stringify(encAuthData)
+    });
+    const responseData = await UserLoginApiCall.json();
+    console.log(responseData, 'UserLoginApiCallData')
+    console.log(UserLoginApiCall, 'UserLoginApiCall');
+    if (responseData.success === true) {
+      console.log("User Loggedin");
+      localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
+      this.props.history.push("/admin/index");
+    }
+    else {
+      const message = "Link Expired";
+      let title = "Error"
+      this.setState({ title, message, Alert_open_close: true });
     }
   }
 
