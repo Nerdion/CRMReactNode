@@ -136,9 +136,7 @@ class Login extends React.Component {
       }
     }
     else {
-      const message = "Link Expired";
-      let title = "Error"
-      this.setState({ title, message, Alert_open_close: true });
+      this.setState({ title : "Error", message : "Link Expired", Alert_open_close: true });
     }
   }
 
