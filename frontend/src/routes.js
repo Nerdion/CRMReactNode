@@ -26,6 +26,7 @@ import CreateTaskTest from './views/CreateTaskTest';
 import WorkSpace from './views/WorkSpace';
 import Users from './views/Users';
 import UserInfo from "./views/UserInfo";
+import JoinOrCreateOrganization from "./views/authViews/JoinOrCreateOrganization";
 
 var routes = [
   {
@@ -125,6 +126,15 @@ var routes = [
     component: Register,
     layout: "/auth",
     showRoute: true,
+    exactLink: false
+  },
+  {
+    path: "/joininviteorg",
+    name: "Invite Or Join Organization",
+    icon: "ni ni-circle-08 text-pink",
+    component: JoinOrCreateOrganization,
+    layout: "/auth",
+    showRoute: false,
     exactLink: false
   },
 
