@@ -107,9 +107,9 @@ class Register extends React.Component {
           console.log(responseData, 'UserRegisterApiCallData')
           console.log(UserRegisterApiCall, 'UserRegisterApiCall');
 
-          if (responseData.status === 200) {
+          if (responseData.success === true) {
             console.log("User Loggedin");
-            //localStorage.setItem('CRM_Token_Value', responseData.token);
+            localStorage.setItem('CRM_Token_Value', responseData.token);
             this.props.history.push("/auth/Login");
           }
           else {

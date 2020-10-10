@@ -22,6 +22,8 @@ api.use('/api/taskAction', taskController.taskAction);
 
 api.use('/api/inviteuser', userController.manageUser);
 
+api.use('/api/authorizeuser', userController.authorizeUser);
 
+api.use('/api/authorizeRegistereduser', userController.authorizeRegisteredUser);
 
 module.exports = api;

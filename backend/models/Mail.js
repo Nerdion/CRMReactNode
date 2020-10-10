@@ -6,31 +6,37 @@ class Mail {
 
     constructor() {
         this.auth = {
-            user: 'devlinklabs@gmail.com',
-            pass: 'L3FQRGVieXN1Tk1Pdz09',
+            user: 'shriyashshingare@yahoo.com',
+            pass: 'wdsurjybgdcdypct',
         }
-        this.host = 'smtp.gmail.com'
-        this.service = 'gmail'
-
-        this.transporter = nodemailer.createTransport({
-            host: this.host,
-            service: this.service,
-            auth: this.auth,
-        });
+        this.host = 'smtp.mail.yahoo.com'
+        this.service = 'yahoo'
+        this.port = 465
     }
 
     sendMail = (options) => {
 
         const mailOptions = {
-            from: '"DevLinkLabs" <devlinklabs@gmail.com>',
+            from: '"Smart Note" <shriyashshingare@yahoo.com>',
             to: options.toMail,
             subject: options.subject,
             text: options.text,
         };
 
-        this.transporter.sendMail(mailOptions, (error, info) => {
-            if (error) console.log(error)
-        });
+        return new Promise((resolve,reject)=> {
+            this.transporter = nodemailer.createTransport({
+                host: this.host,
+                service: this.service,
+                secure: false,
+                port: this.port,
+                auth: this.auth,
+            });
+
+            this.transporter.sendMail(mailOptions, function(error, info){
+                if (error) resolve(false);
+                else resolve(true);
+            })
+        })
     }
 }
 

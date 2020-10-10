@@ -1,0 +1,19 @@
+shriyash
+1.verify user - normal register
+
+5.invite to join organization
+
+6.organization manager - notification list
+
+neel
+2.users inside organization, workspace, tasks
+
+3.remove members organization
+
+4.search organization - done
+
+5. user profile
+
+nishad
+
+invite or join organization - UI
