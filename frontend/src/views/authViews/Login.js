@@ -129,7 +129,11 @@ class Login extends React.Component {
     if (responseData.success === true) {
       console.log("User Loggedin");
       localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
-      this.props.history.push("/admin/index");
+      if(responseData.orgID) {
+        this.props.history.push("/admin/index");
+      } else {
+        this.props.history.push("/auth/joininviteorg");
+      }
     }
     else {
       const message = "Link Expired";

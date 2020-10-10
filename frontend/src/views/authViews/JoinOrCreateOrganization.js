@@ -44,7 +44,6 @@ const organization = [
         "orgName": "Molly Kal",
         "imageUrl": "https://i.pinimg.com/originals/be/ac/96/beac96b8e13d2198fd4bb1d5ef56cdcf.jpg"
     },
-
 ];
 
 class JoinOrCreateOrganization extends Component {
@@ -57,7 +56,7 @@ class JoinOrCreateOrganization extends Component {
         message: '',
         Alert_open_close: false
     }
-
+    
     onPressJoinOrg = async (event) => {
         event.preventDefault();
         const title = "Error";
