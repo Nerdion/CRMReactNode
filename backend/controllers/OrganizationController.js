@@ -17,9 +17,19 @@ module.exports.manage = async (req, res) => {
                 res.json(await organization.getOrganizationDetails(await orgID.orgName))
             }
             if (req.body.method == 'createOrg') {
-                let response = await organization.createOrganization(req.body.orgName, legitUser.message)
-                await user.setOrgID(response.orgID)
-                res.json(response)
+
+                let ifOrgExist = await user.getMyOrganization()
+
+                console.log(ifOrgExist.success)
+
+                if(ifOrgExist.success) {
+                    res.send({ sucess: false, message: 'Already part of an organization' })
+                }
+                else {
+                    let response = await organization.createOrganization(req.body.orgName, legitUser.message)
+                    await user.setOrgID(response.orgId)
+                    res.json(response)
+                }
             }
             if (req.body.method == 2) res.json(await organization.updateOrganizationName(legitUser.message, req.body.updatedName))
         } else res.json(legitUser)

@@ -29,7 +29,7 @@ import {
 } from '@material-ui/icons';
 
 //API's
-import { VerifyUserLogin } from '../CRM_Apis';
+import { organizationAPI } from '../CRM_Apis';
 
 const organization = [
     {
@@ -56,7 +56,12 @@ class JoinOrCreateOrganization extends Component {
         message: '',
         Alert_open_close: false
     }
-    
+
+   
+    async componentDidMount() {
+        this.jwtToken = await localStorage.getItem('CRM_Token_Value');
+    }
+/*
     onPressJoinOrg = async (event) => {
         event.preventDefault();
         const title = "Error";
@@ -94,7 +99,7 @@ class JoinOrCreateOrganization extends Component {
             console.log("Error fetching data-----------", err);
             this.setState({ title, message: err, Alert_open_close: true });
         }
-    }
+    }*/
     encryptData = async (data) => {
         try {
             let tokenKey = 'crmfrontendbackend'
@@ -126,6 +131,32 @@ class JoinOrCreateOrganization extends Component {
 
     onDismissAlert = () => {
         this.setState({ Alert_open_close: false });
+    }
+
+    createNewOrganization = async (event) => {
+        console.log('Org created with name-', this.state.orgName)
+
+        const createNewOrganizationCall = await fetch(organizationAPI, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              'Authorization': `${this.jwtToken}`
+            },
+            body: JSON.stringify({
+                method: 'createOrg',
+                orgName: this.state.orgName
+            })
+        });
+
+        const responseData = await createNewOrganizationCall.json();
+        
+        if(responseData.success) {
+            console.log('Created successfully')
+            this.props.history.push("/admin/index");
+        } else {
+            console.log(responseData.message)
+        }
     }
 
     render() {
@@ -244,7 +275,7 @@ class JoinOrCreateOrganization extends Component {
                                             className="my-4 pl-6 pr-6 br-lg"
                                             color="primary"
                                             type="button"
-                                            onClick={(event) => { }}
+                                            onClick={(event) => { this.createNewOrganization(event)}}
                                         >
                                             Create
                                         </Button>

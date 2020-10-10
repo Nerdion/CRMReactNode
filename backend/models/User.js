@@ -80,7 +80,11 @@ module.exports = class User {
     
     async getMyOrganization() {
         try {
-            return { sucess: true, orgName: await this.decodedInformation.orgId }
+            if(this.decodedInformation.orgId) {
+                return { sucess: true, orgName: await this.decodedInformation.orgId }
+            } else {
+                return { sucess: false, message: "Not in any organization" }
+            }
         } catch (err) {
             return { sucess: false, error: err }
         }
@@ -202,8 +206,10 @@ module.exports = class User {
     }
 
     async setOrgID(orgId) {
+        console.log(orgId)
+        console.log(typeof orgId)
         try {
-            await mongo.usacrm.collection(this.User).findOneAndUpdate({_id: new ObjectId(this.decodedInformation._id)}, { $set: {orgId: orgId}})
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({_id: this.decodedInformation._id}, { $set: {orgId: orgId}})
         } catch(e) {
             return { success: false, message: '', error: e.toString() }
         }

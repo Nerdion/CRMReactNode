@@ -15,3 +15,5 @@ export const AuthUser = `${DomainURL}/api/authorizeuser`;
 export const AuthUserResponse = `${DomainURL}/api/authrizeresponsedata`;
 
 export const VerifyEmailUser = `${DomainURL}/api/authorizeRegistereduser`
+
+export const organizationAPI = `${DomainURL}/api/organisation`
