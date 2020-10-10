@@ -38,7 +38,6 @@ import {
 class AdminNavbar extends React.Component {
 
   logout = (e) => {
-    e.preventdefault();
     localStorage.removeItem('CRM_Token_Value');
     this.props.history.push("/auth/login");
   }
