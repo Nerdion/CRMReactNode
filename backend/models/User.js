@@ -64,7 +64,7 @@ module.exports = class User {
         }
     }
 
-    async encryptData  (data) {
+    async encryptData (data) {
         try {
             var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
             return strenc
@@ -159,9 +159,10 @@ module.exports = class User {
                     $set: { name: name, password: password, statusId: 1 }
                 })
             
-            //let jwtData = await this.generatetoken(email, checkUser._id.toString());
+            let userData = this.decodedInformation
+            let jwtData = await this.generatetoken(userData.email, userData._id.toString());
 
-            return { success: true, message: 'User is authorized successfully' }
+            return { success: true, message: 'User is authorized successfully', jwtData }
         } catch (err) {
             return { success: false, message: 'User is authorized Un-successfully' }
         }
