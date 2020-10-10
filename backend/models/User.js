@@ -55,6 +55,26 @@ module.exports = class User {
             return { 'success': false, 'message': e.toString() };
         }
     }
+
+    async emailVerification(email) {
+        let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: email })
+        let jwtData = await this.generatetoken(email, newUserData._id.toString());
+        let encData = await this.encryptData(jwtData)
+        encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+        let mail = new Mail()
+        const mailOptions = {
+            toMail: email,
+            subject: `Verify Email Address`,
+            text: `Please click the given link below to verify your email
+                ${siteName}/auth/login/${encData}`
+        }
+        let isSend = await mail.sendMail(mailOptions)
+        if (isSend) {
+            return { 'success': true, 'message': "Verificatio link sent successfully" };
+        } else {
+            return { 'success': false, 'message': "Verificatio link sent Un-successfully" };
+        }
+    }
     
     async getMyOrganization() {
         try {
@@ -80,6 +100,17 @@ module.exports = class User {
             return JSON.parse(originalText);
         } catch (e) {
             console.log(e);
+        }
+    }
+
+    async authorizeRegisteredUser() {
+        try {
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({ _id: new ObjectId(this.decodedInformation._id) },{ $set:  {statusId : 1}} )
+            let jwtData = await this.generatetoken(this.decodedInformation.email, this.decodedInformation._id.toString());
+            return { success: true, message: 'User is authorized successfully', jwtData }
+        } catch (e) {
+            console.log(e);
+            return { success : false, message: 'Expired', error : e.toString()}
         }
     }
 
@@ -187,22 +218,4 @@ module.exports = class User {
         
     }
 
-    async emailVerification(email) {
-        let jwtData = await this.generatetoken(email, newUserData._id.toString());
-        let encData = await this.encryptData(jwtData)
-        encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
-        let mail = new Mail()
-        const mailOptions = {
-            toMail: email,
-            subject: `Verify Email Address`,
-            text: `Please click the given link below to verify your email
-                ${siteName}/auth/login/${encData}`
-        }
-        let isSend = await mail.sendMail(mailOptions)
-        if (isSend) {
-            return { 'success': true, 'message': "Verificatio link sent successfully" };
-        } else {
-            return { 'success': false, 'message': "Verificatio link sent Un-successfully" };
-        }
-    }
 }
