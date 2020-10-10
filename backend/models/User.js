@@ -109,16 +109,26 @@ module.exports = class User {
         }
     }
 
-    async inviteNewUser(newMailId, inviterId) {
+    async inviteNewUser(newMailId) {
         try {
+            let inviterId = this.decodedInformation
             if(inviterId.email == newMailId) return { sucess: false, message: "Cannot invite yourself !!"}
-            let inviterData = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(inviterId._id) })
+            
             let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': newMailId }).toArray();
             if (checkUser.length == 0) {
-                let newUser = { email: newMailId, statusId: -1, orgId: inviterData.orgId }
+                let newUser = { email: newMailId, statusId: -1, orgId: inviterId.orgId }
                 await mongo.usacrm.collection(this.User).insertOne(newUser)
             }
             let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailId })
+
+            if(newUserData.orgId.toString() == inviterId.orgId.toString() && newUserData.statusId == 1) {
+                return { success : false, message : " User already exists in your organization"}
+            }
+
+            if(newUserData.orgId != null && newUserData.statusId == 1) {
+                return { success: false, message: "User already exists on smart note"}
+            }
+
             let jwtData = await this.generatetoken(newMailId, newUserData._id.toString());
             let encData = await this.encryptData(jwtData)
             encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
@@ -139,15 +149,17 @@ module.exports = class User {
         }
     }
 
-    async authorizeUser(bodyInfo, userData) {
+    async authorizeUser(bodyInfo) {
         try {
             let authData = await this.decryptData(bodyInfo)
             let password = authData.password;
             let name = authData.name
-            let updateResult = await mongo.usacrm.collection(this.User).updateOne({ "email": userData.email },
+            await mongo.usacrm.collection(this.User).updateOne({ "email": this.decodedInformation.email },
                 {
                     $set: { name: name, password: password, statusId: 1 }
                 })
+            
+            //let jwtData = await this.generatetoken(email, checkUser._id.toString());
 
             return { success: true, message: 'User is authorized successfully' }
         } catch (err) {
@@ -175,7 +187,6 @@ module.exports = class User {
     }
 
     async emailVerification(email) {
-        let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: email })
         let jwtData = await this.generatetoken(email, newUserData._id.toString());
         let encData = await this.encryptData(jwtData)
         encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
@@ -192,6 +203,5 @@ module.exports = class User {
         } else {
             return { 'success': false, 'message': "Verificatio link sent Un-successfully" };
         }
-
     }
 }

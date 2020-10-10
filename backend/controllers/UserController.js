@@ -35,7 +35,7 @@ module.exports.manageUser = async function (req, res) {
 
         if (legitUser.success) {
             if (bodyInfo.method == 'invite') {
-                res.send(await user.inviteNewUser(bodyInfo.useremail, legitUser.message))
+                res.send(await user.inviteNewUser(bodyInfo.useremail))
             }
         } else {
             res.send(legitUser)
@@ -51,7 +51,7 @@ module.exports.authorizeUser = async function (req, res) {
         let bodyInfo = req.body
         let legitUser = await user.verifyUser(req.headers.authorization)
         if (legitUser.success) {
-            var response = await user.authorizeUser(bodyInfo,legitUser.message);
+            var response = await user.authorizeUser(bodyInfo);
             res.send(response)
         } else {
             res.send({ "Success": true, "Error": error, "Payload": [] })
