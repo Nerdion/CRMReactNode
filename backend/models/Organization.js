@@ -23,7 +23,6 @@ class Organization {
         try {
             if(!organizationName) return { success:false, message: 'Please enter organization name'}
             if (await this.ifOrgExists(organizationName)) return { sucess: false, message: 'Organization already exists' }
-            if (await this.ifUserHasOrganization(userInformation._id)) return { sucess: false, message: 'Already part of an organization' }
 
             await mongo.usacrm.collection(this.organization).insertOne({ orgName: organizationName, managerId: userInformation._id })
             
@@ -48,11 +47,6 @@ class Organization {
 
     async ifOrgExists(organizationName) {
         if (await mongo.usacrm.collection(this.organization).findOne({ orgName: organizationName })) return true
-        else return false
-    }
-
-    async ifUserHasOrganization(userid) {
-        if (await mongo.usacrm.collection(this.organization).findOne({ userId: userid })) return true
         else return false
     }
     

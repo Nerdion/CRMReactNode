@@ -21,7 +21,8 @@ module.exports = class User {
             if (checkUser.statusId == 1) {
                 if (password == checkUser.password) {
                     let jwtData = await this.generatetoken(email, checkUser._id.toString());
-                    return { 'success': true, 'message': "User is authenticated Successfully", jwtData }
+                    let myOrganization = checkUser.orgId;
+                    return { 'success': true, 'message': "User is authenticated Successfully", jwtData, orgID : myOrganization }
                 };
             } else {
                 return { 'success': false, 'message': "to login please verify your email first" };
@@ -39,6 +40,7 @@ module.exports = class User {
             name: registerData.username,
             email: registerData.useremail,
             password: registerData.password,
+            orgId : null,
             statusId: 0
         }
 
@@ -78,7 +80,11 @@ module.exports = class User {
     
     async getMyOrganization() {
         try {
+            if(this.decodedInformation.orgId) {
                 return { sucess: true, orgName: await this.decodedInformation.orgId }
+            } else {
+                return { sucess: false, message: "Not in any organization" }
+            }
         } catch (err) {
             return { sucess: false, error: err }
         }
@@ -201,7 +207,7 @@ module.exports = class User {
 
     async setOrgID(orgId) {
         try {
-            await mongo.usacrm.collection(this.User).findOneAndUpdate({_id: new ObjectId(this.decodedInformation._id)}, { $set: {orgId: orgId}})
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({_id: this.decodedInformation._id}, { $set: {orgId: orgId}})
         } catch(e) {
             return { success: false, message: '', error: e.toString() }
         }

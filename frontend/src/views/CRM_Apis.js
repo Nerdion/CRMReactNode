@@ -14,8 +14,11 @@ export const AuthUser = `${DomainURL}/api/authorizeuser`;
 
 export const AuthUserResponse = `${DomainURL}/api/authrizeresponsedata`;
 
+export const organizationAPI = `${DomainURL}/api/organisation`;
+
 export const VerifyEmailUser = `${DomainURL}/api/authorizeRegistereduser`;
 
 export const getWorkSpaceApi = `${DomainURL}/api/getWorkSpace`;
 
 export const setWorkSpaceApi = `${DomainURL}/api/setWorkSpace`;
+
