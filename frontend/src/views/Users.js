@@ -41,8 +41,8 @@ let userData = [
 
 const headerData = [
     { "Header": "User Name" },
-    { "Header": "Role" },
-    { "Header": "last active" },
+    { "Header": "Permissions" },
+    { "Header": "Workspace" },
 ];
 
 class Users extends React.Component {

@@ -69,6 +69,35 @@ class Task {
             let updateResult = await mongo.usacrm.collection(this.task).replaceOne({ _id: new ObjectId(taskId) }, deleteResult)
         }
     }
+    async getCompletionPercentage(taskIds) {
+        try {
+            for (let i = 0; i < taskIds.length; i++) {
+                let statusIdCount = 0;
+                totalCount = taskIds.length;
+                let statusId = await mongo.usacrm.collection(this.task).findOne({ _id: taskIds[i] }, {
+                    _id: 0,
+                    title: 0,
+                    blob: 0,
+                    deadline: 0,
+                    status: 1,
+                    createdDate: 0,
+                    lastModified: 0,
+                    lastModifiedUser: 0,
+                    creationUserID: 0,
+                    userIDs: 0
+                })
+                if (statusId == 3) {
+                    statusIdCount++;
+                }
+
+            }
+            let percentage = (statusIdCount / totalCount) * 100
+            return percentage;
+        } catch (e) {
+            return false;
+        }
+
+    }
 }
 
 module.exports = Task

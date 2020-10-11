@@ -8,7 +8,7 @@ export const VerifyUserRegister = `${DomainURL}/auth/register`;
 
 export const VerifyUserInvite = `${DomainURL}/api/inviteuser`;
 
-export const GetUserAvail = `${DomainURL}/api/getuseravaildata`;
+export const GetUserAvail = `${DomainURL}/api/getavailuserdata`;
 
 export const AuthUser = `${DomainURL}/api/authorizeuser`;
 

@@ -21,6 +21,8 @@ class FormDetails {
         var res = await mongo.appscountry.collection(this.user).aggregate(searchFilter).toArray();
         return res
     }
+
+
 }
 
 module.exports = FormDetails
