@@ -22,7 +22,7 @@ module.exports = class User {
                 if (password == checkUser.password) {
                     let jwtData = await this.generatetoken(email, checkUser._id.toString());
                     let myOrganization = checkUser.orgId;
-                    return { 'success': true, 'message': "User is authenticated Successfully", jwtData, orgID : myOrganization }
+                    return { 'success': true, 'message': "User is authenticated Successfully", jwtData, orgID: myOrganization }
                 };
             } else {
                 return { 'success': false, 'message': "to login please verify your email first" };
@@ -33,20 +33,21 @@ module.exports = class User {
         }
     }
 
-    async register (bodyInfo) {
+    async register(bodyInfo) {
         let registerData = await this.decryptData(bodyInfo)
 
         let userData = {
             name: registerData.username,
             email: registerData.useremail,
             password: registerData.password,
-            orgId : null,
+            orgId: null,
             statusId: 0,
-            workspaces:[
+            orgRoleId: 0,
+            workspaces: [
                 {
-                    workspaceId : null,
-                    rollId : 1,
-                    lastModifiedDate : new Date()
+                    workspaceId: null,
+                    rollId: 0,
+                    lastModifiedDate: new Date()
                 }
             ]
         }
@@ -84,10 +85,10 @@ module.exports = class User {
             return { 'success': false, 'message': "Verificatio link sent Un-successfully" };
         }
     }
-    
+
     async getMyOrganization() {
         try {
-            if(this.decodedInformation.orgId) {
+            if (this.decodedInformation.orgId) {
                 return { sucess: true, orgName: await this.decodedInformation.orgId }
             } else {
                 return { sucess: false, message: "Not in any organization" }
@@ -97,7 +98,7 @@ module.exports = class User {
         }
     }
 
-    async encryptData (data) {
+    async encryptData(data) {
         try {
             var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
             return strenc
@@ -106,7 +107,7 @@ module.exports = class User {
         }
     }
 
-    async decryptData (authData) {
+    async decryptData(authData) {
         try {
             var bytes = CryptoJS.AES.decrypt(authData.data, tokenKey)
             var originalText = bytes.toString(CryptoJS.enc.Utf8);
@@ -118,12 +119,12 @@ module.exports = class User {
 
     async authorizeRegisteredUser() {
         try {
-            await mongo.usacrm.collection(this.User).findOneAndUpdate({ _id: new ObjectId(this.decodedInformation._id) },{ $set:  {statusId : 1}} )
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({ _id: new ObjectId(this.decodedInformation._id) }, { $set: { statusId: 1 } })
             let jwtData = await this.generatetoken(this.decodedInformation.email, this.decodedInformation._id.toString());
             return { success: true, message: 'User is authorized successfully', jwtData }
         } catch (e) {
             console.log(e);
-            return { success : false, message: 'Expired', error : e.toString()}
+            return { success: false, message: 'Expired', error: e.toString() }
         }
     }
 
@@ -156,8 +157,8 @@ module.exports = class User {
     async inviteNewUser(newMailId) {
         try {
             let inviterId = this.decodedInformation
-            if(inviterId.email == newMailId) return { sucess: false, message: "Cannot invite yourself !!"}
-            
+            if (inviterId.email == newMailId) return { sucess: false, message: "Cannot invite yourself !!" }
+
             let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': newMailId }).toArray();
             if (checkUser.length == 0) {
                 let newUser = { email: newMailId, statusId: -1, orgId: inviterId.orgId }
@@ -165,12 +166,12 @@ module.exports = class User {
             }
             let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: newMailId })
 
-            if(newUserData.orgId.toString() == inviterId.orgId.toString() && newUserData.statusId == 1) {
-                return { success : false, message : " User already exists in your organization"}
+            if (newUserData.orgId.toString() == inviterId.orgId.toString() && newUserData.statusId == 1) {
+                return { success: false, message: " User already exists in your organization" }
             }
 
-            if(newUserData.orgId != null && newUserData.statusId == 1) {
-                return { success: false, message: "User already exists on smart note"}
+            if (newUserData.orgId != null && newUserData.statusId == 1) {
+                return { success: false, message: "User already exists on smart note" }
             }
 
             let jwtData = await this.generatetoken(newMailId, newUserData._id.toString());
@@ -202,7 +203,7 @@ module.exports = class User {
                 {
                     $set: { name: name, password: password, statusId: 1 }
                 })
-            
+
             let userData = this.decodedInformation
             let jwtData = await this.generatetoken(userData.email, userData._id.toString());
 
@@ -214,21 +215,50 @@ module.exports = class User {
 
     async setOrgID(orgId) {
         try {
-            await mongo.usacrm.collection(this.User).findOneAndUpdate({_id: this.decodedInformation._id}, { $set: {orgId: orgId}})
-        } catch(e) {
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({ _id: this.decodedInformation._id }, { $set: { orgId: orgId } })
+        } catch (e) {
             return { success: false, message: '', error: e.toString() }
         }
     }
 
     async getMyOrganizationMembers() {
         try {
-            let data = await mongo.usacrm.collection(this.User).find({orgId:this.decodedInformation.orgId}).project({orgId:0, password:0, statusId:0}).toArray()
+            let data = await mongo.usacrm.collection(this.User).find({ orgId: this.decodedInformation.orgId }).project({ orgId: 0, password: 0, statusId: 0 }).toArray()
 
-            return { success: true, message: 'Users inside this organization', data: data}
-        } catch(e) {
+            return { success: true, message: 'Users inside this organization', data: data }
+        } catch (e) {
             return { success: false, message: '', error: e.toString() }
         }
-        
+
+    }
+
+    async getManagerName(managerID) {
+        try {
+            let managerName = await mongo.usacrm.collection(this.user).findOne({ userId: managerID }, {
+                name: 1,
+                _id: 0,
+                email: 0,
+                password: 0,
+                orgId: 0,
+                statusId: 0,
+                orgRoleId: 0,
+                workspaces: 0
+            })
+            return managerName;
+        } catch (e) {
+            return false
+        }
+
+    }
+
+    async getUserNameAndImage(userIds){
+        try{
+            for(let i =0;i<0;i++){
+                
+            }
+        }catch(e){
+
+        }
     }
 
 }
