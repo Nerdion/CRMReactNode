@@ -25,15 +25,16 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
+    UncontrolledTooltip
 } from "reactstrap";
 
 export class WorkSpaceTable extends Component {
     render() {
-        const { Header, onClickHeaderButton, HeaderButtonName, tHeader, userData, IconName, onRowPress } = this.props;
+        const { Header, onClickHeaderButton, HeaderButtonName, tHeader, userData, IconName, onRowPress, onClickAvatar } = this.props;
         return (
             <div>
                 <Col className="mb-12 mb-xl-0" md='12' xl="12">
-                    <Card className="shadow">
+                    <Card className="shadow max-dn-ht-500 hide-scroll-ind">
                         <CardHeader className="border-0">
                             <Row className="align-items-center">
                                 <div className="col">
@@ -62,10 +63,10 @@ export class WorkSpaceTable extends Component {
                             </thead>
                             <tbody>
                                 {userData.map((Tdata, index) => (
-                                    <tr className="cursor-point" onClick={onRowPress} key={index}>
-                                        <th scope="row">{Tdata.WorkspaceName}</th>
-                                        <td>{Tdata.Permissions}</td>
-                                        <td>{Tdata.Role}</td>
+                                    <tr className="card-hover-view" key={index}>
+                                        <th className="cursor-point txt-decoration-hov" onClick={() => onRowPress(Tdata)} scope="row">{Tdata.WorkspaceName}</th>
+                                        <td>{Tdata.OrganizationName}</td>
+                                        <td>{Tdata.Manager_Id}</td>
                                         <td>
                                             <div className="d-flex align-items-center">
                                                 <span className="mr-2">{Tdata.Completion_Text}</span>
@@ -80,6 +81,33 @@ export class WorkSpaceTable extends Component {
                                                         }
                                                     />
                                                 </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div onClick={onClickAvatar} className="avatar-group">
+                                                {Tdata.users.length === 0 || Tdata.users === undefined ?
+                                                    <span className=" text-default">No User Assigned</span> :
+                                                    Tdata.users.map((item, index) => (
+                                                        <>
+                                                            <a
+                                                                className="avatar avatar-sm"
+                                                                id={`tooltip${index}`}
+                                                            >
+                                                                <img
+                                                                    alt={item.userName}
+                                                                    className="rounded-circle"
+                                                                    src={item.imageUrl}
+                                                                />
+                                                            </a>
+                                                            <UncontrolledTooltip
+                                                                delay={0}
+                                                                target={`tooltip${index}`}
+                                                            >
+                                                                {item.userName}
+                                                            </UncontrolledTooltip>
+                                                        </>
+
+                                                    ))}
                                             </div>
                                         </td>
                                         <td>
@@ -112,12 +140,6 @@ export class WorkSpaceTable extends Component {
                                                         >
                                                             <Delete color="error" />
                                                             Delete
-                                                        </DropdownItem>
-                                                        <DropdownItem
-                                                            href="#pablo"
-                                                            onClick={e => e.preventDefault()}
-                                                        >
-                                                            Something else here
                                                         </DropdownItem>
                                                     </DropdownMenu>
                                                 </UncontrolledDropdown>

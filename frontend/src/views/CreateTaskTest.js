@@ -23,6 +23,10 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
+
+    Card,
+
+
 } from "reactstrap";
 
 import {
@@ -32,12 +36,17 @@ import {
     PeopleAlt,
     SaveAlt,
     Edit,
-    Add
+    Add,
+    Clear
 } from '@material-ui/icons';
 
 import {
     Tooltip,
     Button,
+    FormControl,
+    Avatar,
+    FormLabel,
+    Input as Input1
 } from '@material-ui/core';
 
 // core components
@@ -73,10 +82,12 @@ class CreateTaskTest extends React.Component {
                     "userName": "Molly Kal",
                     "imageUrl": "https://i.pinimg.com/originals/be/ac/96/beac96b8e13d2198fd4bb1d5ef56cdcf.jpg"
                 },
-                
+
             ],
             enableEditor: false,
-            setAddUsersBol: false
+            setAddUsersBol: false,
+            userSearch: '',
+            userObj: [],
         };
     }
 
@@ -121,6 +132,18 @@ class CreateTaskTest extends React.Component {
         });
     };
 
+    selectUsers = (UserName, UserImage) => {
+        //   event.preventDefault();
+        this.setState({ userObj: [...this.state.userObj, { userName: UserName, imageUrl: UserImage }] });
+    }
+
+    deleteSelectedUsers = (userName) => {
+        let array = [...this.state.userObj]
+        let filteredArray = array.filter(item => item.userName !== userName)
+        this.setState({ userObj: filteredArray });
+    }
+
+
     render() {
         const { editorState,
             options,
@@ -128,8 +151,16 @@ class CreateTaskTest extends React.Component {
             statusName,
             statusColor,
             users,
+            userObj,
+            userSearch,
             enableEditor,
             setAddUsersBol } = this.state;
+
+        let filtereContacts = users !== null ? users.filter(
+            (item) => {
+                return item.userName.toLowerCase().indexOf(userSearch.toLowerCase()) !== -1;
+            }
+        ) : '';
         return (
             <>
                 <Header />
@@ -190,7 +221,7 @@ class CreateTaskTest extends React.Component {
                                     </span>
                                 </div>
                                 <Col className="mb-2 min-dn-ht hide-scroll-ind">
-                                <Button
+                                    <Button
                                         variant="contained"
                                         color="primary"
                                         size="medium"
@@ -208,7 +239,7 @@ class CreateTaskTest extends React.Component {
                                             />
                                         ))
                                     }
-                                   
+
                                 </Col>
                             </Col>
                         </Col>
@@ -287,9 +318,68 @@ class CreateTaskTest extends React.Component {
                     B2backgroundColor={"#3773b0"}
                     B2color={"#ffffff"}
                 >
-                    <AddUserToAssignCard 
-                        SearchData={users}
-                    />
+
+                    <Col className="shadow br-sm p-4" lg="12">
+                        <FormControl className="col-md-12 col-lg-12 mt-4 mb-2 wd-100p">
+                            <FormLabel className="m-0">
+                                <span for="UserName" className="text-default">  Add Users  </span>
+                            </FormLabel>
+                            <Input1
+                                type="text"
+                                className="txt-lt-dark "
+                                name="UserName"
+                                id="UserName"
+                                value={userSearch}
+                                onChange={(event) => { this.setState({ userSearch: event.target.value }) }}
+                                placeholder="Search for Users"
+                               
+                            />
+                        </FormControl>
+                        <Col className="p-1 max-dn-ht-250  hide-scroll-ind" lg="12">
+                            {
+                                filtereContacts.map((users, index) => (
+                                    <Card onClick={(event) => { this.selectUsers(users.userName, users.imageUrl, event) }} key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
+                                        <Row className="d-flex align-items-center justify-content-around d-fr-direction">
+                                            <Col lg="3" className="d-flex align-items-center justify-content-center">
+                                                <Avatar alt={users.userName} src={users.imageUrl} />
+                                            </Col>
+                                            <Col lg="9" className="d-flex align-items-center justify-content-center">
+                                                <span className="text-clamp">{users.userName}</span>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+                                ))
+                            }
+                        </Col>
+                        {
+                            userObj.length != 0 ?
+                                <Col className="p-1 max-dn-ht-250 hide-scroll-ind" lg="12">
+                                    <h3 className="txt-lt-dark"> Selected Users </h3>
+                                    {
+                                        userObj.map((users, index) => (
+                                            <Card key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
+                                                <Row className="d-flex align-items-center justify-content-around d-fr-direction">
+                                                    <Col lg="3" className="d-flex align-items-center justify-content-center">
+                                                        <Avatar alt={users.userName} src={users.imageUrl} />
+                                                    </Col>
+                                                    <Col lg="8" className="d-flex align-items-center justify-content-center">
+                                                        <span className="text-clamp">{users.userName}</span>
+                                                    </Col>
+                                                    <Col lg="1" className="d-flex align-items-center justify-content-center">
+                                                        <span
+                                                            className="txt-lt-dark cursor-point p-2"
+                                                            onClick={() => { this.deleteSelectedUsers(users.userName) }}
+                                                        >
+                                                            <Clear className="text-red" />
+                                                        </span>
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+                                        ))
+                                    }
+                                </Col> : null
+                        }
+                    </Col>
                 </DialogBox>
             </>
         );
