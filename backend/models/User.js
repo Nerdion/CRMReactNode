@@ -213,8 +213,6 @@ module.exports = class User {
     }
 
     async setOrgID(orgId) {
-        console.log(orgId)
-        console.log(typeof orgId)
         try {
             await mongo.usacrm.collection(this.User).findOneAndUpdate({_id: this.decodedInformation._id}, { $set: {orgId: orgId}})
         } catch(e) {

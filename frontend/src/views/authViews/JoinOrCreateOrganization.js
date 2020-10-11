@@ -155,7 +155,7 @@ class JoinOrCreateOrganization extends Component {
             console.log('Created successfully')
             this.props.history.push("/admin/index");
         } else {
-            console.log(responseData.message)
+            this.setState({ title: "Error", message:  responseData.message, Alert_open_close: true });
         }
     }
 

@@ -17,12 +17,7 @@ module.exports.manage = async (req, res) => {
                 res.json(await organization.getOrganizationDetails(await orgID.orgName))
             }
             if (req.body.method == 'createOrg') {
-
-                let ifOrgExist = await user.getMyOrganization()
-
-                console.log(ifOrgExist.success)
-
-                if(ifOrgExist.success) {
+                if(legitUser.message.orgId) {
                     res.send({ sucess: false, message: 'Already part of an organization' })
                 }
                 else {
