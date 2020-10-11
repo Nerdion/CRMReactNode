@@ -60,10 +60,8 @@ export class UsersTable extends Component {
                                                 {Tdata.UserName}
                                             </div>
                                         </th>
-                                        <td>{Tdata.Permissions}</td>
-                                        <td>{Tdata.Team}</td>
                                         <td>{Tdata.Role}</td>
-                                        <td>
+                                        {/* <td>
                                             <div className="d-flex align-items-center">
                                                 <span className="mr-2">{Tdata.Completion_Text}</span>
                                                 <div>
@@ -78,7 +76,7 @@ export class UsersTable extends Component {
                                                     />
                                                 </div>
                                             </div>
-                                        </td>
+                                        </td> */}
                                         <td>
                                             {Tdata.last_active}
                                         </td>

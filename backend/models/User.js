@@ -216,12 +216,9 @@ module.exports = class User {
     async getMyOrganizationMembers() {
         try {
             let data = await mongo.usacrm.collection(this.User).find({orgId:this.decodedInformation.orgId}).project({orgId:0, password:0, statusId:0}).toArray()
-
             return { success: true, message: 'Users inside this organization', data: data}
         } catch(e) {
             return { success: false, message: '', error: e.toString() }
         }
-        
     }
-
 }
