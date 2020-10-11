@@ -27,6 +27,7 @@ import WorkSpace from './views/WorkSpace';
 import Users from './views/Users';
 import UserInfo from "./views/UserInfo";
 import JoinOrCreateOrganization from "./views/authViews/JoinOrCreateOrganization";
+import Tasks from "./views/Tasks";
 
 var routes = [
   {
@@ -35,16 +36,25 @@ var routes = [
     icon: "ni ni-tv-2 text-primary",
     component: Index,
     layout: "/admin",
-    showRoute: true,
+    showRoute: false,
     exactLink: false
   },
   {
-    path: "/WorkSpace",
+    path: "/workSpace",
     name: "WorkSpace",
     icon: "ni ni-briefcase-24 text-info",
     component: WorkSpace,
     layout: "/admin",
     showRoute: true,
+    exactLink: false
+  },
+  {
+    path: "/tasks",
+    name: "Tasks",
+    icon: "ni ni-briefcase-24 text-info",
+    component: Tasks,
+    layout: "/admin",
+    showRoute: false,
     exactLink: false
   },
   {
@@ -71,7 +81,7 @@ var routes = [
     icon: "ni ni-planet text-blue",
     component: Icons,
     layout: "/admin",
-    showRoute: true,
+    showRoute: false,
     exactLink: false
   },
   {
@@ -80,7 +90,7 @@ var routes = [
     icon: "ni ni-pin-3 text-orange",
     component: Maps,
     layout: "/admin",
-    showRoute: true,
+    showRoute: false,
     exactLink: false
   },
   {
@@ -89,7 +99,7 @@ var routes = [
     icon: "ni ni-single-02 text-yellow",
     component: Profile,
     layout: "/admin",
-    showRoute: true,
+    showRoute: false,
     exactLink: false
   },
   {
@@ -98,7 +108,7 @@ var routes = [
     icon: "ni ni-bullet-list-67 text-red",
     component: Tables,
     layout: "/admin",
-    showRoute: true,
+    showRoute: false,
     exactLink: false
   },
   {
@@ -107,7 +117,7 @@ var routes = [
     icon: "ni ni-circle-08 text-pink",
     component: UserInfo,
     layout: "/auth",
-    showRoute: true,
+    showRoute: false,
     exactLink: true
   },
   {
@@ -116,7 +126,7 @@ var routes = [
     icon: "ni ni-key-25 text-info",
     component: Login,
     layout: "/auth",
-    showRoute: true,
+    showRoute: false,
     exactLink: false
   },
   {
@@ -125,7 +135,7 @@ var routes = [
     icon: "ni ni-circle-08 text-pink",
     component: Register,
     layout: "/auth",
-    showRoute: true,
+    showRoute: false,
     exactLink: false
   },
   {
