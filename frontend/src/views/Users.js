@@ -49,7 +49,7 @@ const UserData = [
 const HeaderData = [
     { "Header": "User Name" },
     { "Header": "Permissions" },
-    { "Header": "Team" },
+    { "Header": "Workspace" },
     { "Header": "Role" },
     { "Header": "Completion" },
     { "Header": "last active" },

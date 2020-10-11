@@ -5,6 +5,7 @@ const userController = require('../controllers/UserController');
 const organizationController = require('../controllers/OrganizationController');
 const workspaceController = require('../controllers/WorkspaceController');
 const taskController = require('../controllers/TaskController');
+const formDetailsController = require('../controllers/FormDetailsController')
 
 //mail api's
 api.use('/api/sendmail', mailcontroller.sendMail);
@@ -26,4 +27,5 @@ api.use('/api/authorizeuser', userController.authorizeUser);
 
 api.use('/api/authorizeRegistereduser', userController.authorizeRegisteredUser);
 
+api.use('/api/authorizeuser', formDetailsController.getAllUsersData);
 module.exports = api;

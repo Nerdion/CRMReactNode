@@ -41,7 +41,14 @@ module.exports = class User {
             email: registerData.useremail,
             password: registerData.password,
             orgId : null,
-            statusId: 0
+            statusId: 0,
+            workspaces:[
+                {
+                    workspaceId : null,
+                    rollId : 1,
+                    lastModifiedDate : new Date()
+                }
+            ]
         }
 
         let checkUser = await mongo.usacrm.collection(this.User).find({ 'email': userData.email }).toArray();
