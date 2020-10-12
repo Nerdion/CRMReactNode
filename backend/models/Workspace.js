@@ -108,7 +108,7 @@ class Workspace {
                 let fData = {
                     "workspaceName": "New Location",
                     "organizationName": "DevLinkLab",
-                    "managerId": "Neel-121434",
+                    "managerName": "Neel-121434",
                     "completionText": "30%",
                     "completion": 30,
                     "users": [
@@ -128,7 +128,7 @@ class Workspace {
                 for (let i = 0; i < workspaceData.length; i++) {
                     fData.workspaceName = workspaceData[i].workspaceName
                     fData.organizationName = await new org().getOrganizationName(workspaceData[i].orgID)
-                    fData.managerId = await new user().getManagerName(workspaceData[i].managerId)
+                    fData.managerName = await new user().getManagerName(workspaceData[i].managerId)
                     fData.completion = await new task().getCompletionPercentage(workspaceData[i].tasksIds)
                     fData.completionText = fData.completion + '%'
                     fData.users = await new user().getUserNameAndImage(workspaceData[i].userIds)

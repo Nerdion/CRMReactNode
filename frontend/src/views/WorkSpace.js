@@ -45,7 +45,7 @@ import Users from "./Users.js";
 import UsersTable from '../components/Tables/UsersTable';
 
 //Api
-import { getWorkSpaceApi, setWorkSpaceApi } from './CRM_Apis';
+import { workspaceAction, setWorkSpaceApi } from './CRM_Apis';
 
 const UserData = [
     {
@@ -80,12 +80,12 @@ const UserHeaderData = [
     { "Header": "last active" },
 ];
 
-const WorkspaceData = [
+let WorkspaceData = [
     {
         "WorkspaceName": "DevLab Setup",
         "OrganizationName": "DevLinkLab",
-        "Manager_Id": "Nishad-23223",
-        "Completion_Text": "60%",
+        "ManagerName": "Nishad-23223",
+        "CompletionText": "60%",
         "Completion": 60,
         "users": [
             {
@@ -123,7 +123,7 @@ const WorkspaceData = [
 const HeaderData = [
     { "Header": "WorkSpace Name" },
     { "Header": "Organization Name" },
-    { "Header": "Manager Id" },
+    { "Header": "Manager Name" },
     { "Header": "Completion" },
     { "Header": "Users" },
     { "Header": "Created At" },
@@ -222,19 +222,22 @@ class WorkSpace extends React.Component {
         let title = "Error";
         let crmToken = localStorage.getItem('CRM_Token_Value');
         try {
-            const getWorkSpaceData = await fetch(getWorkSpaceApi, {
+            const getWorkSpaceData = await fetch(workspaceAction, {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': `${crmToken}`
                 },
+                body: JSON.stringify({
+                    action:4
+                })
             });
             const responseData = await getWorkSpaceData.json();
             console.log(responseData, 'getWorkSpaceData')
             console.log(getWorkSpaceData, 'getWorkSpaceData');
             this.setState({
-                workSpaceData: responseData.Data
+                workSpaceData: responseData.workspaceGrid
             })
         }
         catch (err) {

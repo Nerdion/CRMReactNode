@@ -251,7 +251,7 @@ module.exports = class User {
                 let userData = await mongo.usacrm.collection(this.User).findOne({ _id: userIds[i] }, {
                     projection: {
                         _id: 0,
-                        name: 1,
+                        name:1,
                         imageUrl: 1
                     }
                 })

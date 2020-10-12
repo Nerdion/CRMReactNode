@@ -64,19 +64,19 @@ export class WorkSpaceTable extends Component {
                             <tbody>
                                 {userData.map((Tdata, index) => (
                                     <tr className="card-hover-view" key={index}>
-                                        <th className="cursor-point txt-decoration-hov" onClick={() => onRowPress(Tdata)} scope="row">{Tdata.WorkspaceName}</th>
-                                        <td>{Tdata.OrganizationName}</td>
-                                        <td>{Tdata.Manager_Id}</td>
+                                        <th className="cursor-point txt-decoration-hov" onClick={() => onRowPress(Tdata)} scope="row">{Tdata.workspaceName}</th>
+                                        <td>{Tdata.organizationName}</td>
+                                        <td>{Tdata.managerName}</td>
                                         <td>
                                             <div className="d-flex align-items-center">
-                                                <span className="mr-2">{Tdata.Completion_Text}</span>
+                                                <span className="mr-2">{Tdata.completionText}</span>
                                                 <div>
                                                     <Progress
                                                         max="100"
-                                                        value={Tdata.Completion}
+                                                        value={Tdata.completion}
                                                         barClassName={
-                                                            Tdata.Completion <= 30 ? "bg-gradient-danger" :
-                                                                Tdata.Completion > 30 && Tdata.Completion <= 60 ? "bg-gradient-warning"
+                                                            Tdata.completion <= 30 ? "bg-gradient-danger" :
+                                                                Tdata.completion > 30 && Tdata.completion <= 60 ? "bg-gradient-warning"
                                                                     : "bg-gradient-success"
                                                         }
                                                     />

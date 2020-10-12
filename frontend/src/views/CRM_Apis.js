@@ -18,7 +18,7 @@ export const organizationAPI = `${DomainURL}/api/organisation`;
 
 export const VerifyEmailUser = `${DomainURL}/api/authorizeRegistereduser`;
 
-export const getWorkSpaceApi = `${DomainURL}/api/getWorkSpace`;
+export const workspaceAction = `${DomainURL}/api/workspaceAction`;
 
 export const setWorkSpaceApi = `${DomainURL}/api/setWorkSpace`;
 
