@@ -94,7 +94,7 @@ export class WorkSpaceTable extends Component {
                                                                 id={`tooltip${index}`}
                                                             >
                                                                 <img
-                                                                    alt={item.name}
+                                                                    // alt={item.name}
                                                                     className="rounded-circle"
                                                                     src={item.imageUrl}
                                                                 />

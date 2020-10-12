@@ -37,6 +37,8 @@ import WorkSpaceTasksCard from '../components/Cards/WorkSpaceTasksCard';
 import DialogBox from '../components/DialogBox/DialogBox';
 import WorkSpaceTable from "../components/Tables/WorkSpaceTable.js";
 
+// Api
+import { taskAction } from './CRM_Apis';
 
 const WorkspaceData = [
     {
@@ -81,7 +83,7 @@ class WorkSpace extends React.Component {
                     "activityStatus": "published",
                     "status": "Pending",
                     "users": [
-                   
+
                     ],
                     "onClick": () => { this.props.history.push("/admin/CreateTaskTest") }
                 },
@@ -172,6 +174,39 @@ class WorkSpace extends React.Component {
 
     onChangeText = (Name, value) => {
         this.setState({ [`${Name}`]: value })
+    }
+    getWorkSpace = async () => {
+        let title = "Error";
+        let crmToken = localStorage.getItem('CRM_Token_Value');
+        const {
+            workSpaceId
+        } = this.props.location.state;
+        try {
+            const getWorkSpaceTasks = await fetch(taskAction, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `${crmToken}`
+                },
+                body: JSON.stringify({
+                    workSpaceId
+                })
+            });
+            const responseData = await getWorkSpaceTasks.json();
+            console.log('getWorkSpaceData--->', JSON.stringify(responseData, null, 2))
+            console.log(getWorkSpaceTasks, 'getWorkSpaceData');
+
+            console.log("set workspace:---", responseData.workspaceGrid);
+            this.setState({
+                workSpaceData: responseData.workspaceGrid
+            })
+
+        }
+        catch (err) {
+            console.log("Error fetching data-----------", JSON.stringify(err));
+            this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+        }
     }
 
     render() {

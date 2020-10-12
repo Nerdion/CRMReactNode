@@ -11,7 +11,8 @@ import {
     Form,
     Label,
     Card,
-    Alert
+    Alert,
+    Spinner
 } from "reactstrap";
 
 // Material UI
@@ -28,7 +29,7 @@ import {
     FormGroup,
     FormLabel,
     TextareaAutosize,
-    Avatar
+    Avatar,
 } from '@material-ui/core';
 
 import {
@@ -175,7 +176,7 @@ class WorkSpace extends React.Component {
 
     onSingleWorkSpaceClicked = (TableData) => {
         console.log("Table Data-->", TableData);
-        this.props.history.push("/admin/tasks", { WorkSpaceName: TableData.WorkspaceName, WorkSpaceId: 1 });
+        this.props.history.push("/admin/tasks", { WorkSpaceName: TableData.workspaceName, workSpaceId: 1 });
     }
 
     onWorkSpaceChanged = (event) => {
@@ -218,7 +219,6 @@ class WorkSpace extends React.Component {
     }
 
     getWorkSpace = async () => {
-        const { workSpaceData } = this.state;
         let title = "Error";
         let crmToken = localStorage.getItem('CRM_Token_Value');
         try {
@@ -230,15 +230,18 @@ class WorkSpace extends React.Component {
                     'Authorization': `${crmToken}`
                 },
                 body: JSON.stringify({
-                    action:4
+                    action: 4
                 })
             });
             const responseData = await getWorkSpaceData.json();
-            console.log(responseData, 'getWorkSpaceData')
+            console.log('getWorkSpaceData--->', JSON.stringify(responseData, null, 2))
             console.log(getWorkSpaceData, 'getWorkSpaceData');
+
+            console.log("set workspace:---", responseData.workspaceGrid);
             this.setState({
                 workSpaceData: responseData.workspaceGrid
             })
+
         }
         catch (err) {
             console.log("Error fetching data-----------", JSON.stringify(err));
@@ -266,7 +269,7 @@ class WorkSpace extends React.Component {
                 this.setState({ title, message, Alert_open_close: true });
             }
             else if (WorkSpaceName !== "" && userObj.length !== 0) {
-                const setWorkSpaceResponse = await fetch(setWorkSpaceApi, {
+                let setWorkSpaceResponse = await fetch(setWorkSpaceApi, {
                     method: "POST",
                     headers: {
                         'Accept': 'application/json',
@@ -278,7 +281,7 @@ class WorkSpace extends React.Component {
                         usersdata: userObj
                     })
                 });
-                const responseData = await setWorkSpaceResponse.json();
+                let responseData = await setWorkSpaceResponse.json();
                 console.log(responseData, 'setWorkSpaceResponseData')
                 console.log(setWorkSpaceResponse, 'setWorkSpaceResponse');
 
@@ -302,7 +305,7 @@ class WorkSpace extends React.Component {
 
 
     render() {
-        const {
+        let {
             Alert_open_close,
             setAddWorkspaceOpenClose,
             WorkSpaceName,
@@ -315,6 +318,7 @@ class WorkSpace extends React.Component {
             setShowUsers
         } = this.state;
 
+        console.log("this is workspace:---", workSpaceData);
         const AlertError =
             (
                 <div>
@@ -334,139 +338,147 @@ class WorkSpace extends React.Component {
         ) : '';
         return (
             <>
-                <Header />
-                {/* Page content */}
-                <Container className="mt--7" fluid>
-                    <Row className="mb-3 align-items-center">
-                        <Col className="justify-content-center" xl="12">
-                            <WorkSpaceTable
-                                Header={'WorkSpace'}
-                                onClickHeaderButton={() => this.onClickOpenAddWorkSpace()}
-                                HeaderButtonName={'Add WorkSpace'}
-                                userData={workSpaceData}
-                                tHeader={HeaderData}
-                                onRowPress={(Tdata) => this.onSingleWorkSpaceClicked(Tdata)}
-                                onClickAvatar={() => this.OpenUsersDialog()}
-                            />
-                        </Col>
-                    </Row>
-                </Container>
-                <DialogBox
-                    disableBackdropClick={true}
-                    maxWidth={"sm"}
-                    fullWidth={true}
-                    DialogHeader={"Create New WorkSpace"}
-                    DialogContentTextData={""}
-                    DialogButtonText1={"Cancel"}
-                    DialogButtonText2={"Save"}
-                    Variant={"outlined"}
-                    onClose={this.handleClose}
-                    onOpen={setAddWorkspaceOpenClose}
-                    OnClick_Bt1={this.handleClose}
-                    OnClick_Bt2={this.setWorkSpaceApi}
-                    B2backgroundColor={"#3773b0"}
-                    B2color={"#ffffff"}
-                >
-                    {AlertError}
-                    <FormGroup className="mt-4">
-                        <FormControl>
-                            <FormLabel className="m-0">
-                                <span className="text-default">  What would you like to call the WorkSpace? </span>
-                            </FormLabel>
-                            <TextField
-                                autoFocus
-                                margin="none"
-                                id="name"
-                                label="WorkSpace Name"
-                                type="text"
-                                required={false}
-                                value={WorkSpaceName}
-                                autocomplete="section-blue shipping"
-                                onChange={(e) => this.onChangeText("WorkSpaceName", e.target.value)}
-                                fullWidth
-                            />
-                        </FormControl>
-                        <FormControl className="mt-4">
-                            <FormLabel className="m-0">
-                                <span for="UserName" className="text-default">  Add Users </span>
-                            </FormLabel>
-                            <Input
-                                type="text"
-                                className="txt-lt-dark"
-                                name="UserName"
-                                id="UserName"
-                                value={userSearch}
-                                onChange={(e) => this.onChangeText("userSearch", e.target.value)}
-                                placeholder="Search for Users" />
-                        </FormControl>
-                    </FormGroup>
-                    <Col className="shadow br-sm p-4" lg="12">
-                        <Col className="p-1 max-dn-ht-250  hide-scroll-ind" lg="12">
-                            {
-                                filtereContacts.map((users, index) => (
-                                    <Card onClick={(event) => { this.selectUsers(users.userName, users.imageUrl, event) }} key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
-                                        <Row className="d-flex align-items-center justify-content-around d-fr-direction">
-                                            <Col lg="3" className="d-flex align-items-center justify-content-center">
-                                                <Avatar alt={users.userName} src={users.imageUrl} />
-                                            </Col>
-                                            <Col lg="9" className="d-flex align-items-center justify-content-center">
-                                                <span className="text-clamp">{users.userName}</span>
-                                            </Col>
-                                        </Row>
-                                    </Card>
-                                ))
-                            }
-                        </Col>
-                        {
-                            userObj.length != 0 ?
-                                <Col className="p-1 max-dn-ht-250 hide-scroll-ind" lg="12">
-                                    <h3 className="txt-lt-dark"> Selected Users </h3>
+                { workSpaceData === null ?
+                    <div>
+                        <Spinner color="primary" />
+                    </div>
+                    :
+                    <>
+                        <Header />
+                        {/* Page content */}
+                        <Container className="mt--7" fluid>
+                            <Row className="mb-3 align-items-center">
+                                <Col className="justify-content-center" xl="12">
+                                    <WorkSpaceTable
+                                        Header={'WorkSpace'}
+                                        onClickHeaderButton={() => this.onClickOpenAddWorkSpace()}
+                                        HeaderButtonName={'Add WorkSpace'}
+                                        userData={workSpaceData}
+                                        tHeader={HeaderData}
+                                        onRowPress={(Tdata) => this.onSingleWorkSpaceClicked(Tdata)}
+                                        onClickAvatar={() => this.OpenUsersDialog()}
+                                    />
+                                </Col>
+                            </Row>
+                        </Container>
+                        <DialogBox
+                            disableBackdropClick={true}
+                            maxWidth={"sm"}
+                            fullWidth={true}
+                            DialogHeader={"Create New WorkSpace"}
+                            DialogContentTextData={""}
+                            DialogButtonText1={"Cancel"}
+                            DialogButtonText2={"Save"}
+                            Variant={"outlined"}
+                            onClose={this.handleClose}
+                            onOpen={setAddWorkspaceOpenClose}
+                            OnClick_Bt1={this.handleClose}
+                            OnClick_Bt2={this.setWorkSpaceApi}
+                            B2backgroundColor={"#3773b0"}
+                            B2color={"#ffffff"}
+                        >
+                            {AlertError}
+                            <FormGroup className="mt-4">
+                                <FormControl>
+                                    <FormLabel className="m-0">
+                                        <span className="text-default">  What would you like to call the WorkSpace? </span>
+                                    </FormLabel>
+                                    <TextField
+                                        autoFocus
+                                        margin="none"
+                                        id="name"
+                                        label="WorkSpace Name"
+                                        type="text"
+                                        required={false}
+                                        value={WorkSpaceName}
+                                        autocomplete="section-blue shipping"
+                                        onChange={(e) => this.onChangeText("WorkSpaceName", e.target.value)}
+                                        fullWidth
+                                    />
+                                </FormControl>
+                                <FormControl className="mt-4">
+                                    <FormLabel className="m-0">
+                                        <span for="UserName" className="text-default">  Add Users </span>
+                                    </FormLabel>
+                                    <Input
+                                        type="text"
+                                        className="txt-lt-dark"
+                                        name="UserName"
+                                        id="UserName"
+                                        value={userSearch}
+                                        onChange={(e) => this.onChangeText("userSearch", e.target.value)}
+                                        placeholder="Search for Users" />
+                                </FormControl>
+                            </FormGroup>
+                            <Col className="shadow br-sm p-4" lg="12">
+                                <Col className="p-1 max-dn-ht-250  hide-scroll-ind" lg="12">
                                     {
-                                        userObj.map((users, index) => (
-                                            <Card key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
+                                        filtereContacts.map((users, index) => (
+                                            <Card onClick={(event) => { this.selectUsers(users.userName, users.imageUrl, event) }} key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
                                                 <Row className="d-flex align-items-center justify-content-around d-fr-direction">
                                                     <Col lg="3" className="d-flex align-items-center justify-content-center">
                                                         <Avatar alt={users.userName} src={users.imageUrl} />
                                                     </Col>
-                                                    <Col lg="8" className="d-flex align-items-center justify-content-center">
+                                                    <Col lg="9" className="d-flex align-items-center justify-content-center">
                                                         <span className="text-clamp">{users.userName}</span>
-                                                    </Col>
-                                                    <Col lg="1" className="d-flex align-items-center justify-content-center">
-                                                        <span
-                                                            className="txt-lt-dark cursor-point p-2"
-                                                            onClick={() => { this.deleteSelectedUsers(users.userName) }}
-                                                        >
-                                                            <Clear className="text-red" />
-                                                        </span>
                                                     </Col>
                                                 </Row>
                                             </Card>
                                         ))
                                     }
-                                </Col> : null
-                        }
-                    </Col>
-                </DialogBox>
-                <DialogBox
-                    disableBackdropClick={true}
-                    maxWidth={"md"}
-                    fullWidth={true}
-                    DialogHeader={"Users"}
-                    DialogContentTextData={"Users Which are Availabel in WorkSpace"}
-                    DialogButtonText2={"Ok"}
-                    Variant={"outlined"}
-                    onClose={this.handleCloseDialog}
-                    onOpen={setShowUsers}
-                    OnClick_Bt2={this.handleCloseDialog}
-                    B2backgroundColor={"#3773b0"}
-                    B2color={"#ffffff"}
-                >
-                    <UsersTable
-                        Header={'Users'}
-                        userData={UserData}
-                        tHeader={UserHeaderData}
-                    />
-                </DialogBox>
+                                </Col>
+                                {
+                                    userObj.length != 0 ?
+                                        <Col className="p-1 max-dn-ht-250 hide-scroll-ind" lg="12">
+                                            <h3 className="txt-lt-dark"> Selected Users </h3>
+                                            {
+                                                userObj.map((users, index) => (
+                                                    <Card key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
+                                                        <Row className="d-flex align-items-center justify-content-around d-fr-direction">
+                                                            <Col lg="3" className="d-flex align-items-center justify-content-center">
+                                                                <Avatar alt={users.userName} src={users.imageUrl} />
+                                                            </Col>
+                                                            <Col lg="8" className="d-flex align-items-center justify-content-center">
+                                                                <span className="text-clamp">{users.userName}</span>
+                                                            </Col>
+                                                            <Col lg="1" className="d-flex align-items-center justify-content-center">
+                                                                <span
+                                                                    className="txt-lt-dark cursor-point p-2"
+                                                                    onClick={() => { this.deleteSelectedUsers(users.userName) }}
+                                                                >
+                                                                    <Clear className="text-red" />
+                                                                </span>
+                                                            </Col>
+                                                        </Row>
+                                                    </Card>
+                                                ))
+                                            }
+                                        </Col> : null
+                                }
+                            </Col>
+                        </DialogBox>
+                        <DialogBox
+                            disableBackdropClick={true}
+                            maxWidth={"md"}
+                            fullWidth={true}
+                            DialogHeader={"Users"}
+                            DialogContentTextData={"Users Which are Availabel in WorkSpace"}
+                            DialogButtonText2={"Ok"}
+                            Variant={"outlined"}
+                            onClose={this.handleCloseDialog}
+                            onOpen={setShowUsers}
+                            OnClick_Bt2={this.handleCloseDialog}
+                            B2backgroundColor={"#3773b0"}
+                            B2color={"#ffffff"}
+                        >
+                            <UsersTable
+                                Header={'Users'}
+                                userData={UserData}
+                                tHeader={UserHeaderData}
+                            />
+                        </DialogBox>
+                    </>
+                }
             </>
         );
     }

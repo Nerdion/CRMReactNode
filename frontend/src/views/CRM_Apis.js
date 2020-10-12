@@ -22,3 +22,5 @@ export const workspaceAction = `${DomainURL}/api/workspaceAction`;
 
 export const setWorkSpaceApi = `${DomainURL}/api/setWorkSpace`;
 
+export const taskAction = `${DomainURL}/api/taskAction`;
+
