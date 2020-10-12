@@ -30,7 +30,16 @@ import {
 
 export class WorkSpaceTable extends Component {
     render() {
-        const { Header, onClickHeaderButton, HeaderButtonName, tHeader, userData, IconName, onRowPress, onClickAvatar } = this.props;
+        const {
+            Header,
+            onClickHeaderButton,
+            HeaderButtonName,
+            tHeader,
+            userData,
+            IconName,
+            onRowPress,
+            onClickAvatar,
+            editWorkSpace } = this.props;
         return (
             <div>
                 <Col className="mb-12 mb-xl-0" md='12' xl="12">
@@ -118,7 +127,7 @@ export class WorkSpaceTable extends Component {
                                                 <UncontrolledDropdown>
                                                     <DropdownToggle
                                                         className="btn-icon-only text-light"
-                                                        href="#pablo"
+
                                                         role="button"
                                                         size="sm"
                                                         color=""
@@ -128,14 +137,13 @@ export class WorkSpaceTable extends Component {
                                                     </DropdownToggle>
                                                     <DropdownMenu className="dropdown-menu-arrow" right>
                                                         <DropdownItem
-                                                            href="#pablo"
-                                                            onClick={e => e.preventDefault()}
+                                                        onClick={() => editWorkSpace()}
                                                         >
-                                                            <Edit color="primary" />
+                                                                <Edit color="primary" />
                                                             Edit
                                                         </DropdownItem>
                                                         <DropdownItem
-                                                            href="#pablo"
+
                                                             onClick={e => e.preventDefault()}
                                                         >
                                                             <Delete color="error" />
@@ -151,7 +159,7 @@ export class WorkSpaceTable extends Component {
                         </Table>
                     </Card>
                 </Col>
-            </div>
+            </div >
         )
     }
 }

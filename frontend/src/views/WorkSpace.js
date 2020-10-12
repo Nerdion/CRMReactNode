@@ -249,6 +249,38 @@ class WorkSpace extends React.Component {
         }
     }
 
+    editWorkSpace = async () => {
+        let title = "Error";
+        let crmToken = localStorage.getItem('CRM_Token_Value');
+        try {
+            const editWorkSpace = await fetch(workspaceAction, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `${crmToken}`
+                },
+                body: JSON.stringify({
+                    action: 2,
+
+                })
+            });
+            const responseData = await editWorkSpace.json();
+            console.log('editWorkSpace--->', JSON.stringify(responseData, null, 2))
+            console.log(editWorkSpace, 'editWorkSpace');
+
+            console.log("set workspace:---", responseData.workspaceGrid);
+            this.setState({
+                workSpaceData: responseData.workspaceGrid
+            })
+
+        }
+        catch (err) {
+            console.log("Error fetching data-----------", JSON.stringify(err));
+            this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+        }
+    }
+
     setWorkSpaceApi = async (event) => {
         const { WorkSpaceName, userObj } = this.state;
         event.preventDefault();
@@ -470,6 +502,7 @@ class WorkSpace extends React.Component {
                             OnClick_Bt2={this.handleCloseDialog}
                             B2backgroundColor={"#3773b0"}
                             B2color={"#ffffff"}
+                            editWorkSpace={() => this.onClickOpenAddWorkSpace()}
                         >
                             <UsersTable
                                 Header={'Users'}
