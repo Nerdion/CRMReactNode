@@ -389,6 +389,7 @@ class WorkSpace extends React.Component {
                                         tHeader={HeaderData}
                                         onRowPress={(Tdata) => this.onSingleWorkSpaceClicked(Tdata)}
                                         onClickAvatar={() => this.OpenUsersDialog()}
+                                        editWorkSpace={(Tdata) => this.onClickOpenAddWorkSpace(Tdata)}
                                     />
                                 </Col>
                             </Row>
@@ -502,12 +503,12 @@ class WorkSpace extends React.Component {
                             OnClick_Bt2={this.handleCloseDialog}
                             B2backgroundColor={"#3773b0"}
                             B2color={"#ffffff"}
-                            editWorkSpace={() => this.onClickOpenAddWorkSpace()}
                         >
                             <UsersTable
                                 Header={'Users'}
                                 userData={UserData}
                                 tHeader={UserHeaderData}
+
                             />
                         </DialogBox>
                     </>

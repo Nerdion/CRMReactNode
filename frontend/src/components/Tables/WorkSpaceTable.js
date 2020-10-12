@@ -137,9 +137,9 @@ export class WorkSpaceTable extends Component {
                                                     </DropdownToggle>
                                                     <DropdownMenu className="dropdown-menu-arrow" right>
                                                         <DropdownItem
-                                                        onClick={() => editWorkSpace()}
+                                                            onClick={() => editWorkSpace(Tdata)}
                                                         >
-                                                                <Edit color="primary" />
+                                                            <Edit color="primary" />
                                                             Edit
                                                         </DropdownItem>
                                                         <DropdownItem
