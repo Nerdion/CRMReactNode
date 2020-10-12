@@ -94,7 +94,7 @@ export class WorkSpaceTable extends Component {
                                                                 id={`tooltip${index}`}
                                                             >
                                                                 <img
-                                                                    alt={item.userName}
+                                                                    alt={item.name}
                                                                     className="rounded-circle"
                                                                     src={item.imageUrl}
                                                                 />
@@ -103,7 +103,7 @@ export class WorkSpaceTable extends Component {
                                                                 delay={0}
                                                                 target={`tooltip${index}`}
                                                             >
-                                                                {item.userName}
+                                                                {item.name}
                                                             </UncontrolledTooltip>
                                                         </>
 
@@ -111,7 +111,7 @@ export class WorkSpaceTable extends Component {
                                             </div>
                                         </td>
                                         <td>
-                                            {Tdata.last_active}
+                                            {Tdata.createdAt}
                                         </td>
                                         <tb>
                                             <td className="text-right">

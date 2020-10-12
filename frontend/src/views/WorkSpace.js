@@ -308,6 +308,7 @@ class WorkSpace extends React.Component {
             WorkSpaceName,
             title,
             message,
+            workSpaceData,
             users,
             userObj,
             userSearch,
@@ -342,7 +343,7 @@ class WorkSpace extends React.Component {
                                 Header={'WorkSpace'}
                                 onClickHeaderButton={() => this.onClickOpenAddWorkSpace()}
                                 HeaderButtonName={'Add WorkSpace'}
-                                userData={WorkspaceData}
+                                userData={workSpaceData}
                                 tHeader={HeaderData}
                                 onRowPress={(Tdata) => this.onSingleWorkSpaceClicked(Tdata)}
                                 onClickAvatar={() => this.OpenUsersDialog()}
