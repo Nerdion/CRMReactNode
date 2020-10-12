@@ -70,8 +70,8 @@ class Organization {
     }
     async getOrganizationName(orgId) {
         try {
-            let orgName = await mongo.usacrm.collection(this.organization).findOne({ orgID: workspaceData[i].orgID }, { orgName: 1, _id: 0, orgID: 0 });
-            return orgName
+            let orgName = await mongo.usacrm.collection(this.organization).findOne({ _id: orgId },  { projection:{ name: 1, _id: 0}});
+            return orgName.name
         } catch (e) {
             return false
         }

@@ -142,8 +142,7 @@ module.exports = class User {
     async verifyUser(token) {
         try {
             let decoded = await jwt.verify(token, tokenKey)
-            this.decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }) //password : 0
-
+            this.decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }, { password: 0, workspaces: 0 }) //password : 0
             if (!this.decodedInformation) {
                 return { success: false, message: 'Not authorised' }
             } else {
@@ -223,38 +222,43 @@ module.exports = class User {
 
     async getMyOrganizationMembers() {
         try {
-            let data = await mongo.usacrm.collection(this.User).find({orgId:this.decodedInformation.orgId}).project({orgId:0, password:0, statusId:0}).toArray()
-            return { success: true, message: 'Users inside this organization', data: data}
-        } catch(e) {
+            let data = await mongo.usacrm.collection(this.User).find({ orgId: this.decodedInformation.orgId }).project({ orgId: 0, password: 0, statusId: 0 }).toArray()
+            return { success: true, message: 'Users inside this organization', data: data }
+        } catch (e) {
             return { success: false, message: '', error: e.toString() }
         }
     }
 
     async getManagerName(managerID) {
         try {
-            let managerName = await mongo.usacrm.collection(this.user).findOne({ userId: managerID }, {
-                name: 1,
-                _id: 0,
-                email: 0,
-                password: 0,
-                orgId: 0,
-                statusId: 0,
-                orgRoleId: 0,
-                workspaces: 0
+            let managerName = await mongo.usacrm.collection(this.User).findOne({ _id: managerID }, {
+                projection: {
+                    name: 1,
+                    _id: 0,
+                }
             })
-            return managerName;
+            return managerName.name;
         } catch (e) {
             return false
         }
 
     }
 
-    async getUserNameAndImage(userIds){
-        try{
-            for(let i =0;i<0;i++){
-                
+    async getUserNameAndImage(userIds) {
+        try {
+            let users = []
+            for (let i = 0; i < userIds.length; i++) {
+                let userData = await mongo.usacrm.collection(this.User).findOne({ _id: userIds[i] }, {
+                    projection: {
+                        _id: 0,
+                        name: 1,
+                        imageUrl: 1
+                    }
+                })
+                users.push(userData)
             }
-        }catch(e){
+            return users
+        } catch (e) {
 
         }
     }
