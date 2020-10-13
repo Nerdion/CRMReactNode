@@ -9,11 +9,14 @@ module.exports.workspaceAction = async function (req, res) {
             bodyInfo.workspaceData['managerId'] = legitUser.message._id;
             bodyInfo.workspaceData['lastModifiedUser'] = legitUser.message._id;
         }
-        if (legitUser) {
+        if (bodyInfo.action == 2) {
+            bodyInfo.updatedWorkSpaceData['lastModifiedUser'] = legitUser.message._id;
+        }
+        if (legitUser.success) {
             var response = await new workspace().workspaceAction(bodyInfo);
             res.send(response)
         } else {
-            res.send({ "Success": true, "Error": error, "Payload": [] })
+            res.send({ "Success": true, "Error": error.toString(), "Payload": [] })
         }
     } catch (e) {
         res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
