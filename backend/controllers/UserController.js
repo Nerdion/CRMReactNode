@@ -34,6 +34,7 @@ module.exports.manageUser = async function (req, res) {
         let legitUser = await user.verifyUser(req.headers.authorization)
 
         if (legitUser.success) {
+            // method to invite a new user
             if (bodyInfo.method == 'invite') {
                 res.send(await user.inviteNewUser(bodyInfo.useremail))
             }
@@ -45,6 +46,7 @@ module.exports.manageUser = async function (req, res) {
     }
 }
 
+//Authorize newly invited user
 module.exports.authorizeUser = async function (req, res) {
     try {
         let user = new User()
