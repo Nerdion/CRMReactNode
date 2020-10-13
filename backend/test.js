@@ -14,7 +14,7 @@ var decData = await new User().decryptData(authdata)
 console.log(decData);
 }
 test()
-let d={"action":4,
+let body ={"action":4,
 "workspaceData" : {
    "workspaceName": "sample workspace 2",
    "userIds": [
@@ -23,4 +23,18 @@ let d={"action":4,
        "5f7ead1a00f666150ee1b3d4"
    ]
 }
+}
+
+task = {
+    'action':1,
+    'taskData':{
+        'taskName': 'sample task 1',
+        'userIds':[
+            "5f816afd7b3de903e5201488",
+            "5f775cfb468ce741b33babdb",
+        ],
+        'JSONObject':null,
+        'statusId':0,
+        
+    }
 }

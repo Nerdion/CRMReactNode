@@ -1,25 +1,26 @@
 const { ObjectId } = require('mongodb')
 const mongo = require('./Model')
+const workspace = require('./Workspace')
 class Task {
 
     constructor() {
-        this.task = 'task'
+        this.task = 'Task'
     }
 
     taskAction = async (bodyInfo) => {
         if (bodyInfo.action == 1) {  // create task
             try {
                 let taskData = bodyInfo.taskData;
+                let userIds = await this.returnObjectId(bodyInfo.taskData.userIds)
                 let task = {
-                    title: taskData.title,
+                    taskName: taskData.taskName,
                     blob: taskData.JSONObject,
-                    deadline: taskData.deadline,
-                    status: taskData.status,
+                    deadline: new Date(taskData.deadline),
+                    statusId: taskData.statusId,
                     createdDate: new Date(),
                     lastModified: new Date(),
                     lastModifiedUser: taskData.lastModifiedUser,
-                    creationUserID: bodyInfo.creationUserID,
-                    userIDs: bodyInfo.userIDs
+                    userIds: userIds
                 }
                 let insert = await mongo.usacrm.collection(this.task).insertOne(task)
                 return { 'success': true, 'message': "Task is created successfully" }
@@ -95,6 +96,18 @@ class Task {
 
         } catch (e) {
             return false;
+        }
+
+    }
+    async returnObjectId(ids) {
+        let idArray = [];
+        if (ids.length == 1) {
+            return new ObjectId(ids)
+        } else {
+            for (let i = 0; i < ids.length; i++) {
+                idArray.push(new ObjectId(ids[i]))
+            }
+            return idArray
         }
 
     }

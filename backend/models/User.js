@@ -143,7 +143,7 @@ module.exports = class User {
             email: email
         }
         let token = jwt.sign(token_string, tokenKey, {
-            expiresIn: '1h'
+            expiresIn: '7d'
         });
         return { "Token": token }
     }

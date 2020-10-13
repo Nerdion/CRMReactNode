@@ -15,8 +15,6 @@ class Workspace {
     workspaceAction = async (bodyInfo) => {
         if (bodyInfo.action == 1) { //create a workspace
             try {
-                //check managerId 
-                //let orgId = new user().getOrganizationName()
                 let workspaceData = bodyInfo.workspaceData;
                 let userIds = await this.returnObjectId(workspaceData.userIds)
                 let workspace = {
@@ -30,23 +28,23 @@ class Workspace {
                     tasksIds: workspaceData.tasksIds
                 }
                 let insert = await mongo.usacrm.collection(this.workspace).insertOne(workspace);
+                workspace['workspaceId'] = insert.insertedId
+                let userInsert = await this.insertIntoUser(workspace)
                 return { 'success': true, 'message': "Workspace is created successfully" }
             } catch (error) {
                 return { 'success': false, 'error': error.toString(), 'message': "workspace is created Un-successfully" };
             }
         } else if (bodyInfo.action == 2) { //update a workspace
             try {
-                let workspaceId = bodyInfo.workspaceId;
-                //lastmodified
+                let workspaceId = await this.returnObjectId(bodyInfo.updatedWorkSpaceData.workspaceId)
                 let updatedWorkSpaceData = bodyInfo.updatedWorkSpaceData;
+                updatedWorkSpaceData['lastModified'] = new Date()
                 let updatedWorkSpaceDataKeys = Object.keys(updatedWorkSpaceData);
-                let workspaceData = await mongo.usacrm.collection(this.workspace).findOne({ _id: new ObjectId(taskId) }).toArray();
+                let workspaceData = await mongo.usacrm.collection(this.workspace).findOne({ _id: workspaceId })
                 for (let i = 0; i < updatedWorkSpaceDataKeys.length; i++) {
                     workspaceData[updatedWorkSpaceDataKeys[i]] = updatedWorkSpaceData[i];
                 }
-                workspaceData['lastModified'] = new Date()
-                //lastmodifieduser jwt
-                let updateResult = await mongo.usacrm.collection(this.workspace).replaceOne({ _id: new ObjectId(workspaceId) }, workspaceData)
+                let updateResult = await mongo.usacrm.collection(this.workspace).replaceOne({ _id: workspaceId }, workspaceData)
                 return { 'success': true, 'message': "Workspace is updated successfully" }
 
             } catch (error) {
@@ -78,7 +76,7 @@ class Workspace {
                     {
                         "$match":
                         {
-                            "_id": ObjectId(workspaceId)
+                            "_id": workspaceId
                         }
                     },
                     {
@@ -146,6 +144,11 @@ class Workspace {
     }
 
     async timeDifference(current, previous) {
+        try {
+
+        } catch (err) {
+
+        }
 
         var msPerMinute = 60 * 1000;
         var msPerHour = msPerMinute * 60;
@@ -179,20 +182,51 @@ class Workspace {
             return 'approximately ' + Math.round(elapsed / msPerYear) + ' years ago';
         }
     }
+    
     async returnObjectId(ids) {
-        let idArray = [];
-        if (ids.length == 1) {
-            return new ObjectId(ids)
-        } else {
-            for (let i = 0; i < ids.length; i++) {
-                idArray.push(new ObjectId(ids[i]))
+        try {
+            let idArray = [];
+            if (ids.length == 1) {
+                return new ObjectId(ids)
+            } else {
+                for (let i = 0; i < ids.length; i++) {
+                    idArray.push(new ObjectId(ids[i]))
+                }
+                return idArray
             }
-            return idArray
-        }
 
+        } catch (err) {
+            return false
+        }
+    }
+    async insertIntoUser(workspace) {
+        try {
+            let userIds = workspace.userIds
+            let managerId = workspace.managerId
+
+            for (let i = 0; i < userIds.length; i++) {
+                let workspacesObj = {
+                    workspaceId: workspace.workspaceId,
+                    rollId: 0,
+                    lastModifiedDate: null
+                }
+                if (!(userIds[i] == managerId)) {
+                    await mongo.usacrm.collection(this.user).updateOne({ _id: userIds[i] }, { $push: { "workspaces": workspacesObj } })
+                }
+            }
+            let workspacesObj = {
+                workspaceId: workspace.workspaceId,
+                rollId: 1,
+                lastModifiedDate: null
+            }
+            await mongo.usacrm.collection(this.user).updateOne({ _id: managerId }, { $push: { "workspaces": workspacesObj } })
+        } catch (err) {
+            return false
+        }
     }
 
 }
+
 
 
 
