@@ -70,10 +70,13 @@ class Admin extends React.Component {
             imgSrc: require("../assets/img/brand/argon-react.png"),
             imgAlt: "..."
           }}
+        //userImage = {}
         />
         <div className="main-content" ref="mainContent">
           <AdminNavbar
             {...this.props}
+            userName={"Nishad Patil"}
+            //userImage
             brandText={this.getBrandText(this.props.location.pathname)}
           />
           <Switch>

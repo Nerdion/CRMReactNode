@@ -13,7 +13,6 @@ import {
   InputGroupText,
   InputGroup,
   Col,
-  CardFooter,
   Alert
 } from "reactstrap";
 
@@ -55,11 +54,11 @@ class Login extends React.Component {
   }
 
   submitLoginHandler = async (event) => {
-    event.preventDefault();
+    //event.preventDefault();
     let title = "Error";
     let token = this.props.match.params.token;
 
-    
+
     console.log("Signed in:-", this.state.UserEmail, this.state.Password);
     try {
       if (this.state.UserEmail === "") {
@@ -112,7 +111,7 @@ class Login extends React.Component {
       console.log(e);
     }
   }
-  
+
   getLoggedIn = async (whichAPI, encAuthData) => {
     const UserLoginApiCall = await fetch(whichAPI, {
       method: "POST",
@@ -129,14 +128,14 @@ class Login extends React.Component {
     if (responseData.success === true) {
       console.log("User Loggedin");
       localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
-      if(responseData.orgID) {
-        this.props.history.push("/admin/index");
+      if (responseData.orgID) {
+        this.props.history.push("/admin/workSpace");
       } else {
         this.props.history.push("/auth/joininviteorg");
       }
     }
     else {
-      this.setState({ title : "Error", message : "Link Expired", Alert_open_close: true });
+      this.setState({ title: "Error", message: "Link Expired", Alert_open_close: true });
     }
   }
 
@@ -175,7 +174,7 @@ class Login extends React.Component {
                     <Input
                       placeholder="Email"
                       type="email"
-                      autoComplete="email"
+                      name="email"
                       className="txt-dark"
                       value={this.state.UserEmail}
                       onChange={(event) => { this.onChange("UserEmail", event.target.value, event) }}
@@ -199,19 +198,6 @@ class Login extends React.Component {
                     />
                   </InputGroup>
                 </FormGroup>
-                <div className="custom-control custom-control-alternative custom-checkbox">
-                  <input
-                    className="custom-control-input"
-                    id=" customCheckLogin"
-                    type="checkbox"
-                  />
-                  <label
-                    className="custom-control-label"
-                    htmlFor=" customCheckLogin"
-                  >
-                    <span className="text-muted">Remember me</span>
-                  </label>
-                </div>
                 <div className="text-center">
                   <Button
                     className="my-4 pl-6 pr-6 br-lg"
@@ -225,7 +211,7 @@ class Login extends React.Component {
                 <div className="text-center">
                   <a
                     className="txt-lt-dark"
-                    href="#pablo"
+
                     onClick={e => e.preventDefault()}
                   >
                     <small>Forgot password?</small>
@@ -233,51 +219,15 @@ class Login extends React.Component {
                 </div>
                 <div className="text-center mt-2">
                   <a
-                    className="txt-lt-dark"
-                    href="#pablo"
+                    className="txt-lt-dark cursor-point"
+
                     onClick={() => this.props.history.push("/auth/register")}
                   >
-                    <small>Sign up</small>
+                    <h5>Sign up</h5>
                   </a>
                 </div>
               </Form>
             </CardBody>
-            <CardFooter className="bg-transparent pb-5">
-              <div className="text-muted text-center mt-2 mb-3">
-                <small>Sign in with</small>
-              </div>
-              <div className="btn-wrapper text-center">
-                <Button
-                  className="btn-neutral btn-icon mt-2 mb-2"
-                  color="default"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={require("../../assets/img/icons/common/facebook.svg")}
-                    />
-                  </span>
-                  <span className="btn-inner--text">Facebook</span>
-                </Button>
-
-                <Button
-                  className="btn-neutral btn-icon  mt-2 mb-2"
-                  color="default"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={require("../../assets/img/icons/common/google.svg")}
-                    />
-                  </span>
-                  <span className="btn-inner--text">Google</span>
-                </Button>
-              </div>
-            </CardFooter>
           </Card>
         </Col>
       </>

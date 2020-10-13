@@ -28,120 +28,280 @@ import {
   Input,
   Container,
   Row,
-  Col
+  Col,
+  Alert
 } from "reactstrap";
+
+import ImageUploader from 'react-images-upload';
+
 // core components
 import UserHeader from "../../components/Headers/UserHeader.js";
+import DialogBox from '../../components/DialogBox/DialogBox';
+
+
+//Api
+import { editUserProfileApi, getUserProfileApi } from '../CRM_Apis';
 
 class Profile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userName: '',
+      userEmail: '',
+      firstName: '',
+      lastName: '',
+      address: '',
+      city: '',
+      country: '',
+      postCode: '',
+      title: '',
+      message: '',
+      Alert_open_close: false,
+      pictures: null,
+      setShowUsers: false,
+      Alert_open_close1: false,
+      editUserProfile: false
+    };
+    this.onDrop = this.onDrop.bind(this);
+  }
+
+  onDrop(picture) {
+    this.setState({
+      pictures: picture,
+    });
+  }
+
+  setImageTobase = () => {
+    let { pictures } = this.state;
+    let title = "Error";
+    let message = '';
+
+    console.log("base64 type---->", pictures[0])
+    var reader = new FileReader();
+    if (pictures != null) {
+      reader.readAsDataURL(pictures[0]);
+      reader.onload = async () => {
+        var Base64 = await reader.result;
+        title = "Note"
+        message = "Please Click Save to upload the selected Image";
+        this.setState({ title, message, Alert_open_close: true, base64Image: Base64 });
+        console.log("Base64 Image------>", Base64);
+        this.handleCloseDialog();
+      };
+      reader.onerror = (error) => {
+        message = "Please Enter Username And Email, Required Fields";
+        this.setState({ title, message, Alert_open_close1: true });
+      }
+    }
+  }
+
+  onTextValueChanged = (state, text) => {
+    this.setState({ [`${state}`]: text })
+  }
+
+  getUserProfile = async () => {
+    let title = "Error";
+    let crmToken = localStorage.getItem('CRM_Token_Value');
+    try {
+      const getUserProfileData = await fetch(getUserProfileApi, {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `${crmToken}`
+        },
+        body: JSON.stringify({
+          action: 4
+        })
+      });
+      const responseData = await getUserProfileData.json();
+      console.log('getUserProfile--->', JSON.stringify(responseData, null, 2))
+      console.log(getUserProfileData, 'getUserProfile');
+
+      console.log("set workspace:---", responseData.workspaceGrid);
+      this.setState({
+        userName: responseData.userName,
+        userEmail: responseData.userEmail,
+        firstName: responseData.firstName,
+        lastName: responseData.lastName,
+        address: responseData.address,
+        city: responseData.city,
+        country: responseData.country,
+        postCode: responseData.postCode,
+      })
+
+    }
+    catch (err) {
+      console.log("Error fetching data-----------", JSON.stringify(err));
+      this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+    }
+  }
+
+  editUserProfile = async (event) => {
+    let { userName, userEmail, firstName, lastName, address, city, country, postCode, base64Image } = this.state;
+    //event.preventDefault();
+    const title = "Error";
+    let message = "";
+    let crmToken = localStorage.getItem('CRM_Token_Value');
+    try {
+      if (userName === "" && userEmail === "") {
+        message = "Please Enter Username And Email, Required Fields";
+        this.setState({ title, message, Alert_open_close: true });
+      }
+      else if (userName === "" && userEmail !== "") {
+        message = "Please Enter Username";
+        this.setState({ title, message, Alert_open_close: true });
+      }
+      else if (userName !== "" && userEmail === "") {
+        message = "Please Enter userEmail";
+        this.setState({ title, message, Alert_open_close: true });
+      }
+      else if (userName !== "" && userEmail !== "") {
+        let editUserProfileData = await fetch(editUserProfileApi, {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `${crmToken}`
+          },
+          body: JSON.stringify({
+            userName,
+            userEmail,
+            firstName,
+            lastName,
+            address,
+            city,
+            country,
+            postCode,
+            userProfileImage: base64Image
+          })
+        });
+        let responseData = await editUserProfileData.json();
+        console.log(responseData, 'editUserProfileData1')
+        console.log(editUserProfileData, 'editUserProfileData');
+
+        if (responseData.success === true) {
+          const title = "Success"
+          message = "UserProfile Updated!";
+          this.setState({ title, message, Alert_open_close: true });
+          this.handleClose();
+        }
+        else {
+          message = responseData.message;
+          this.setState({ title, message, Alert_open_close: true });
+        }
+      }
+    }
+    catch (err) {
+      console.log("Error fetching data-----------", JSON.stringify(err));
+      this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+    }
+  }
+
+  onDismissAlert = () => {
+    this.setState({ Alert_open_close: false });
+  }
+
+  onDismissAlert1 = () => {
+    this.setState({ Alert_open_close1: false });
+  }
+
+
+  OpenUsersDialog = () => {
+    this.setState({ setShowUsers: true })
+  }
+
+  handleCloseDialog = () => {
+    this.setState({ setShowUsers: false })
+  }
+
+  editUserProfileEnable = () => {
+    this.setState((prevState) => ({ editUserProfile: !prevState.editUserProfile }));
+  }
+
   render() {
+    let { userName,
+      userEmail,
+      firstName,
+      lastName,
+      address,
+      city,
+      country,
+      postCode,
+      title,
+      message,
+      Alert_open_close,
+      setShowUsers,
+      pictures,
+      base64Image,
+      Alert_open_close1,
+      editUserProfile
+    } = this.state;
+    const AlertError =
+      (
+        <div className="mb-2">
+          <Alert isOpen={Alert_open_close} toggle={() => this.onDismissAlert()} color="danger" >
+            <h4 className="alert-heading">
+              {title}
+            </h4>
+            {message}
+          </Alert>
+        </div>
+      );
+    const AlertError1 =
+      (
+        <div className="mb-2">
+          <Alert isOpen={Alert_open_close1} toggle={() => this.onDismissAlert1()} color="danger" >
+            <h4 className="alert-heading">
+              {title}
+            </h4>
+            {message}
+          </Alert>
+        </div>
+      );
+
+    console.log("Picture Data------", pictures);
     return (
       <>
-        <UserHeader />
+        <UserHeader
+          userName={"Nishad Patil"}
+        />
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
-            <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
-              <Card className="card-profile shadow">
+            <Col className="order-xl-1" xl="12">
+              {AlertError}
+            </Col>
+            <Col className="order-xl-1" xl="12">
+              <Card className="bg-secondary shadow">
                 <Row className="justify-content-center">
-                  <Col className="order-lg-2" lg="3">
-                    <div className="card-profile-image">
-                      <a href="#pablo" onClick={e => e.preventDefault()}>
+                  <Col className="order-lg-2" lg="3" sm="6" xs="6" md="6">
+                    <div className="card-profile-image ">
+                      <a onClick={(e) => { editUserProfile ? this.OpenUsersDialog() : e.preventDefault() }}>
                         <img
                           alt="..."
-                          className="rounded-circle"
-                          src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                          className="rounded-circle obj-cover"
+                          width="190"
+                          height="175"
+                          src={base64Image ? base64Image : require("../../assets/img/theme/team-4-800x800.jpg")}
                         />
                       </a>
                     </div>
                   </Col>
                 </Row>
-                <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                  <div className="d-flex justify-content-between">
-                    <Button
-                      className="mr-4"
-                      color="info"
-                      href="#pablo"
-                      onClick={e => e.preventDefault()}
-                      size="sm"
-                    >
-                      Connect
-                    </Button>
-                    <Button
-                      className="float-right"
-                      color="default"
-                      href="#pablo"
-                      onClick={e => e.preventDefault()}
-                      size="sm"
-                    >
-                      Message
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardBody className="pt-0 pt-md-4">
-                  <Row>
-                    <div className="col">
-                      <div className="card-profile-stats d-flex justify-content-center mt-md-5">
-                        <div>
-                          <span className="heading">22</span>
-                          <span className="description">Friends</span>
-                        </div>
-                        <div>
-                          <span className="heading">10</span>
-                          <span className="description">Photos</span>
-                        </div>
-                        <div>
-                          <span className="heading">89</span>
-                          <span className="description">Comments</span>
-                        </div>
-                      </div>
-                    </div>
-                  </Row>
-                  <div className="text-center">
-                    <h3>
-                      Jessica Jones
-                      <span className="font-weight-light">, 27</span>
-                    </h3>
-                    <div className="h5 font-weight-300">
-                      <i className="ni location_pin mr-2" />
-                      Bucharest, Romania
-                    </div>
-                    <div className="h5 mt-4">
-                      <i className="ni business_briefcase-24 mr-2" />
-                      Solution Manager - Creative Tim Officer
-                    </div>
-                    <div>
-                      <i className="ni education_hat mr-2" />
-                      University of Computer Science
-                    </div>
-                    <hr className="my-4" />
-                    <p>
-                      Ryan — the name taken by Melbourne-raised, Brooklyn-based
-                      Nick Murphy — writes, performs and records all of his own
-                      music.
-                    </p>
-                    <a href="#pablo" onClick={e => e.preventDefault()}>
-                      Show more
-                    </a>
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
-            <Col className="order-xl-1" xl="8">
-              <Card className="bg-secondary shadow">
-                <CardHeader className="bg-white border-0">
+                <CardHeader className="bg-white border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                   <Row className="align-items-center">
                     <Col xs="8">
                       <h3 className="mb-0">My account</h3>
                     </Col>
                     <Col className="text-right" xs="4">
                       <Button
-                        color="primary"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
+                        color={editUserProfile ? "warning" : "primary"}
+                        onClick={() => this.editUserProfileEnable()}
                         size="sm"
+                        className="pr-4 pl-4"
                       >
-                        Settings
+                        Edit
                       </Button>
                     </Col>
                   </Row>
@@ -162,8 +322,12 @@ class Profile extends React.Component {
                               Username
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              defaultValue="lucky.jesse"
+                              className="form-control-alternative txt-lt-dark disable-hover"
+                              value={userName}
+                              required="true"
+                              disabled={editUserProfile ? false : true}
+                              name="username"
+                              onChange={(event) => this.onTextValueChanged("userName", event.target.value)}
                               id="input-username"
                               placeholder="Username"
                               type="text"
@@ -179,8 +343,13 @@ class Profile extends React.Component {
                               Email address
                             </label>
                             <Input
-                              className="form-control-alternative"
+                              className="form-control-alternative txt-lt-dark disable-hover"
                               id="input-email"
+                              value={userEmail}
+                              disabled={editUserProfile ? false : true}
+                              name="email"
+                              required="true"
+                              onChange={(event) => this.onTextValueChanged("userEmail", event.target.value)}
                               placeholder="jesse@example.com"
                               type="email"
                             />
@@ -197,8 +366,11 @@ class Profile extends React.Component {
                               First name
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              defaultValue="Lucky"
+                              className="form-control-alternative txt-lt-dark disable-hover"
+                              value={firstName}
+                              name="firstName"
+                              disabled={editUserProfile ? false : true}
+                              onChange={(event) => this.onTextValueChanged("firstName", event.target.value)}
                               id="input-first-name"
                               placeholder="First name"
                               type="text"
@@ -214,8 +386,11 @@ class Profile extends React.Component {
                               Last name
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              defaultValue="Jesse"
+                              className="form-control-alternative txt-lt-dark disable-hover"
+                              value={lastName}
+                              name="lastName"
+                              disabled={editUserProfile ? false : true}
+                              onChange={(event) => this.onTextValueChanged("lastName", event.target.value)}
                               id="input-last-name"
                               placeholder="Last name"
                               type="text"
@@ -240,8 +415,11 @@ class Profile extends React.Component {
                               Address
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+                              className="form-control-alternative txt-lt-dark disable-hover"
+                              value={address}
+                              name="address"
+                              disabled={editUserProfile ? false : true}
+                              onChange={(event) => this.onTextValueChanged("address", event.target.value)}
                               id="input-address"
                               placeholder="Home Address"
                               type="text"
@@ -259,8 +437,11 @@ class Profile extends React.Component {
                               City
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              defaultValue="New York"
+                              className="form-control-alternative txt-lt-dark disable-hover"
+                              value={city}
+                              name="city"
+                              disabled={editUserProfile ? false : true}
+                              onChange={(event) => this.onTextValueChanged("city", event.target.value)}
                               id="input-city"
                               placeholder="City"
                               type="text"
@@ -276,8 +457,11 @@ class Profile extends React.Component {
                               Country
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              defaultValue="United States"
+                              className="form-control-alternative txt-lt-dark disable-hover"
+                              value={country}
+                              name="country"
+                              disabled={editUserProfile ? false : true}
+                              onChange={(event) => this.onTextValueChanged("country", event.target.value)}
                               id="input-country"
                               placeholder="Country"
                               type="text"
@@ -293,8 +477,12 @@ class Profile extends React.Component {
                               Postal code
                             </label>
                             <Input
-                              className="form-control-alternative"
+                              className="form-control-alternative txt-lt-dark disable-hover"
                               id="input-postal-code"
+                              value={postCode}
+                              disabled={editUserProfile ? false : true}
+                              name="postCode"
+                              onChange={(event) => this.onTextValueChanged("postCode", event.target.value)}
                               placeholder="Postal code"
                               type="number"
                             />
@@ -302,28 +490,57 @@ class Profile extends React.Component {
                         </Col>
                       </Row>
                     </div>
-                    <hr className="my-4" />
-                    {/* Description */}
-                    <h6 className="heading-small text-muted mb-4">About me</h6>
-                    <div className="pl-lg-4">
-                      <FormGroup>
-                        <label>About Me</label>
-                        <Input
-                          className="form-control-alternative"
-                          placeholder="A few words about you ..."
-                          rows="4"
-                          defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
-                          Open Source."
-                          type="textarea"
-                        />
-                      </FormGroup>
-                    </div>
+                    {
+                      editUserProfile ?
+                        <>
+                          <hr className="my-4" />
+                          <div className="text-center">
+                            <FormGroup>
+                              <Button
+                                color="primary"
+                                onClick={(e) => this.editUserProfile(e.preventDefault())}
+                                size="md"
+                                className="pr-4 pl-4"
+                              >
+                                Save
+                              </Button>
+                            </FormGroup>
+                          </div>
+                        </> :
+                        null
+                    }
                   </Form>
                 </CardBody>
               </Card>
             </Col>
           </Row>
         </Container>
+        <DialogBox
+          disableBackdropClick={true}
+          maxWidth={"sm"}
+          fullWidth={true}
+          DialogHeader={"Edit User Image"}
+          DialogContentTextData={""}
+          DialogButtonText1={"Cancel"}
+          DialogButtonText2={"Save"}
+          Variant={"outlined"}
+          onClose={this.handleCloseDialog}
+          onOpen={setShowUsers}
+          OnClick_Bt1={this.handleCloseDialog}
+          OnClick_Bt2={this.setImageTobase}
+          B2backgroundColor={"#3773b0"}
+          B2color={"#ffffff"}
+        >
+          {AlertError1}
+          <ImageUploader
+            withIcon={true}
+            buttonText='Choose images'
+            onChange={this.onDrop}
+            singleImage={true}
+            imgExtension={['.jpg', '.gif', '.png', '.gif']}
+            maxFileSize={5242880}
+          />
+        </DialogBox>
       </>
     );
   }

@@ -131,7 +131,19 @@ color: #e8cd82
     min-width: 120px !important;
 }
 
+.min-wd-250{
+    min-width: 250px !important;
+}
+
 .min-wd-200{
+    min-width: 200px !important;
+}
+
+.max-wd-300{
+    min-width: 300px !important;
+}
+
+.max-wd-200{
     min-width: 200px !important;
 }
 
@@ -180,6 +192,31 @@ color: #e8cd82
 
 .ht-600{
     height: 600px !important;
+}
+
+.ht-20p{
+    height: 20% !important;
+}
+
+.ht-30p{
+    height: 30% !important;
+}
+
+.ht-50p{
+    height: 50% !important;
+}
+
+
+.wd-20p{
+    width: 20% !important;
+}
+
+.wd-30p{
+    width: 30% !important;
+}
+
+.wd-50p{
+    width: 50% !important;
 }
 
 
@@ -361,4 +398,12 @@ color: #e8cd82
 
   .txt-bold{
       font-weight: bold;
+  }
+
+  .obj-cover{
+    object-fit: cover !important;
+  }
+
+  .obj-contain{
+    object-fit: contain !important;
   }

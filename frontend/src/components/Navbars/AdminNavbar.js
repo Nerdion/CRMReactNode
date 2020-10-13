@@ -43,6 +43,7 @@ class AdminNavbar extends React.Component {
   }
 
   render() {
+    let { userName, userImage } = this.props;
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -72,12 +73,12 @@ class AdminNavbar extends React.Component {
                     <span className="avatar avatar-sm rounded-circle">
                       <img
                         alt="..."
-                        src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                        src={userImage ? userImage : require("../../assets/img/theme/team-4-800x800.jpg")}
                       />
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        Jessica Jones
+                        {userName}
                       </span>
                     </Media>
                   </Media>
@@ -90,20 +91,8 @@ class AdminNavbar extends React.Component {
                     <i className="ni ni-single-02" />
                     <span>My profile</span>
                   </DropdownItem>
-                  <DropdownItem to="/admin/user-profile" tag={Link}>
-                    <i className="ni ni-settings-gear-65" />
-                    <span>Settings</span>
-                  </DropdownItem>
-                  <DropdownItem to="/admin/user-profile" tag={Link}>
-                    <i className="ni ni-calendar-grid-58" />
-                    <span>Activity</span>
-                  </DropdownItem>
-                  <DropdownItem to="/admin/user-profile" tag={Link}>
-                    <i className="ni ni-support-16" />
-                    <span>Support</span>
-                  </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem href="#pablo" onClick={(e) => this.logout(e)}>
+                  <DropdownItem onClick={(e) => this.logout(e)}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>
                   </DropdownItem>
