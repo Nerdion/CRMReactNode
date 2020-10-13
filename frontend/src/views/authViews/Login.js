@@ -15,6 +15,7 @@ import {
   Col,
   Alert
 } from "reactstrap";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 //API's
 import { VerifyUserLogin, VerifyEmailUser } from '../CRM_Apis';
@@ -28,7 +29,8 @@ class Login extends React.Component {
     Password: '',
     Alert_open_close: false,
     title: '',
-    message: ''
+    message: '',
+    setRedirect: ''
   }
 
   async componentDidMount() {
@@ -113,6 +115,7 @@ class Login extends React.Component {
   }
 
   getLoggedIn = async (whichAPI, encAuthData) => {
+    let Root = '';
     const UserLoginApiCall = await fetch(whichAPI, {
       method: "POST",
       headers: {
@@ -129,10 +132,14 @@ class Login extends React.Component {
       console.log("User Loggedin");
       localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
       if (responseData.orgID) {
-        this.props.history.push("/admin/workSpace");
+        //this.props.history.push("/admin/workSpace");
+        Root = 'workSpace'
+
       } else {
-        this.props.history.push("/auth/joininviteorg");
+        //this.props.history.push("/auth/joininviteorg");
+        Root = 'joininviteorg'
       }
+      this.setState({ setRedirect: Root })
     }
     else {
       this.setState({ title: "Error", message: "Link Expired", Alert_open_close: true });
@@ -141,7 +148,7 @@ class Login extends React.Component {
 
 
   render() {
-    const { title, message, Alert_open_close } = this.state;
+    const { title, message, Alert_open_close, setRedirect } = this.state;
     const AlertError =
       (
         <div>
@@ -156,6 +163,17 @@ class Login extends React.Component {
 
     return (
       <>
+        {setRedirect === "workSpace" ?
+          <Switch>
+            <Redirect from="/" to="/admin/workSpace" />
+          </Switch> :
+          setRedirect === "joininviteorg" ?
+            <Switch>
+              <Redirect from="/" to="/admin/joininviteorg" />
+            </Switch> : localStorage.getItem('CRM_Token_Value') ?
+              <Redirect from="/" to="/admin/workSpace" /> :
+              null
+        }
         <Col lg="5" md="7">
           {AlertError}
           <Card className="bg-secondary shadow border-0">

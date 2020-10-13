@@ -36,14 +36,8 @@ import {
 } from "reactstrap";
 
 class AdminNavbar extends React.Component {
-
-  logout = (e) => {
-    localStorage.removeItem('CRM_Token_Value');
-    this.props.history.push("/auth/login");
-  }
-
   render() {
-    let { userName, userImage } = this.props;
+    let { userName, userImage, logout } = this.props;
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -92,7 +86,7 @@ class AdminNavbar extends React.Component {
                     <span>My profile</span>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem onClick={(e) => this.logout(e)}>
+                  <DropdownItem onClick={logout}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>
                   </DropdownItem>
