@@ -11,6 +11,7 @@ module.exports = class User {
         this.User = 'User'
     }
 
+    // Login Authentication function
     async login(bodyInfo) {
         let authData = await this.decryptData(bodyInfo)
         let email = authData.useremail;
@@ -33,6 +34,7 @@ module.exports = class User {
         }
     }
 
+    // Registeration of the new user
     async register(bodyInfo) {
         let registerData = await this.decryptData(bodyInfo)
 
@@ -46,7 +48,7 @@ module.exports = class User {
             workspaces: [
                 {
                     workspaceId: null,
-                    rollId: 0,
+                    roleId: 0,
                     lastModifiedDate: new Date()
                 }
             ]
@@ -66,6 +68,7 @@ module.exports = class User {
         }
     }
 
+    // send the mail for newly registered user
     async emailVerification(email) {
         let newUserData = await mongo.usacrm.collection(this.User).findOne({ email: email })
         let jwtData = await this.generatetoken(email, newUserData._id.toString());
@@ -86,9 +89,11 @@ module.exports = class User {
         }
     }
 
+    // returns the orgId of the user
     async getMyOrganization() {
         try {
             if (this.decodedInformation.orgId) {
+                //also return the role of me
                 return { sucess: true, orgName: await this.decodedInformation.orgId }
             } else {
                 return { sucess: false, message: "Not in any organization" }
@@ -98,6 +103,7 @@ module.exports = class User {
         }
     }
 
+    // function for encryption
     async encryptData(data) {
         try {
             var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
@@ -107,6 +113,7 @@ module.exports = class User {
         }
     }
 
+    // function for decryption
     async decryptData(authData) {
         try {
             var bytes = CryptoJS.AES.decrypt(authData.data, tokenKey)
@@ -117,6 +124,7 @@ module.exports = class User {
         }
     }
 
+    // Verifies normally registered user
     async authorizeRegisteredUser() {
         try {
             await mongo.usacrm.collection(this.User).findOneAndUpdate({ _id: new ObjectId(this.decodedInformation._id) }, { $set: { statusId: 1 } })
@@ -128,6 +136,7 @@ module.exports = class User {
         }
     }
 
+    // Generates a new JWT Token called by Login function
     async generatetoken(email, userId) {
         var token_string = {
             userid: userId.toString(),
@@ -139,10 +148,11 @@ module.exports = class User {
         return { "Token": token }
     }
 
+    // verifies the credentials of the JWT Token & returns complete information of the user
     async verifyUser(token) {
         try {
             let decoded = await jwt.verify(token, tokenKey)
-            this.decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }, { password: 0, workspaces: 0 }) //password : 0
+            this.decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }, { password: 0, workspaces: 0 })
             if (!this.decodedInformation) {
                 return { success: false, message: 'Not authorised' }
             } else {
@@ -153,6 +163,7 @@ module.exports = class User {
         }
     }
 
+    // invites new user takes in new mail id which registered user has invited
     async inviteNewUser(newMailId) {
         try {
             let inviterId = this.decodedInformation
@@ -193,6 +204,7 @@ module.exports = class User {
         }
     }
 
+    //Authorize newly invited user
     async authorizeUser(bodyInfo) {
         try {
             let authData = await this.decryptData(bodyInfo)
@@ -212,6 +224,7 @@ module.exports = class User {
         }
     }
 
+    //setting the OrgID of a user
     async setOrgID(orgId) {
         try {
             await mongo.usacrm.collection(this.User).findOneAndUpdate({ _id: this.decodedInformation._id }, { $set: { orgId: orgId } })
@@ -220,6 +233,7 @@ module.exports = class User {
         }
     }
 
+    // returns all the members in the organization
     async getMyOrganizationMembers() {
         try {
             let data = await mongo.usacrm.collection(this.User).find({ orgId: this.decodedInformation.orgId }).project({ orgId: 0, password: 0, statusId: 0 }).toArray()
@@ -229,6 +243,7 @@ module.exports = class User {
         }
     }
 
+    // gets the manager information of a particular organization
     async getManagerName(managerID) {
         try {
             let managerName = await mongo.usacrm.collection(this.User).findOne({ _id: managerID }, {
@@ -241,9 +256,10 @@ module.exports = class User {
         } catch (e) {
             return false
         }
-
     }
 
+
+    //returns names & images of the users
     async getUserNameAndImage(userIds) {
         try {
             let users = []
@@ -259,7 +275,7 @@ module.exports = class User {
             }
             return users
         } catch (e) {
-
+            return { success: false, message: '', error: e.toString() }
         }
     }
 }
