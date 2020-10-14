@@ -58,6 +58,21 @@ border-radius: 1rem !important;
     color: #0f4366 !important;
 }
 
+.txt-primeblue{
+    color: #3774d6 !important;
+}
+
+.txt-draft{
+color:#bac7d4
+}
+.txt-pending{
+color: #e8cd82
+}
+
+.txt-finished{
+ color:  #83e67e   
+}
+
 .disable-hover, .txt-dark:hover{
     text-decoration: none !important;
     color: unset !important;
@@ -132,8 +147,23 @@ border-radius: 1rem !important;
     height: 30px !important;
 }
 
+.ht-80{
+    height: 80px !important;
+}
+
 .ht-100{
     height: 100px !important;
+}
+.ht-120{
+    height: 120px !important;
+}
+
+.ht-160{
+    height: 160px !important;
+}
+
+.ht-250{
+    height: 250px !important;
 }
 
 .ht-300{
@@ -143,6 +173,15 @@ border-radius: 1rem !important;
 .ht-400{
     height: 400px !important;
 }
+
+.ht-500{
+    height: 500px !important;
+}
+
+.ht-600{
+    height: 600px !important;
+}
+
 
 .wd-100{
     width: 100px !important;
@@ -154,6 +193,10 @@ border-radius: 1rem !important;
 
 .wd-150{
     width: 150px !important;
+}
+
+.wd-170{
+    width: 170px !important;
 }
 
 .wd-100p{
@@ -263,10 +306,29 @@ border-radius: 1rem !important;
     flex-direction: row !important;
 }
 
+.d-fc-direction{
+    flex-direction: column !important;
+}
+
 .min-dn-ht{
     /* height: fit-content; */
     max-height: 347px;
     /* min-height: 45vh; */
+    overflow:scroll;
+}
+
+.max-dn-ht-250{
+    max-height: 250px;
+    overflow:scroll;
+}
+
+.max-dn-ht-300{
+    max-height: 300px;
+    overflow:scroll;
+}
+
+.max-dn-ht-500{
+    max-height: 500px;
     overflow:scroll;
 }
 
@@ -285,4 +347,18 @@ border-radius: 1rem !important;
   .hide-scroll-ind {
     -ms-overflow-style: none;  
     scrollbar-width: none; 
+  }
+
+  .border-div-1{
+    border:1px solid #38668f;
+    box-sizing: border-box;
+  }
+
+  .txt-decoration-hov:hover{
+    text-decoration: underline #3774d6 !important;
+    color: #3774d6;
+  }
+
+  .txt-bold{
+      font-weight: bold;
   }

@@ -20,39 +20,17 @@ import UsersTable from "../components/Tables/UsersTable.js";
 
 
 //API's
-import { VerifyUserInvite, GetUserAvail } from './CRM_Apis';
+import { organizationAPI, VerifyUserInvite } from './CRM_Apis';
 
 //Temp Data
 
-const UserData = [
-    {
-        "UserName": "Nishad Patil",
-        "Permissions": "Admin",
-        "Team": "Meta",
-        "Role": "Designer",
-        "Completion_Text": "60%",
-        "Completion": 60,
-        "last_active": "2 minute ago"
-    },
-    {
-        "UserName": "Neel Khalade",
-        "Permissions": "Organizer",
-        "Team": "Meta",
-        "Role": "Backend Manager",
-        "Completion_Text": "30%",
-        "Completion": 30,
-        "last_active": "5 minute ago"
-    },
+let userData = []
 
-]
-
-const HeaderData = [
-    { "Header": "User Name" },
+const headerData = [
+    { "Header": "Profile" },
+    { "Header": "Name"},
+    { "Header": "E-mail"},
     { "Header": "Permissions" },
-    { "Header": "Team" },
-    { "Header": "Role" },
-    { "Header": "Completion" },
-    { "Header": "last active" },
 ];
 
 class Users extends React.Component {
@@ -102,28 +80,28 @@ class Users extends React.Component {
         }
     }
 
-    GetUserData = async () => {
-        const CRM_Token = await localStorage.getItem('CRM_Token_Value');
-        try {
-            const GetAvailUser = await fetch(GetUserAvail, {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `JWT ${CRM_Token}`
-                },
-            });
-            const responseData = await GetAvailUser.json();
-            console.log(responseData, 'GetAvailUser')
-            console.log(GetAvailUser, 'GetAvailUserHeader');
-            this.setState({
-                TotalCount: responseData.count,
-                UserData: responseData.results.userData,
-            })
-        } catch (err) {
-            console.log("Error fetching data-----------", err);
-        }
-    }
+    // GetUserData = async () => {
+    //     const CRM_Token = await localStorage.getItem('CRM_Token_Value');
+    //     try {
+    //         const GetAvailUser = await fetch(GetUserAvail, {
+    //             method: "POST",
+    //             headers: {
+    //                 'Accept': 'application/json',
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `JWT ${CRM_Token}`
+    //             },
+    //         });
+    //         const responseData = await GetAvailUser.json();
+    //         console.log(responseData, 'GetAvailUser')
+    //         console.log(GetAvailUser, 'GetAvailUserHeader');
+    //         this.setState({
+    //             TotalCount: responseData.count,
+    //             UserData: responseData.results.userData,
+    //         })
+    //     } catch (err) {
+    //         console.log("Error fetching data-----------", err);
+    //     }
+    // }
 
     SendInviteHandle = async () => {
         let title = "Error";
@@ -165,6 +143,47 @@ class Users extends React.Component {
         this.setState({ Alert_open_close: false });
     }
 
+    getUserData = async () => {
+        this.jwtToken = await localStorage.getItem('CRM_Token_Value');
+
+        const getAllMembers = await fetch(organizationAPI, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `${this.jwtToken}`
+            },
+            body: JSON.stringify({
+                method: 'members'
+            })
+        });
+        const response = await getAllMembers.json();
+
+        let responseData = response.data
+
+        for (let i = 0; i < responseData.length; i++) {
+            console.log(responseData[i])
+            let data = responseData[i]
+            let isAdmin = 'Member'
+
+            if(data.orgRoleId) {
+                isAdmin = 'Admin'
+            }
+
+            userData.push({
+                UserName: data.name,
+                Role: isAdmin,
+                mail : data.email,
+                imageUrl: 'blank',
+            })
+        }
+
+        this.setState(userData)
+    }
+
+    componentDidMount = async () => {
+        await this.getUserData()
+    }
 
     render() {
         const { Dialog_open_close, title, message, Alert_open_close, AlertColor, UserEmail, invalidEmail } = this.state;
@@ -190,8 +209,8 @@ class Users extends React.Component {
                             Header={'Users'}
                             onClickHeaderButton={() => this.handleClickOpen()}
                             HeaderButtonName={'Invite User'}
-                            userData={UserData}
-                            tHeader={HeaderData}
+                            userData={userData}
+                            tHeader={headerData}
                         />
                     </div>
                 </Container>

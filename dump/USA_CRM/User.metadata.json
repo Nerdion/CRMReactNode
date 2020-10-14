@@ -1,0 +1,1 @@
+{"options":{"autoIndexId":true},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"USA_CRM.User"}],"uuid":"467faa1ff7b34f3e8df9df6fdfc5e6c7"}

@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 //Material UI
 import {
     Button,
-} from '@material-ui/core/';
+    Avatar
+} from '@material-ui/core';
 
 // reactstrap components
 import {
@@ -21,22 +22,25 @@ export class UsersTable extends Component {
         return (
             <div>
                 <Col className="mb-12 mb-xl-0" md='12' xl="12">
-                    <Card className="shadow">
+                    <Card className="shadow max-dn-ht-500 hide-scroll-ind">
                         <CardHeader className="border-0">
                             <Row className="align-items-center">
                                 <div className="col">
                                     <h3 className="mb-0">{Header}</h3>
                                 </div>
-                                <div className="col text-right">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="small"
-                                        onClick={onClickHeaderButton}
-                                    >
-                                        {HeaderButtonName}
-                                    </Button>
-                                </div>
+                                {HeaderButtonName ?
+                                    <div className="col text-right">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="small"
+                                            onClick={onClickHeaderButton}
+                                        >
+                                            {HeaderButtonName}
+                                        </Button>
+                                    </div> :
+                                    null
+                                }
                             </Row>
                         </CardHeader>
                         <Table className="align-items-center table-flush" responsive>
@@ -50,11 +54,15 @@ export class UsersTable extends Component {
                             <tbody>
                                 {userData.map((Tdata, index) => (
                                     <tr key={index}>
-                                        <th scope="row">{Tdata.UserName}</th>
-                                        <td>{Tdata.Permissions}</td>
-                                        <td>{Tdata.Team}</td>
+                                        <th scope="row">
+                                            <div className="d-flex justify-content-around align-items-center">
+                                                <Avatar src={Tdata.imageUrl} alt={Tdata.UserName} />
+                                            </div>
+                                        </th>
+                                        <td>{Tdata.UserName}</td>
+                                        <td>{Tdata.mail}</td>
                                         <td>{Tdata.Role}</td>
-                                        <td>
+                                        {/* <td>
                                             <div className="d-flex align-items-center">
                                                 <span className="mr-2">{Tdata.Completion_Text}</span>
                                                 <div>
@@ -69,10 +77,7 @@ export class UsersTable extends Component {
                                                     />
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td>
-                                            {Tdata.last_active}
-                                        </td>
+                                        </td> */}
                                     </tr>
                                 ))}
                             </tbody>

@@ -25,15 +25,25 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
+    UncontrolledTooltip
 } from "reactstrap";
 
 export class WorkSpaceTable extends Component {
     render() {
-        const { Header, onClickHeaderButton, HeaderButtonName, tHeader, userData, IconName, onRowPress } = this.props;
+        const {
+            Header,
+            onClickHeaderButton,
+            HeaderButtonName,
+            tHeader,
+            userData,
+            IconName,
+            onRowPress,
+            onClickAvatar,
+            editWorkSpace } = this.props;
         return (
             <div>
                 <Col className="mb-12 mb-xl-0" md='12' xl="12">
-                    <Card className="shadow">
+                    <Card className="shadow max-dn-ht-500 hide-scroll-ind">
                         <CardHeader className="border-0">
                             <Row className="align-items-center">
                                 <div className="col">
@@ -62,20 +72,20 @@ export class WorkSpaceTable extends Component {
                             </thead>
                             <tbody>
                                 {userData.map((Tdata, index) => (
-                                    <tr className="cursor-point" onClick={onRowPress} key={index}>
-                                        <th scope="row">{Tdata.WorkspaceName}</th>
-                                        <td>{Tdata.Permissions}</td>
-                                        <td>{Tdata.Role}</td>
+                                    <tr className="card-hover-view" key={index}>
+                                        <th className="cursor-point txt-decoration-hov" onClick={() => onRowPress(Tdata)} scope="row">{Tdata.workspaceName}</th>
+                                        <td>{Tdata.organizationName}</td>
+                                        <td>{Tdata.managerName}</td>
                                         <td>
                                             <div className="d-flex align-items-center">
-                                                <span className="mr-2">{Tdata.Completion_Text}</span>
+                                                <span className="mr-2">{Tdata.completionText}</span>
                                                 <div>
                                                     <Progress
                                                         max="100"
-                                                        value={Tdata.Completion}
+                                                        value={Tdata.completion}
                                                         barClassName={
-                                                            Tdata.Completion <= 30 ? "bg-gradient-danger" :
-                                                                Tdata.Completion > 30 && Tdata.Completion <= 60 ? "bg-gradient-warning"
+                                                            Tdata.completion <= 30 ? "bg-gradient-danger" :
+                                                                Tdata.completion > 30 && Tdata.completion <= 60 ? "bg-gradient-warning"
                                                                     : "bg-gradient-success"
                                                         }
                                                     />
@@ -83,14 +93,41 @@ export class WorkSpaceTable extends Component {
                                             </div>
                                         </td>
                                         <td>
-                                            {Tdata.last_active}
+                                            <div onClick={onClickAvatar} className="avatar-group">
+                                                {Tdata.users.length === 0 || Tdata.users === undefined ?
+                                                    <span className=" text-default">No User Assigned</span> :
+                                                    Tdata.users.map((item, index) => (
+                                                        <>
+                                                            <a
+                                                                className="avatar avatar-sm"
+                                                                id={`tooltip${index}`}
+                                                            >
+                                                                <img
+                                                                    // alt={item.name}
+                                                                    className="rounded-circle"
+                                                                    src={item.imageUrl}
+                                                                />
+                                                            </a>
+                                                            <UncontrolledTooltip
+                                                                delay={0}
+                                                                target={`tooltip${index}`}
+                                                            >
+                                                                {item.name}
+                                                            </UncontrolledTooltip>
+                                                        </>
+
+                                                    ))}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {Tdata.createdAt}
                                         </td>
                                         <tb>
                                             <td className="text-right">
                                                 <UncontrolledDropdown>
                                                     <DropdownToggle
                                                         className="btn-icon-only text-light"
-                                                        href="#pablo"
+
                                                         role="button"
                                                         size="sm"
                                                         color=""
@@ -100,24 +137,17 @@ export class WorkSpaceTable extends Component {
                                                     </DropdownToggle>
                                                     <DropdownMenu className="dropdown-menu-arrow" right>
                                                         <DropdownItem
-                                                            href="#pablo"
-                                                            onClick={e => e.preventDefault()}
+                                                            onClick={() => editWorkSpace(Tdata)}
                                                         >
                                                             <Edit color="primary" />
                                                             Edit
                                                         </DropdownItem>
                                                         <DropdownItem
-                                                            href="#pablo"
+
                                                             onClick={e => e.preventDefault()}
                                                         >
                                                             <Delete color="error" />
                                                             Delete
-                                                        </DropdownItem>
-                                                        <DropdownItem
-                                                            href="#pablo"
-                                                            onClick={e => e.preventDefault()}
-                                                        >
-                                                            Something else here
                                                         </DropdownItem>
                                                     </DropdownMenu>
                                                 </UncontrolledDropdown>
@@ -129,7 +159,7 @@ export class WorkSpaceTable extends Component {
                         </Table>
                     </Card>
                 </Col>
-            </div>
+            </div >
         )
     }
 }

@@ -42,9 +42,9 @@ class DialogBox extends Component {
                         {children}
                     </DialogContent>
                     <DialogActions>
-                        <Button style={B1backgroundColor ? { backgroundColor: B1backgroundColor, color: B1color } : {}} variant={Variant} onClick={OnClick_Bt1} color="primary">
+                        {DialogButtonText1 ? <Button style={B1backgroundColor ? { backgroundColor: B1backgroundColor, color: B1color } : {}} variant={Variant} onClick={OnClick_Bt1} color="primary">
                             {DialogButtonText1}
-                        </Button>
+                        </Button> : null}
                         <Button style={B2backgroundColor ? { backgroundColor: B2backgroundColor, color: B2color } : {}} variant={Variant} onClick={OnClick_Bt2} color="primary">
                             {DialogButtonText2}
                         </Button>

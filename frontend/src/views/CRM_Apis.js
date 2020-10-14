@@ -8,10 +8,19 @@ export const VerifyUserRegister = `${DomainURL}/auth/register`;
 
 export const VerifyUserInvite = `${DomainURL}/api/inviteuser`;
 
-export const GetUserAvail = `${DomainURL}/api/getuseravaildata`;
+export const GetUserAvail = `${DomainURL}/api/getavailuserdata`;
 
 export const AuthUser = `${DomainURL}/api/authorizeuser`;
 
 export const AuthUserResponse = `${DomainURL}/api/authrizeresponsedata`;
 
-export const VerifyEmailUser = `${DomainURL}/api/authorizeRegistereduser`
+export const organizationAPI = `${DomainURL}/api/organisation`;
+
+export const VerifyEmailUser = `${DomainURL}/api/authorizeRegistereduser`;
+
+export const workspaceAction = `${DomainURL}/api/workspaceAction`;
+
+export const setWorkSpaceApi = `${DomainURL}/api/setWorkSpace`;
+
+export const taskAction = `${DomainURL}/api/taskAction`;
+
