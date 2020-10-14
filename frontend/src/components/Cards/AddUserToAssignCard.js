@@ -19,7 +19,6 @@ import {
 } from 'reactstrap';
 
 import {
-    FiberManualRecord,
     ExpandMore,
 } from '@material-ui/icons';
 

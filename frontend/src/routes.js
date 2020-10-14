@@ -15,13 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Index from "./views/Index";
 import Profile from "./views/authViews/Profile";
-import Maps from "./views/authViews/Maps";
 import Register from "./views/authViews/Register";
 import Login from "./views/authViews/Login";
-import Tables from "./views/authViews/Tables";
-import Icons from "./views/authViews/Icons";
 import CreateTaskTest from './views/CreateTaskTest';
 import WorkSpace from './views/WorkSpace';
 import Users from './views/Users';
@@ -33,15 +29,6 @@ import JoinUser from "./views/JoinUser";
 import EditTask from "./views/EditTask";
 
 var routes = [
-  {
-    path: "/index",
-    name: "Dashboard",
-    icon: "ni ni-tv-2 text-primary",
-    component: Index,
-    layout: "/admin",
-    showRoute: false,
-    exactLink: false
-  },
   {
     path: "/workSpace",
     name: "WorkSpace",
@@ -92,25 +79,7 @@ var routes = [
     name: "JoinUser",
     icon: "ni ni-single-02 text-primary",
     component: JoinUser,
-    layout: "/admin",
-    showRoute: true,
-    exactLink: false
-  },
-  {
-    path: "/icons",
-    name: "Icons",
-    icon: "ni ni-planet text-blue",
-    component: Icons,
-    layout: "/admin",
-    showRoute: false,
-    exactLink: false
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "ni ni-pin-3 text-orange",
-    component: Maps,
-    layout: "/admin",
+    layout: "/auth",
     showRoute: false,
     exactLink: false
   },
@@ -119,15 +88,6 @@ var routes = [
     name: "User Profile",
     icon: "ni ni-single-02 text-yellow",
     component: Profile,
-    layout: "/admin",
-    showRoute: false,
-    exactLink: false
-  },
-  {
-    path: "/tables",
-    name: "Tables",
-    icon: "ni ni-bullet-list-67 text-red",
-    component: Tables,
     layout: "/admin",
     showRoute: false,
     exactLink: false

@@ -6,8 +6,6 @@ import { Editor } from 'react-draft-wysiwyg';
 import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
-
 
 // reactstrap components
 import {
@@ -18,7 +16,6 @@ import {
     FormGroup,
     Label,
     Input,
-    FormText,
     ButtonDropdown,
     DropdownToggle,
     DropdownMenu,
@@ -34,7 +31,6 @@ import {
     Telegram,
     PeopleAlt,
     SaveAlt,
-    Edit,
     Add,
     Clear
 } from '@material-ui/icons';

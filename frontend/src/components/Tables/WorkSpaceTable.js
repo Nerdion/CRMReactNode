@@ -8,9 +8,6 @@ import {
 import {
     Delete,
     Edit,
-    Telegram,
-    PeopleAlt,
-    SaveAlt,
     Add
 } from '@material-ui/icons';
 // reactstrap components

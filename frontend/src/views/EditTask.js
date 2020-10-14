@@ -18,7 +18,6 @@ import {
     FormGroup,
     Label,
     Input,
-    FormText,
     ButtonDropdown,
     DropdownToggle,
     DropdownMenu,
@@ -58,7 +57,6 @@ import { saveEditTaskDataApi, getTaskData, getUserTaskDataApi } from '../views/C
 import Header from "../components/Headers/Header.js";
 import DialogBox from '../components/DialogBox/DialogBox';
 import UserTaskCard from '../components/Cards/UserTaskCard';
-import AddUserToAssignCard from "../components/Cards/AddUserToAssignCard";
 
 let linkTaskId = null;
 class EditTask extends React.Component {

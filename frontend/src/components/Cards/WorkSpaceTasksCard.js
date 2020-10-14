@@ -5,7 +5,6 @@ import {
     Card,
     CardHeader,
     CardBody,
-    Progress,
     Row,
     Col,
     ButtonDropdown,
@@ -21,7 +20,6 @@ import {
     MoreVert,
     Edit,
     FileCopy,
-    Archive,
     Delete
 } from '@material-ui/icons';
 

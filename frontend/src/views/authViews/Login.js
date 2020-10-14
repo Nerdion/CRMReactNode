@@ -15,7 +15,7 @@ import {
   Col,
   Alert
 } from "reactstrap";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 
 //API's
 import { VerifyUserLogin, VerifyEmailUser } from '../CRM_Apis';
@@ -131,13 +131,13 @@ class Login extends React.Component {
     if (responseData.success === true) {
       console.log("User Loggedin");
       localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
+      console.log("this is orgId---->", responseData.orgID);
       if (responseData.orgID) {
-        //this.props.history.push("/admin/workSpace");
-        Root = 'workSpace'
-
+        this.props.route.push("/admin/workSpace");
+        // Root = 'workSpace'
       } else {
-        //this.props.history.push("/auth/joininviteorg");
-        Root = 'joininviteorg'
+        this.props.route.push("/auth/joininviteorg");
+       // Root = 'joininviteorg'
       }
       this.setState({ setRedirect: Root })
     }
@@ -163,7 +163,7 @@ class Login extends React.Component {
 
     return (
       <>
-        {setRedirect === "workSpace" ?
+        {/* {setRedirect === "workSpace" ?
           <Switch>
             <Redirect from="/" to="/admin/workSpace" />
           </Switch> :
@@ -173,7 +173,7 @@ class Login extends React.Component {
             </Switch> : localStorage.getItem('CRM_Token_Value') ?
               <Redirect from="/" to="/admin/workSpace" /> :
               null
-        }
+        } */}
         <Col lg="5" md="7">
           {AlertError}
           <Card className="bg-secondary shadow border-0">

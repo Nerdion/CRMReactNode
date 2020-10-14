@@ -8,8 +8,6 @@ import {
     Container,
     Row,
     Col,
-    Form,
-    Label,
     Card,
     Alert,
     Spinner
@@ -17,32 +15,22 @@ import {
 
 // Material UI
 import {
-    Select,
-    InputLabel,
-    MenuItem,
-    FormHelperText,
     FormControl,
-    Button,
     TextField,
     Input,
-    FormControlLabel,
     FormGroup,
     FormLabel,
-    TextareaAutosize,
     Avatar,
 } from '@material-ui/core';
 
 import {
-    Add,
     Clear
 } from '@material-ui/icons';
 
 // core components
 import Header from "../components/Headers/Header.js";
-import WorkSpaceTasksCard from '../components/Cards/WorkSpaceTasksCard';
 import DialogBox from '../components/DialogBox/DialogBox';
 import WorkSpaceTable from "../components/Tables/WorkSpaceTable.js";
-import Users from "./Users.js";
 import UsersTable from '../components/Tables/UsersTable';
 
 //Api

@@ -8,7 +8,6 @@ import {
 
 import {
     Card,
-    CardBody,
     Row,
     Col,
 } from 'reactstrap';

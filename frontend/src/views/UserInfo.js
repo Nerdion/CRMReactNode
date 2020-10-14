@@ -5,7 +5,6 @@ import CryptoJS from 'crypto-js';
 import {
     Button,
     Card,
-    CardFooter,
     CardBody,
     FormGroup,
     Form,
@@ -13,7 +12,6 @@ import {
     InputGroupAddon,
     InputGroupText,
     InputGroup,
-    Row,
     Col,
     Alert, Spinner
 } from "reactstrap";

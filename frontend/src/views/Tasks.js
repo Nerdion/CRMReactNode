@@ -1,7 +1,5 @@
 
 import React from "react";
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
 
 // reactstrap components
 import {
@@ -12,30 +10,13 @@ import {
 
 // Material UI
 import {
-    Select,
-    InputLabel,
-    MenuItem,
-    FormHelperText,
-    FormControl,
-    Button,
-    TextField,
-    Input,
-    FormControlLabel,
-    FormGroup,
-    FormLabel,
-    TextareaAutosize,
     Card,
 } from '@material-ui/core';
 
-import {
-    Add
-} from '@material-ui/icons';
 
 // core components
 import Header from "../components/Headers/Header.js";
 import WorkSpaceTasksCard from '../components/Cards/WorkSpaceTasksCard';
-import DialogBox from '../components/DialogBox/DialogBox';
-import WorkSpaceTable from "../components/Tables/WorkSpaceTable.js";
 
 // Api
 import { taskAction } from './CRM_Apis';
@@ -251,61 +232,6 @@ class WorkSpace extends React.Component {
                         ))}
                     </Row>
                 </Container>
-                {/* <DialogBox
-                    disableBackdropClick={true}
-                    maxWidth={"sm"}
-                    fullWidth={true}
-                    DialogHeader={"Create New WorkSpace"}
-                    DialogContentTextData={""}
-                    DialogButtonText1={"Cancel"}
-                    DialogButtonText2={"Save"}
-                    Variant={"outlined"}
-                    onClose={this.handleClose}
-                    onOpen={setAddWorkspaceOpenClose}
-                    OnClick_Bt1={this.handleClose}
-                    OnClick_Bt2={this.handleClose}
-                    B2backgroundColor={"#3773b0"}
-                    B2color={"#ffffff"}
-                >
-                    <FormGroup className="mt-4">
-                        <FormControl>
-                            <FormLabel className="m-0">
-                                <span className="text-default">  What would you like to call the WorkSpace? </span>
-                            </FormLabel>
-                            <TextField
-                                autoFocus
-                                margin="none"
-                                id="name"
-                                label="WorkSpace Name"
-                                type="text"
-                                required={false}
-                                value={WorkSpaceName}
-                                autocomplete="section-blue shipping"
-                                onChange={(e) => this.onChangeText("WorkSpaceName", e.target.value)}
-                                fullWidth
-                            />
-                        </FormControl>
-                        <FormControl className="mt-5">
-                            <FormLabel className="m-0">
-                                <span className="text-default">  Description(Optional) </span>
-                            </FormLabel>
-                            <TextField
-                                margin="dense"
-                                id="name"
-                                label="Description"
-                                type="text"
-                                rows={6}
-                                rowsMax={6}
-                                multiline={true}
-                                required={false}
-                                value={WorkSpaceDesc}
-                                autocomplete="section-blue shipping"
-                                onChange={(e) => this.onChangeText("WorkSpaceDesc", e.target.value)}
-                                fullWidth
-                            />
-                        </FormControl>
-                    </FormGroup>
-                </DialogBox> */}
             </>
         );
     }

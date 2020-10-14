@@ -100,10 +100,7 @@ class ForgotPass extends React.Component {
     }
 
     submitForgotPassHandler = async (event) => {
-        //event.preventDefault();
         let title = "Error";
-        let token = this.props.match.params.token;
-        // console.log("Signed in:-", this.state.UserEmail, this.state.Password);
         try {
             if (this.state.confirmPassword === "" && this.state.Password !== "") {
                 const message = "Please Enter confirm password";
@@ -281,7 +278,7 @@ class ForgotPass extends React.Component {
                                         <InputGroup className="input-group-alternative">
                                             <InputGroupAddon addonType="prepend">
                                                 <InputGroupText>
-                                                    <i className="ni ni-lock-circle-open" />
+                                                    <i className="ni ni-key-25" />
                                                 </InputGroupText>
                                             </InputGroupAddon>
                                             <Input

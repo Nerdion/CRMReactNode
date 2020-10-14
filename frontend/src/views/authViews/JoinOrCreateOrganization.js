@@ -13,17 +13,11 @@ import {
     InputGroupText,
     InputGroup,
     Col,
-    CardFooter,
     Alert,
     Label,
     Row
 } from "reactstrap";
 
-//Material UI
-import {
-    Avatar,
-
-} from '@material-ui/core';
 import {
     Clear
 } from '@material-ui/icons';
