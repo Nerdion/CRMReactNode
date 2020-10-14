@@ -83,7 +83,6 @@ module.exports = class User {
             subject: `Verify Email Address`,
             html: html
         }
-        console.log(html)
         let isSend = await mail.sendMail(mailOptions)
         if (isSend) {
             return { 'success': true, 'message': "Verification link sent successfully" };
@@ -101,8 +100,8 @@ module.exports = class User {
             } else {
                 return { sucess: false, message: "Not in any organization" }
             }
-        } catch (err) {
-            return { sucess: false, error: err }
+        } catch (e) {
+            return { sucess: false, error: e.toString() }
         }
     }
 
@@ -112,7 +111,7 @@ module.exports = class User {
             var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
             return strenc
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 
@@ -123,7 +122,7 @@ module.exports = class User {
             var originalText = bytes.toString(CryptoJS.enc.Utf8);
             return JSON.parse(originalText);
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 
@@ -191,7 +190,6 @@ module.exports = class User {
             let encData = await this.encryptData(jwtData)
             encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
             let mail = new Mail()
-            console.log(this.decodedInformation.orgId)
             let orgName = await new Organization().getOrganizationName(this.decodedInformation.orgId)
             let html = await inviteMail(this.decodedInformation.name, this.decodedInformation.email, `${siteName}/auth/userinfo/${encData}`, orgName)
             const mailOptions = {
@@ -215,7 +213,7 @@ module.exports = class User {
             let name = authData.name
             await mongo.usacrm.collection(this.User).updateOne({ "email": this.decodedInformation.email },
                 {
-                    $set: { name: name, password: password, statusId: 1 }
+                    $set: { name: name, password: password, statusId: 1, orgRoleId: 0}
                 })
 
             let userData = this.decodedInformation
@@ -236,10 +234,19 @@ module.exports = class User {
         }
     }
 
+    async makeMeOrgAdmin() {
+        try {
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({ _id: this.decodedInformation._id }, { $set: { orgRoleId: 1 } })
+        } catch (e) {
+            return { success: false, message: '', error: e.toString() }
+        }
+    }
+
     // returns all the members in the organization
     async getMyOrganizationMembers() {
         try {
             let data = await mongo.usacrm.collection(this.User).find({ orgId: this.decodedInformation.orgId }).project({ orgId: 0, password: 0, statusId: 0 }).toArray()
+            //console.log(data)
             return { success: true, message: 'Users inside this organization', data: data }
         } catch (e) {
             return { success: false, message: '', error: e.toString() }

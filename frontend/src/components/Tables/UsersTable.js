@@ -57,9 +57,10 @@ export class UsersTable extends Component {
                                         <th scope="row">
                                             <div className="d-flex justify-content-around align-items-center">
                                                 <Avatar src={Tdata.imageUrl} alt={Tdata.UserName} />
-                                                {Tdata.UserName}
                                             </div>
                                         </th>
+                                        <td>{Tdata.UserName}</td>
+                                        <td>{Tdata.mail}</td>
                                         <td>{Tdata.Role}</td>
                                         {/* <td>
                                             <div className="d-flex align-items-center">
@@ -77,9 +78,6 @@ export class UsersTable extends Component {
                                                 </div>
                                             </div>
                                         </td> */}
-                                        <td>
-                                            {Tdata.last_active}
-                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

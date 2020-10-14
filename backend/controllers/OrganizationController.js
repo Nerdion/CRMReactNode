@@ -23,6 +23,7 @@ module.exports.manage = async (req, res) => {
                 else {
                     let response = await organization.createOrganization(req.body.orgName, legitUser.message)
                     await user.setOrgID(response.orgId)
+                    await user.makeMeOrgAdmin()
                     res.json(response)
                 }
             }

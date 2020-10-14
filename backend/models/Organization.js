@@ -4,6 +4,8 @@ const tokenKey = require('../config').key
 const jwt = require('jsonwebtoken')
 const { ObjectId, Db } = require('mongodb')
 
+const User = require('./User')
+
 class Organization {
 
     constructor() {
