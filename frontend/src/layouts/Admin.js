@@ -65,7 +65,7 @@ class Admin extends React.Component {
         return routes[i].name;
       }
     }
-    return "Brand";
+    return "Edit Task";
   };
   render() {
     return (
@@ -75,7 +75,7 @@ class Admin extends React.Component {
           routes={routes}
           logo={{
             innerLink: "/admin/workSpace",
-            imgSrc: require("../assets/img/brand/argon-react.png"),
+            imgSrc: require("../assets/img/brand/smartnote2.png"),
             imgAlt: "..."
           }}
         //userImage = {}
