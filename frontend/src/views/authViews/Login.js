@@ -15,10 +15,14 @@ import {
   Col,
   Alert
 } from "reactstrap";
-import { Switch, Redirect } from "react-router-dom";
 
 //API's
 import { VerifyUserLogin, VerifyEmailUser } from '../CRM_Apis';
+
+//redux
+import { connect } from 'react-redux';
+
+import * as actionTypes from '../../store/actions';
 
 let token = null;
 
@@ -133,13 +137,15 @@ class Login extends React.Component {
       localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
       console.log("this is orgId---->", responseData.orgID);
       if (responseData.orgID) {
-        this.props.route.push("/admin/workSpace");
-        // Root = 'workSpace'
+        this.props.onLogin(localStorage.getItem('CRM_Token_Value'));
+        setTimeout(() => {
+          this.props.history.push("/admin/workSpace");
+        }, 500);
       } else {
-        this.props.route.push("/auth/joininviteorg");
-       // Root = 'joininviteorg'
+        setTimeout(() => {
+          this.props.history.push("/auth/joininviteorg");
+        }, 500);
       }
-      this.setState({ setRedirect: Root })
     }
     else {
       this.setState({ title: "Error", message: "Link Expired", Alert_open_close: true });
@@ -152,7 +158,7 @@ class Login extends React.Component {
     const AlertError =
       (
         <div>
-          <Alert isOpen={Alert_open_close} toggle={() => this.onDismissAlert()} color="danger" >
+          <Alert isOpen={Alert_open_close} toggle={this.onDismissAlert} color="danger" >
             <h4 className="alert-heading">
               {title}
             </h4>
@@ -221,7 +227,7 @@ class Login extends React.Component {
                     className="my-4 pl-6 pr-6 br-lg"
                     color="primary"
                     type="button"
-                    onClick={(event) => this.submitLoginHandler(event)}
+                    onClick={(event) => { this.submitLoginHandler(event) }}
                   >
                     Sign in
                   </Button>
@@ -230,7 +236,7 @@ class Login extends React.Component {
                   <a
                     className="txt-lt-dark cursor-point"
 
-                    onClick={() => this.props.history.push("/auth/forgotpass")}
+                    onClick={() => { this.props.history.push("/auth/forgotpass") }}
                   >
                     <small>Forgot password?</small>
                   </a>
@@ -239,7 +245,7 @@ class Login extends React.Component {
                   <a
                     className="txt-lt-dark cursor-point"
 
-                    onClick={() => this.props.history.push("/auth/register")}
+                    onClick={() => { this.props.history.push("/auth/register") }}
                   >
                     <h5>Sign up</h5>
                   </a>
@@ -253,4 +259,16 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => {
+  return {
+    setLogin: state.setLoginValue
+  };
+}
+
+const mapDispatcToProps = dispatch => {
+  return {
+    onLogin: (setLoginData) => dispatch({ type: actionTypes.SET_LOGIN, setLoginValue: setLoginData })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatcToProps)(Login);

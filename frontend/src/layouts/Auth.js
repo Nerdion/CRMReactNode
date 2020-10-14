@@ -19,14 +19,21 @@ class Auth extends React.Component {
   getRoutes = routes => {
     return routes.map((prop, key) => {
       if (prop.layout === "/auth") {
-        return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            exact={prop.exactLink}
-            key={key}
-          />
-        );
+        if (localStorage.getItem('CRM_Token_Value') && prop.path === "/login/:token?") {
+          return (
+            <Redirect to="/admin/workSpace" />
+          );
+        }
+        else {
+          return (
+            <Route
+              path={prop.layout + prop.path}
+              component={prop.component}
+              exact={prop.exactLink}
+              key={key}
+            />
+          );
+        }
       } else {
         return null;
       }
