@@ -9,8 +9,13 @@ module.exports.manage = async (req, res) => {
         const user = new User()
         let legitUser = await user.verifyUser(req.headers.authorization)
         if (legitUser.success) {
-            if (req.body.method == 'search') res.json(await organization.getOrganizationNames(req.body.orgName))
+            if (req.body.method == 'search') res.json(await organization.searchToJoin(req.body.orgName))
             if (req.body.method == 'members') res.json(await user.getMyOrganizationMembers())
+            if (req.body.method == 'inviteToJoin') {
+                let managerIdData = await organization.getMyManager(req.body.orgId)
+                let reponse = await user.inviteToJoin(managerIdData.message)
+                res.json(reponse)
+            }
             //method to get organization details
             if (req.body.method == 0) {
                 const orgID = await user.getMyOrganization()
@@ -28,6 +33,11 @@ module.exports.manage = async (req, res) => {
                 }
             }
             if (req.body.method == 2) res.json(await organization.updateOrganizationName(legitUser.message, req.body.updatedName))
+
+            if(req.body.method == 'allowJoin') {
+                
+            }
+
         } else res.json(legitUser)
     } catch (e) {
         res.send({ "Success": false, "Error": e.toString(), "Payload": [] });

@@ -4,7 +4,7 @@ const tokenKey = require('../config').key
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 const Mail = require('./Mail');
-const { verifyMail, inviteMail } = require('./MailTemplates');
+const { verifyMail, inviteMail, inviteToJoin } = require('./MailTemplates');
 const siteName = require('../config').siteName
 const Organization = require('./Organization')
 
@@ -264,10 +264,9 @@ module.exports = class User {
             })
             return managerName.name;
         } catch (e) {
-            return false
+            return { success: false, message: '', error: e.toString() }
         }
     }
-
 
     //returns names & images of the users
     async getUserNameAndImage(userIds) {
@@ -287,5 +286,34 @@ module.exports = class User {
         } catch (e) {
             return { success: false, message: '', error: e.toString() }
         }
+    }
+
+    // this will send organization manager a mail
+    async inviteToJoin(managerId) {
+        try {
+            let loggedInUser = this.decodedInformation
+
+            let managerInfo = await mongo.usacrm.collection(this.User).findOne({ _id: managerId }, {projection: {email:1, _id:0}})
+    
+            let inviteToken = await this.generatetoken(loggedInUser.email, loggedInUser._id)
+            let encToken = await this.encryptData(inviteToken)
+            let encTokenEscaped = await encToken.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
+            let link = `${siteName}/admin/joinUser/${encTokenEscaped}`
+            let html = await inviteToJoin(loggedInUser.name, loggedInUser.email, link)
+
+            const mailOptions = {
+                toMail: managerInfo.email,
+                subject: `${this.decodedInformation.name} has asked to join on yours SmartNote`,
+                html: html
+            }
+
+            await new Mail().sendMail(mailOptions)
+
+            return { success: true, message: 'Invite sent successfully.'}
+
+        } catch (e) {
+            return { success: false, error: e.toString()}
+        }
+
     }
 }

@@ -28,6 +28,7 @@ import Users from './views/Users';
 import UserInfo from "./views/UserInfo";
 import JoinOrCreateOrganization from "./views/authViews/JoinOrCreateOrganization";
 import Tasks from "./views/Tasks";
+import JoinUser from "./views/JoinUser"
 
 var routes = [
   {
@@ -71,6 +72,15 @@ var routes = [
     name: "Users",
     icon: "ni ni-single-02 text-primary",
     component: Users,
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
+  },
+  {
+    path: "/joinUser/:joinLink?",
+    name: "JoinUser",
+    icon: "ni ni-single-02 text-primary",
+    component: JoinUser,
     layout: "/admin",
     showRoute: true,
     exactLink: false
