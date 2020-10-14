@@ -11,6 +11,7 @@ class Task {
         if (bodyInfo.action == 1) {  // create task
             try {
                 let taskData = bodyInfo.taskData;
+                let workspaceId = await this.returnObjectId(bodyInfo.workspaceId)
                 let userIds = await this.returnObjectId(bodyInfo.taskData.userIds)
                 let task = {
                     taskName: taskData.taskName,
@@ -23,6 +24,8 @@ class Task {
                     userIds: userIds
                 }
                 let insert = await mongo.usacrm.collection(this.task).insertOne(task)
+                task['taskId'] = insert.insertedId
+                let userInsert = await this.insertIntoUser(task,workspaceId)
                 return { 'success': true, 'message': "Task is created successfully" }
 
             } catch (error) {
@@ -34,7 +37,7 @@ class Task {
                 let taskId = bodyInfo.taskId;
                 let updatedTaskData = bodyInfo.updatedTaskData;
                 let updatedTaskDataKeys = Object.keys(updatedTaskData);
-                let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: new ObjectId(taskId) }).toArray();
+                let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: new ObjectId(taskId) })
                 for (let i = 0; i < updatedTaskDataKeys.length; i++) {
                     taskData[updatedTaskDataKeys[i]] = updatedTaskData[i];
                 }
@@ -47,27 +50,11 @@ class Task {
             }
         } else if (bodyInfo.action == 3) {  //delete task
             let taskId = bodyInfo.taskId;
-            let deleteFilter = [
-                {
-                    "$match":
-                    {
-                        "_id": ObjectId(taskId)
-                    }
-                },
-                {
-                    "$project":
-                    {
-                        "title": 1,
-                        "taskId": '$_id',
-                        "_id": 0
-                    }
-                }
-            ]
-            //deletedUser id
-            let deletedTaskData = await mongo.usacrm.collection(this.task).aggregate(deleteFilter).toArray()
+            let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: taskId })
+            let userIds = taskData.userIds;
+            let deletedTaskData = await mongo.usacrm.collection(this.task).deleteOne( { "_id" : taskId } );
             let deleteResult = deletedTaskData[0]
             deleteResult['status'] = 4
-            let updateResult = await mongo.usacrm.collection(this.task).replaceOne({ _id: new ObjectId(taskId) }, deleteResult)
         }
     }
     async getCompletionPercentage(taskIds) {
@@ -108,6 +95,63 @@ class Task {
                 idArray.push(new ObjectId(ids[i]))
             }
             return idArray
+        }
+
+    }
+    async insertIntoUser(task,workspaceId) {
+        try {
+            let userIds = task.userIds
+            let managerId = task.managerId
+
+            for (let i = 0; i < userIds.length; i++) {
+                let workspacesObj = {
+                    taskId: task.taskId,
+                    rollId: 0,
+                    lastModifiedDate: null
+                }
+                if (!(userIds[i] == managerId)) {
+                    await mongo.usacrm.collection(this.user).updateOne({ _id: userIds[i] }, { $push: { "workspaces": workspacesObj } })
+                }
+            }
+            let workspacesObj = {
+                workspaceId: workspace.workspaceId,
+                rollId: 1,
+                lastModifiedDate: null
+            }
+            await mongo.usacrm.collection(this.user).updateOne({ _id: managerId }, { $push: { "workspaces": workspacesObj } })
+        } catch (err) {
+            return false
+        }
+    }
+    async deleteUserIds(deletedIds, workspaceId) {
+        try {
+            for (let i = 0; i < deletedIds.length; i++) {
+                let updated = await mongo.usacrm.collection(this.user).updateOne(
+                    { '_id': deletedIds[i] },
+                    { '$pull': { workspaces: { workspaceId: workspaceId } } }
+                )
+            }
+            return true
+        } catch (err) {
+            return false
+        }
+
+
+    }
+
+    async addUserIds(addedUserIds, workspaceId) {
+        try {
+            for (let i = 0; i < addedUserIds.length; i++) {
+                let workspacesObj = {
+                    workspaceId: workspaceId,
+                    rollId: 0,
+                    lastModifiedDate: null
+                }
+                await mongo.usacrm.collection(this.user).updateOne({ _id: addedUserIds[i] }, { $push: { "workspaces": workspacesObj } })
+                return true
+            }
+        } catch (err) {
+            return false
         }
 
     }

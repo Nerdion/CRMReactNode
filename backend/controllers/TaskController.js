@@ -8,7 +8,7 @@ module.exports.taskAction = async function (req, res) {
             bodyInfo.taskData['managerId'] = legitUser.message._id;
             bodyInfo.taskData['lastModifiedUser'] = legitUser.message._id;
         }
-        if (legitUser) {
+        if (legitUser.success) {
             var response = await new task().taskAction(bodyInfo);
             res.send(response)
         } else {
