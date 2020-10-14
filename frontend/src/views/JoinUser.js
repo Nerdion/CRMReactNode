@@ -28,7 +28,6 @@ class JoinUser extends React.Component {
         let joinLink = this.props.match.params.joinLink;
         this.jwtToken = await localStorage.getItem('CRM_Token_Value');
         try {
-
             const UserRegisterApiCall = await fetch(organizationAPI, {
                 method: "POST",
                 headers: {
