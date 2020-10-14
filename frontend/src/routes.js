@@ -27,8 +27,10 @@ import WorkSpace from './views/WorkSpace';
 import Users from './views/Users';
 import UserInfo from "./views/UserInfo";
 import JoinOrCreateOrganization from "./views/authViews/JoinOrCreateOrganization";
+import ForgotPass from './views/authViews/ForgotPass';
 import Tasks from "./views/Tasks";
-import JoinUser from "./views/JoinUser"
+import JoinUser from "./views/JoinUser";
+import EditTask from "./views/EditTask";
 
 var routes = [
   {
@@ -65,6 +67,15 @@ var routes = [
     component: CreateTaskTest,
     layout: "/admin",
     showRoute: true,
+    exactLink: false
+  },
+  {
+    path: "/editTask/:tasks",
+    name: "Edit Task",
+    icon: "ni ni-archive-2 text-red",
+    component: EditTask,
+    layout: "/admin",
+    showRoute: false,
     exactLink: false
   },
   {
@@ -135,6 +146,15 @@ var routes = [
     name: "Login",
     icon: "ni ni-key-25 text-info",
     component: Login,
+    layout: "/auth",
+    showRoute: false,
+    exactLink: false
+  },
+  {
+    path: "/forgotpass/:token?",
+    name: "Forgot Password",
+    icon: "ni ni-key-25 text-info",
+    component: ForgotPass,
     layout: "/auth",
     showRoute: false,
     exactLink: false

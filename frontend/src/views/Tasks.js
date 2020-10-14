@@ -85,7 +85,7 @@ class WorkSpace extends React.Component {
                     "users": [
 
                     ],
-                    "onClick": () => { this.props.history.push("/admin/CreateTaskTest") }
+                    "taskId": 1
                 },
                 {
                     "header": "Dev Link new Set",
@@ -102,7 +102,7 @@ class WorkSpace extends React.Component {
                             "imageUrl": "https://storage.pixteller.com/designs/designs-images/2016-11-19/02/thumbs/img_page_1_58305b35ebf5e.png"
                         },
                     ],
-                    "onClick": () => { this.props.history.push("/admin/CreateTaskTest") }
+                    "taskId": 2
                 },
                 {
                     "header": "Best Project",
@@ -123,7 +123,7 @@ class WorkSpace extends React.Component {
                             "imageUrl": "https://i.pinimg.com/originals/be/ac/96/beac96b8e13d2198fd4bb1d5ef56cdcf.jpg"
                         },
                     ],
-                    "onClick": () => { this.props.history.push("/admin/CreateTaskTest") }
+                    "taskId": 3
                 },
                 {
                     "header": "Good Project",
@@ -148,7 +148,7 @@ class WorkSpace extends React.Component {
                             "imageUrl": "https://storage.pixteller.com/designs/designs-images/2016-11-19/02/thumbs/img_page_1_58305b35ebf5e.png"
                         },
                     ],
-                    "onClick": () => { this.props.history.push("/admin/CreateTaskTest") }
+                    "taskId": 4
                 }
             ],
             workSpaces: [
@@ -245,6 +245,7 @@ class WorkSpace extends React.Component {
                             <WorkSpaceTasksCard
                                 key={index}
                                 TaskCardData={data}
+                                onClickTask={() => { this.props.history.push(`/admin/editTask/${data.taskId}`) }}
                             // onClickAvatar={() => this.props.history.push("/admin/users")}
                             />
                         ))}

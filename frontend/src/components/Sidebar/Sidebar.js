@@ -71,6 +71,11 @@ class Sidebar extends React.Component {
       collapseOpen: false
     });
   };
+
+  logout = (e) => {
+    localStorage.removeItem('CRM_Token_Value');
+    this.props.history.push("/auth/login");
+  }
   // creates the links that appear in the left menu / Sidebar
   createLinks = routes => {
     return routes.map((prop, key) => {
@@ -93,7 +98,7 @@ class Sidebar extends React.Component {
     });
   };
   render() {
-    const { bgColor, routes, logo } = this.props;
+    const { bgColor, routes, logo, userImage } = this.props;
     let navbarBrandProps;
     if (logo && logo.innerLink) {
       navbarBrandProps = {
@@ -154,7 +159,7 @@ class Sidebar extends React.Component {
                   <span className="avatar avatar-sm rounded-circle">
                     <img
                       alt="..."
-                      src={require("../../assets/img/theme/team-1-800x800.jpg")}
+                      src={userImage ? userImage : require("../../assets/img/theme/team-1-800x800.jpg")}
                     />
                   </span>
                 </Media>
@@ -167,20 +172,8 @@ class Sidebar extends React.Component {
                   <i className="ni ni-single-02" />
                   <span>My profile</span>
                 </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-settings-gear-65" />
-                  <span>Settings</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-calendar-grid-58" />
-                  <span>Activity</span>
-                </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-support-16" />
-                  <span>Support</span>
-                </DropdownItem>
                 <DropdownItem divider />
-                <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                <DropdownItem onClick={(e) => this.logout(e)}>
                   <i className="ni ni-user-run" />
                   <span>Logout</span>
                 </DropdownItem>

@@ -50,7 +50,6 @@ class Workspace {
                         for (let i = 0; i < deletedIds.length; i++) {
                             let userIds = workspaceData['userIds'].splice(workspaceData['userIds'].indexOf(deletedIds[i], 1))
                         }
-
                         await this.deleteUserIds(deletedIds, workspaceId)
                     } else if (updatedWorkSpaceDataKeys[i] == 'addedUserIds') {
                         let addedIds = await this.returnObjectId(updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]])

@@ -5,7 +5,6 @@ import CryptoJS from 'crypto-js';
 import {
   Button,
   Card,
-  CardFooter,
   CardBody,
   FormGroup,
   Form,
@@ -176,6 +175,7 @@ class Register extends React.Component {
                     <Input
                       placeholder="Name"
                       type="text"
+                      name="name"
                       className="txt-dark"
                       value={this.state.UserName}
                       onChange={(event) => { this.onChange("UserName", event.target.value, event) }}
@@ -192,6 +192,7 @@ class Register extends React.Component {
                     <Input
                       placeholder="Email"
                       type="email"
+                      name="email"
                       autoComplete="email"
                       className="txt-dark"
                       value={this.state.UserEmail}
@@ -248,7 +249,7 @@ class Register extends React.Component {
                       >
                         <span className="text-muted">
                           I agree with the{" "}
-                          <a href="#pablo" onClick={e => e.preventDefault()}>
+                          <a className="txt-dark cursor-point" onClick={e => e.preventDefault()}>
                             Privacy Policy
                           </a>
                         </span>
@@ -263,8 +264,8 @@ class Register extends React.Component {
                 </div>
                 <div className="text-center mt-2 mb-0">
                   <a
-                    className="txt-lt-dark"
-                    href="#pablo"
+                    className="txt-lt-dark cursor-point"
+
                     onClick={() => this.props.history.push("/auth/login")}
                   >
                     <h5>Sign in</h5>
@@ -272,42 +273,7 @@ class Register extends React.Component {
                 </div>
               </Form>
             </CardBody>
-            <CardFooter className="bg-transparent pb-5">
-              <div className="text-muted text-center mt-2 mb-3">
-                <small>Sign in with</small>
-              </div>
-              <div className="btn-wrapper text-center">
-                <Button
-                  className="btn-neutral btn-icon mt-2 mb-2"
-                  color="default"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={require("../../assets/img/icons/common/facebook.svg")}
-                    />
-                  </span>
-                  <span className="btn-inner--text">Facebook</span>
-                </Button>
 
-                <Button
-                  className="btn-neutral btn-icon  mt-2 mb-2"
-                  color="default"
-                  href="#pablo"
-                  onClick={e => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={require("../../assets/img/icons/common/google.svg")}
-                    />
-                  </span>
-                  <span className="btn-inner--text">Google</span>
-                </Button>
-              </div>
-            </CardFooter>
           </Card>
         </Col>
       </>

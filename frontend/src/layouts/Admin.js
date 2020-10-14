@@ -27,10 +27,18 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import routes from "../routes.js";
 
 class Admin extends React.Component {
+  state = {
+    logoutBol: false
+  }
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     this.refs.mainContent.scrollTop = 0;
+  }
+
+  logout = (e) => {
+    localStorage.removeItem('CRM_Token_Value');
+    this.setState({ logoutBol: true })
   }
   getRoutes = routes => {
     return routes.map((prop, key) => {
@@ -57,7 +65,7 @@ class Admin extends React.Component {
         return routes[i].name;
       }
     }
-    return "Brand";
+    return "Edit Task";
   };
   render() {
     return (
@@ -66,19 +74,28 @@ class Admin extends React.Component {
           {...this.props}
           routes={routes}
           logo={{
-            innerLink: "/admin/index",
-            imgSrc: require("../assets/img/brand/argon-react.png"),
+            innerLink: "/admin/workSpace",
+            imgSrc: require("../assets/img/brand/smartnote2.png"),
             imgAlt: "..."
           }}
+        //userImage = {}
         />
         <div className="main-content" ref="mainContent">
           <AdminNavbar
             {...this.props}
+            userName={"Nishad Patil"}
+            //userImage
+            logout={() => this.logout()}
             brandText={this.getBrandText(this.props.location.pathname)}
           />
+          {this.state.logoutBol ?
+            <Switch>
+              <Redirect from="*" to="/auth/login" />
+            </Switch> : null
+          }
           <Switch>
             {this.getRoutes(routes)}
-            <Redirect from="*" to="/admin/index" />
+            <Redirect from="*" to="/admin/workSpace" />
           </Switch>
           <Container fluid>
             <AdminFooter />

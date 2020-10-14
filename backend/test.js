@@ -40,6 +40,25 @@ const { ObjectId } = require('mongodb');
 //         "statusId":0,
 //     }
 
+task={
+        "action":2,
+    "updatedTaskData":{
+        "taskId":"5f86d1d102d98a2752a69ec3",
+        "workspaceId":"5f8582bc2ee99672bac77ae4",
+        "taskName": 'mail generator',
+        "deletedUserIds": [
+            "5f7ead1a00f666150ee1b3d4",
+        ],
+        "addedUserIds":[
+            "5f7ead1a00f666150ee1b3d4"
+        ],
+        "JSONObject":`<p>fadfasdfadsfasdfasdfadfafasf</p>
+        <img src="https://images.pexels.com/photos/255379/pexels-photo-255379.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="undefined" style="height: auto;width: auto"/>
+        <p></p>`,
+        "statusId":1,
+    }
+}
+
 // task = {
 //     'action':1,
 //     'taskData':{

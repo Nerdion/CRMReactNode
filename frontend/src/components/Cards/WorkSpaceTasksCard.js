@@ -42,7 +42,7 @@ export class WorkSpaceTasksCard extends Component {
     }
     render() {
         const { openMenu, options } = this.state;
-        const { TaskCardData, onClickAvatar } = this.props;
+        const { TaskCardData, onClickAvatar, onClickTask } = this.props;
         let Users = TaskCardData.users;
         // console.log("usersData---", TaskCardData.users);
         return (
@@ -73,7 +73,7 @@ export class WorkSpaceTasksCard extends Component {
                             </Tooltip>
                         </Row>
                     </CardHeader>
-                    <div className="card-hover-view cursor-point" onClick={TaskCardData.onClick}>
+                    <div className="card-hover-view cursor-point" onClick={onClickTask}>
                         <CardBody>
                             {/* Chart */}
                             <div className="col">
