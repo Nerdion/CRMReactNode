@@ -35,7 +35,7 @@ module.exports.manage = async (req, res) => {
             if (req.body.method == 2) res.json(await organization.updateOrganizationName(legitUser.message, req.body.updatedName))
 
             if(req.body.method == 'allowJoin') {
-                
+                res.json(await user.approveInvited(req.body.userData))
             }
 
         } else res.json(legitUser)

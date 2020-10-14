@@ -6,7 +6,9 @@ const { ObjectId } = require('mongodb');
 const Mail = require('./Mail');
 const { verifyMail, inviteMail, inviteToJoin } = require('./MailTemplates');
 const siteName = require('../config').siteName
-const Organization = require('./Organization')
+const Organization = require('./Organization');
+const { response } = require('express');
+const e = require('express');
 
 module.exports = class User {
     constructor() {
@@ -301,9 +303,7 @@ module.exports = class User {
             let managerInfo = await mongo.usacrm.collection(this.User).findOne({ _id: managerId }, {projection: {email:1, _id:0}})
     
             let inviteToken = await this.generatetoken(loggedInUser.email, loggedInUser._id)
-            let encToken = await this.encryptData(inviteToken)
-            let encTokenEscaped = await encToken.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
-            let link = `${siteName}/admin/joinUser/${encTokenEscaped}`
+            let link = `${siteName}/admin/joinUser/${inviteToken.Token}`
             let html = await inviteToJoin(loggedInUser.name, loggedInUser.email, link)
 
             const mailOptions = {
@@ -319,6 +319,23 @@ module.exports = class User {
         } catch (e) {
             return { success: false, error: e.toString()}
         }
+    }
 
+    async approveInvited(newUserToken) {
+        try {
+            let managerId = await new Organization().getMyManager(this.decodedInformation.orgId)
+
+            if(managerId.message.toString() == this.decodedInformation._id.toString()) {
+                let orgId = this.decodedInformation.orgId
+                let newUserData = await this.verifyUser(newUserToken)
+                await this.setOrgID(orgId)
+                return { sucess: true, message: 'User added sucessfully!'}
+            } else {
+                return { success: false, message: 'User is not admin'}
+            }
+
+        } catch (e) {
+            return { sucess: false, error : e.toString()}
+        }
     }
 }

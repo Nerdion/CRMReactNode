@@ -25,6 +25,7 @@ class JoinUser extends React.Component {
             })
         });
         const responseData = await UserRegisterApiCall.json();
+        console.log(responseData)
     }
 
 
