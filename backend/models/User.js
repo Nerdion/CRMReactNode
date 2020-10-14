@@ -3,8 +3,10 @@ const CryptoJS = require("crypto-js");
 const tokenKey = require('../config').key
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
-const Mail = require('./Mail')
+const Mail = require('./Mail');
+const { verifyMail, inviteMail } = require('./MailTemplates');
 const siteName = require('../config').siteName
+const Organization = require('./Organization')
 
 module.exports = class User {
     constructor() {
@@ -75,17 +77,17 @@ module.exports = class User {
         let encData = await this.encryptData(jwtData)
         encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
         let mail = new Mail()
+        let html = await verifyMail(`${siteName}/auth/login/${encData}`)
         const mailOptions = {
             toMail: email,
             subject: `Verify Email Address`,
-            text: `Please click the given link below to verify your email
-                ${siteName}/auth/login/${encData}`
+            html: html
         }
         let isSend = await mail.sendMail(mailOptions)
         if (isSend) {
-            return { 'success': true, 'message': "Verificatio link sent successfully" };
+            return { 'success': true, 'message': "Verification link sent successfully" };
         } else {
-            return { 'success': false, 'message': "Verificatio link sent Un-successfully" };
+            return { 'success': false, 'message': "Verification link sent Un-successfully" };
         }
     }
 
@@ -98,8 +100,8 @@ module.exports = class User {
             } else {
                 return { sucess: false, message: "Not in any organization" }
             }
-        } catch (err) {
-            return { sucess: false, error: err }
+        } catch (e) {
+            return { sucess: false, error: e.toString() }
         }
     }
 
@@ -109,7 +111,7 @@ module.exports = class User {
             var strenc = CryptoJS.AES.encrypt(JSON.stringify(data), tokenKey).toString();
             return strenc
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 
@@ -120,7 +122,7 @@ module.exports = class User {
             var originalText = bytes.toString(CryptoJS.enc.Utf8);
             return JSON.parse(originalText);
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 
@@ -188,13 +190,12 @@ module.exports = class User {
             let encData = await this.encryptData(jwtData)
             encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
             let mail = new Mail()
-
+            let orgName = await new Organization().getOrganizationName(this.decodedInformation.orgId)
+            let html = await inviteMail(this.decodedInformation.name, this.decodedInformation.email, `${siteName}/auth/userinfo/${encData}`, orgName)
             const mailOptions = {
                 toMail: newMailId,
-                subject: `${inviterId.email} has invited you on smart note`,
-                text: `${inviterId.email} has invited you on smart note,
-                    go to this link to accept invitation - 
-                    ${siteName}/auth/userinfo/${encData}`
+                subject: `${this.decodedInformation.email} has invited you on smart note`,
+                html: html
             }
             let isSend = await mail.sendMail(mailOptions)
             if (isSend) return { 'success': true, 'message': "User is invited successfully via mail" };
@@ -212,7 +213,7 @@ module.exports = class User {
             let name = authData.name
             await mongo.usacrm.collection(this.User).updateOne({ "email": this.decodedInformation.email },
                 {
-                    $set: { name: name, password: password, statusId: 1 }
+                    $set: { name: name, password: password, statusId: 1, orgRoleId: 0}
                 })
 
             let userData = this.decodedInformation
@@ -233,10 +234,19 @@ module.exports = class User {
         }
     }
 
+    async makeMeOrgAdmin() {
+        try {
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({ _id: this.decodedInformation._id }, { $set: { orgRoleId: 1 } })
+        } catch (e) {
+            return { success: false, message: '', error: e.toString() }
+        }
+    }
+
     // returns all the members in the organization
     async getMyOrganizationMembers() {
         try {
             let data = await mongo.usacrm.collection(this.User).find({ orgId: this.decodedInformation.orgId }).project({ orgId: 0, password: 0, statusId: 0 }).toArray()
+            //console.log(data)
             return { success: true, message: 'Users inside this organization', data: data }
         } catch (e) {
             return { success: false, message: '', error: e.toString() }
