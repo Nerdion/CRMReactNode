@@ -34,7 +34,7 @@ class AdminNavbar extends React.Component {
         >
           <Container className="px-4">
             <NavbarBrand className="" to="/" tag={Link}>
-              <img alt="..." src={require("../../assets/img/brand/argon-react-white.png")} />
+              <img alt="..." src={require("../../assets/img/brand/smartnote3.png")} />
             </NavbarBrand>
           </Container>
         </Navbar>

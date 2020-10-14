@@ -24,3 +24,22 @@ export const setWorkSpaceApi = `${DomainURL}/api/setWorkSpace`;
 
 export const taskAction = `${DomainURL}/api/taskAction`;
 
+export const editUserProfileApi = `${DomainURL}/api/editUserProfile`;
+
+export const getUserProfileApi = `${DomainURL}/api/getUserProfile`;
+
+export const sendRecoveryEmail = `${DomainURL}/api/sendRecoveryEmail`;
+
+export const changePasswordApi = `${DomainURL}/api/changePasswordApi`;
+
+export const saveCreateTaskDataApi = `${DomainURL}/api/saveCreateTaskDataApi`;
+
+export const getUserTaskDataApi = `${DomainURL}/api/getUserTaskDataApi`;
+
+export const saveEditTaskDataApi = `${DomainURL}/api/saveEditTaskDataApi`;
+
+export const getTaskData = `${DomainURL}/api/getTaskData`;
+
+
+
+
