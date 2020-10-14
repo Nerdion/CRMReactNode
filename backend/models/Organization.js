@@ -56,7 +56,7 @@ class Organization {
         try {
             let regexp = new RegExp(`^${orgName}`, 'gm')
             let data = await mongo.usacrm.collection(this.organization).find({ orgName: { $regex: regexp } }).toArray()
-            return { sucess: true, orgName: data }
+            return { sucess: true, orgNameData: data }
         } catch (e) {
             return { sucess: false, error: e.toString() }
         }
@@ -75,8 +75,17 @@ class Organization {
             let orgName = await mongo.usacrm.collection(this.organization).findOne({ _id: orgId },  { projection:{ orgName: 1, _id: 0}});
             return orgName.orgName
         } catch (e) {
-            console.log(e.toString())
-            return false
+            return { success: false, error: e.toString()}
+        }
+    }
+
+    // returns manager id of an organization
+    async getMyManager(orgId) {
+        try {
+            let orgName = await mongo.usacrm.collection(this.organization).findOne({ _id: new ObjectId(orgId) },  { projection:{ managerId: 1, _id: 0}});
+            return { success: true, message: orgName.managerId}
+        } catch (e) {
+            return { success: false, error: e.toString()}
         }
     }
 }
