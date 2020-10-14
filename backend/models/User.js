@@ -154,7 +154,12 @@ module.exports = class User {
     async verifyUser(token) {
         try {
             let decoded = await jwt.verify(token, tokenKey)
-            this.decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }, { password: 0, workspaces: 0 })
+            this.decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }, {
+                projection: {
+                    password:0,
+                    workspaces: 0
+                }
+            })
             if (!this.decodedInformation) {
                 return { success: false, message: 'Not authorised' }
             } else {
