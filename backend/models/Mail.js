@@ -20,7 +20,7 @@ class Mail {
             from: '"Smart Note" <shriyashshingare@yahoo.com>',
             to: options.toMail,
             subject: options.subject,
-            text: options.text,
+            html: options.html,
         };
 
         return new Promise((resolve,reject)=> {

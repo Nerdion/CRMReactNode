@@ -3,8 +3,10 @@ const CryptoJS = require("crypto-js");
 const tokenKey = require('../config').key
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
-const Mail = require('./Mail')
+const Mail = require('./Mail');
+const { verifyMail, inviteMail } = require('./MailTemplates');
 const siteName = require('../config').siteName
+const Organization = require('./Organization')
 
 module.exports = class User {
     constructor() {
@@ -75,17 +77,18 @@ module.exports = class User {
         let encData = await this.encryptData(jwtData)
         encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
         let mail = new Mail()
+        let html = await verifyMail(`${siteName}/auth/login/${encData}`)
         const mailOptions = {
             toMail: email,
             subject: `Verify Email Address`,
-            text: `Please click the given link below to verify your email
-                ${siteName}/auth/login/${encData}`
+            html: html
         }
+        console.log(html)
         let isSend = await mail.sendMail(mailOptions)
         if (isSend) {
-            return { 'success': true, 'message': "Verificatio link sent successfully" };
+            return { 'success': true, 'message': "Verification link sent successfully" };
         } else {
-            return { 'success': false, 'message': "Verificatio link sent Un-successfully" };
+            return { 'success': false, 'message': "Verification link sent Un-successfully" };
         }
     }
 
@@ -188,13 +191,13 @@ module.exports = class User {
             let encData = await this.encryptData(jwtData)
             encData = encData.replace(/\+/g, 'p1L2u3S').replace(/\//g, 's1L2a3S4h').replace(/=/g, 'e1Q2u3A4l');
             let mail = new Mail()
-
+            console.log(this.decodedInformation.orgId)
+            let orgName = await new Organization().getOrganizationName(this.decodedInformation.orgId)
+            let html = await inviteMail(this.decodedInformation.name, this.decodedInformation.email, `${siteName}/auth/userinfo/${encData}`, orgName)
             const mailOptions = {
                 toMail: newMailId,
-                subject: `${inviterId.email} has invited you on smart note`,
-                text: `${inviterId.email} has invited you on smart note,
-                    go to this link to accept invitation - 
-                    ${siteName}/auth/userinfo/${encData}`
+                subject: `${this.decodedInformation.email} has invited you on smart note`,
+                html: html
             }
             let isSend = await mail.sendMail(mailOptions)
             if (isSend) return { 'success': true, 'message': "User is invited successfully via mail" };

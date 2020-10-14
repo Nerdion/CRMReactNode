@@ -50,7 +50,7 @@ class Organization {
         else return false
     }
 
-    async getOrganizationNames(orgName) {
+    async searchToJoin(orgName) {
         try {
             let regexp = new RegExp(`^${orgName}`, 'gm')
             let data = await mongo.usacrm.collection(this.organization).find({ orgName: { $regex: regexp } }).toArray()
@@ -70,9 +70,10 @@ class Organization {
     }
     async getOrganizationName(orgId) {
         try {
-            let orgName = await mongo.usacrm.collection(this.organization).findOne({ _id: orgId },  { projection:{ name: 1, _id: 0}});
-            return orgName.name
+            let orgName = await mongo.usacrm.collection(this.organization).findOne({ _id: orgId },  { projection:{ orgName: 1, _id: 0}});
+            return orgName.orgName
         } catch (e) {
+            console.log(e.toString())
             return false
         }
     }
