@@ -28,18 +28,17 @@
 const { ObjectId } = require('mongodb');
 
 
-<<<<<<< HEAD
-task = {
-    "action":1,
-    "taskData":{
-        "taskName": 'sample task 1',
-        "userIds":[
-            "5f816afd7b3de903e5201488",
-            "5f775cfb468ce741b33babdb",
-        ],
-        "JSONObject":null,
-        "statusId":0,
-=======
+// task = {
+//     "action":1,
+//     "taskData":{
+//         "taskName": 'sample task 1',
+//         "userIds":[
+//             "5f816afd7b3de903e5201488",
+//             "5f775cfb468ce741b33babdb",
+//         ],
+//         "JSONObject":null,
+//         "statusId":0,
+//     }
 
 // task = {
 //     'action':1,
@@ -51,7 +50,6 @@ task = {
 //         ],
 //         'JSONObject':null,
 //         'statusId':0,
->>>>>>> 0edd02611c3712d89b5bfc365e94a037f5d92431
         
 //     }
 // }
