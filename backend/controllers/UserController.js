@@ -20,10 +20,10 @@ module.exports.register = async function (req, res) {
             var response = await new User().register(bodyInfo);
             res.send(response)
         } else {
-            res.send({ "Success": true, "Error": error, "Payload": [] })
+            res.send({ "success": true, "Error": error, "Payload": [] })
         }
     } catch (e) {
-        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+        res.send({ "success": false, "Error": e.toString(), "Payload": [] });
     }
 };
 
@@ -42,7 +42,7 @@ module.exports.manageUser = async function (req, res) {
             res.send(legitUser)
         }
     } catch (e) {
-        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+        res.send({ "success": false, "Error": e.toString(), "Payload": [] });
     }
 }
 
@@ -56,10 +56,10 @@ module.exports.authorizeUser = async function (req, res) {
             let response = await user.authorizeUser(bodyInfo);
             res.send(response)
         } else {
-            res.send({ "Success": true, "Error": error, "Payload": [] })
+            res.send({ "success": true, "Error": error, "Payload": [] })
         }
     } catch (e) {
-        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+        res.send({ "success": false, "Error": e.toString(), "Payload": [] });
     }
 };
 
@@ -72,10 +72,10 @@ module.exports.authorizeRegisteredUser = async function (req,res) {
             let response = await user.authorizeRegisteredUser(bodyInfo);
             res.send(response)
         } else {
-            res.send({ "Success": true, "Error": error, "Payload": [] })
+            res.send({ "success": true, "Error": error, "Payload": [] })
         }
     } catch (e) {
-        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+        res.send({ "success": false, "Error": e.toString(), "Payload": [] });
     }
 }
 module.exports.getMyOrganizationMembers = async function (req,res) {
@@ -87,9 +87,9 @@ module.exports.getMyOrganizationMembers = async function (req,res) {
             let response = await user.getMyOrganizationMembers(bodyInfo);
             res.send(response)
         } else {
-            res.send({ "Success": true, "Error": error, "Payload": [] })
+            res.send({ "success": true, "Error": error, "Payload": [] })
         }
     } catch (e) {
-        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+        res.send({ "success": false, "Error": e.toString(), "Payload": [] });
     }
 }
