@@ -11,7 +11,13 @@ import {
 // Material UI
 import {
     Card,
+    Button
 } from '@material-ui/core';
+import {
+    Add,
+
+} from '@material-ui/icons';
+
 
 
 // core components
@@ -57,7 +63,7 @@ class WorkSpace extends React.Component {
             SelectWorkSpace: '',
             setAddWorkspaceOpenClose: false,
             WorkSpaceDesc: '',
-            TaskCardData: [
+            taskCardData: [
                 {
                     "header": "Overall Method of Sets",
                     "desc": "you have to create a data related to a perticular matrix",
@@ -141,6 +147,10 @@ class WorkSpace extends React.Component {
         };
     }
 
+    componentDidMount() {
+        this.getWorkSpaceTasksCall();
+    }
+
     onWorkSpaceChanged = (event) => {
         this.setState({ SelectWorkSpace: event });
     }
@@ -156,11 +166,11 @@ class WorkSpace extends React.Component {
     onChangeText = (Name, value) => {
         this.setState({ [`${Name}`]: value })
     }
-    getWorkSpace = async () => {
+    getWorkSpaceTasksCall = async () => {
         let title = "Error";
         let crmToken = localStorage.getItem('CRM_Token_Value');
         const {
-            workSpaceId
+            workspaceId
         } = this.props.location.state;
         try {
             const getWorkSpaceTasks = await fetch(taskAction, {
@@ -171,16 +181,17 @@ class WorkSpace extends React.Component {
                     'Authorization': `${crmToken}`
                 },
                 body: JSON.stringify({
-                    workSpaceId
+                    workspaceId: workspaceId,
+                    action: 4
                 })
             });
             const responseData = await getWorkSpaceTasks.json();
             console.log('getWorkSpaceData--->', JSON.stringify(responseData, null, 2))
             console.log(getWorkSpaceTasks, 'getWorkSpaceData');
 
-            console.log("set workspace:---", responseData.workspaceGrid);
+            console.log("set workspace:---", responseData.taskCardData);
             this.setState({
-                workSpaceData: responseData.workspaceGrid
+                taskCardData: responseData.taskCardData
             })
 
         }
@@ -193,13 +204,14 @@ class WorkSpace extends React.Component {
     render() {
         const {
             SelectWorkSpace,
-            TaskCardData,
+            taskCardData,
             setAddWorkspaceOpenClose,
             WorkSpaceDesc,
             workSpaces
         } = this.state;
         const {
-            WorkSpaceName
+            WorkSpaceName,
+            workspaceId
         } = this.props.location.state;
         return (
             <>
@@ -210,19 +222,28 @@ class WorkSpace extends React.Component {
                         <Col className="justify-content-center" xl="12">
                             <Card className="shadow pt-2 pb-2 pr-4 pl-4">
                                 <Row className="d-flex align-items-center justify-content-between">
-                                    <Col sm="12" md="3" lg="3" className="p-1 text-center ">
+                                    <Col sm="12" md="6" lg="6" className="p-1 txt-left-to-center">
                                         <h5 className="text-muted">WorkSpace Name:</h5>
                                         <h3 className="text-default">{WorkSpaceName}</h3>
                                     </Col>
-                                    <Col sm="12" md="3" lg="3" className="p-1 mt-1 text-center">
-                                        <h3 className="txt-primeblue">All Tasks</h3>
+                                    <Col className="txt-right-to-center p-1 mt-1 p-1" xs="12" sm="12" md="6" lg="6" xl="6">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            className="wd-150"
+                                            size="medium"
+                                            startIcon={<Add />}
+                                            onClick={() => { this.props.history.push(`/admin/CreateTaskTest/${workspaceId}`) }}
+                                        >
+                                            Add Task
+                                        </Button>
                                     </Col>
                                 </Row>
                             </Card>
                         </Col>
                     </Row>
                     <Row className=" mt-2 justify-content-around">
-                        {TaskCardData.map((data, index) => (
+                        {taskCardData.map((data, index) => (
                             <WorkSpaceTasksCard
                                 key={index}
                                 TaskCardData={data}

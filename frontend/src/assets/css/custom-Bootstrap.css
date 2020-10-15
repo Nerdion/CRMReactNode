@@ -314,11 +314,28 @@ color: #e8cd82
     background-color: #c1cfe74f !important;
 }
 
+.txt-right-to-center{
+    text-align: center !important;
+}
+.txt-left-to-center{
+    text-align: center !important;
+}
+
 @media (min-width: 768px) {
     .text-white-to-default{
         color: #ffffff  !important;
     }
+    .txt-right-to-center{
+        text-align: right !important;
+    }
+    .txt-left-to-center{
+        text-align: left !important;
+    }
  }
+
+@media (max-width: 768px) {
+   
+}
 
  .min-ht-20-px{
      height: 20px !important;

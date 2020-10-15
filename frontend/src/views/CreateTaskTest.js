@@ -60,12 +60,12 @@ class CreateTaskTest extends React.Component {
             editorState: EditorState.createEmpty(),
             openMenu: null,
             options: [
-                { "option": "Draft", "icon": FiberManualRecord, "color": "#bac7d4" },
-                { "option": "Pending", "icon": FiberManualRecord, "color": "#e8cd82" },
-                { "option": "Finished", "icon": FiberManualRecord, "color": "#83e67e" },
+                // { "option": "Draft", "icon": FiberManualRecord, "color": "#bac7d4", "statusId":  },
+                { "option": "Pending", "icon": FiberManualRecord, "color": "#e8cd82", "statusId": 1 },
+                { "option": "Finished", "icon": FiberManualRecord, "color": "#83e67e", "statusId": 2 },
             ],
-            statusName: "Draft",
-            statusColor: "#bac7d4",
+            statusName: "Pending",
+            statusColor: "#e8cd82",
             statusData: null,
             users: [
                 {
@@ -89,6 +89,7 @@ class CreateTaskTest extends React.Component {
             setAddUsersBol: false,
             userSearch: '',
             userObj: [],
+            addedUserIds: [],
             topicName: '',
             stepTitle: '',
             title: '',
@@ -99,16 +100,8 @@ class CreateTaskTest extends React.Component {
 
     componentDidMount = () => {
         this.getUserProfile();
+        console.log("check status--->", this.state.statusName, this.state.statusColor);
     }
-
-    handleopen = () => {
-        this.setState((prevState) => ({ openMenu: !prevState.openMenu }))
-    }
-
-    changeStatus = (color, status) => {
-        this.setState({ statusName: status, statusColor: color, statusData: { statusColor: color, statusName: status } });
-    }
-
     onChangeTextData = (state, text) => {
         this.setState({ [`${state}`]: text })
     }
@@ -163,8 +156,9 @@ class CreateTaskTest extends React.Component {
             this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
         }
     }
-    onClickSaveWorkSpaceTask = async () => {
+    onClickSaveWorkSpaceTask = async (statusId) => {
         const { topicName, stepTitle, userObj, statusData, editorState } = this.state;
+        let workspaceId = this.props.match.params.workspaceId;
         let crm_token = localStorage.getItem('CRM_Token_Value');
         let title = "Error";
         let message = '';
@@ -194,12 +188,17 @@ class CreateTaskTest extends React.Component {
                         'Authentication': `${crm_token}`
                     },
                     body: JSON.stringify({
-                        topicName,
-                        stepTitle,
-                        userObj,
-                        statusData,
-                        editorRawData
-                    })
+                        action: 1,
+                        taskData: {
+                            workspaceId: workspaceId,
+                            taskName: topicName,
+                            taskDescription: stepTitle,
+                            taskDetails: editorRawData,
+                            statusId: statusId,
+                            addedUserIds: userObj
+                        }
+                    }
+                    )
                 });
                 const responseData = await UserRegisterApiCall.json();
                 console.log(responseData, 'UserRegisterApiCallData')
@@ -239,15 +238,22 @@ class CreateTaskTest extends React.Component {
         });
     };
 
-    selectUsers = (UserName, UserImage) => {
+    selectUsers = (UserName, UserImage, userId) => {
+        console.log("UserIdselect---->", userId);
         //   event.preventDefault();
-        this.setState({ userObj: [...this.state.userObj, { userName: UserName, userImage: UserImage }] });
+        this.setState({
+            userObj: [...this.state.userObj, { userName: UserName, userImage: UserImage }],
+            addedUserIds: [...this.state.addedUserIds], userId
+        });
     }
 
-    deleteSelectedUsers = (userName) => {
+    deleteSelectedUsers = (userName, userId) => {
+        console.log("UserIdDelete---->", userId);
         let array = [...this.state.userObj]
         let filteredArray = array.filter(item => item.userName !== userName)
-        this.setState({ userObj: filteredArray });
+        let array1 = [...this.state.addedUserIds]
+        let filteredArray1 = array1.filter(item => item !== userId)
+        this.setState({ userObj: filteredArray, userId: filteredArray1 });
     }
 
 
@@ -296,40 +302,18 @@ class CreateTaskTest extends React.Component {
                         <Col className="" xs="12" md="6" lg="8" xl="8">
                             <Form>
                                 <FormGroup>
-                                    <Label className="text-white" for="Topic">Topic Name</Label>
+                                    <Label className="text-white" for="TaskName">Task Name</Label>
                                     <Input
                                         type="text"
                                         className="txt-lt-dark"
-                                        name="TopicName"
+                                        name="TaskName"
 
-                                        id="Topic"
+                                        id="TaskName"
                                         value={topicName}
                                         onChange={(event) => { this.onChangeTextData("topicName", event.target.value, event) }}
-                                        placeholder="with a placeholder" />
+                                        placeholder="Task Name" />
                                 </FormGroup>
                             </Form>
-                        </Col>
-                        <Col className="text-center mb-4" xs="6" md="3" lg="2" xl="2">
-                            <Tooltip title="Status" arrow>
-                                <ButtonDropdown className="" direction="left" isOpen={openMenu} toggle={() => this.handleopen()}>
-                                    <Col className="mb-1">
-                                        <span className="text-left text-defalut text-white-to-default mr-5">
-                                            Status
-                                        </span>
-                                    </Col>
-                                    <DropdownToggle size="md" className="br-sm outline-border">
-                                        <FiberManualRecord style={{ color: statusColor }} />
-                                        <ExpandMore style={{ color: "#d0d4d9" }} />
-                                    </DropdownToggle>
-                                    <DropdownMenu>
-                                        {
-                                            options.map((options, index) => (
-                                                <DropdownItem key={index} onClick={() => this.changeStatus(options.color, options.option)} key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
-                                            ))
-                                        }
-                                    </DropdownMenu>
-                                </ButtonDropdown>
-                            </Tooltip>
                         </Col>
                         <Col className="text-center mt-1" xs="6" md="3" lg="2" xl="2">
                             <Button
@@ -375,7 +359,6 @@ class CreateTaskTest extends React.Component {
                                             />
                                         ))
                                     }
-
                                 </Col>
                             </Col>
                         </Col>
@@ -383,16 +366,16 @@ class CreateTaskTest extends React.Component {
                             <Col>
                                 <Form>
                                     <FormGroup>
-                                        <Label for="StepTitle">Step Title</Label>
+                                        <Label for="TaskDescription">Task Description</Label>
                                         <Input
                                             type="text"
                                             className="txt-lt-dark"
-                                            name="StepTitle"
+                                            name="TaskDescription"
 
-                                            id="StepTitle"
+                                            id="TaskDescription"
                                             value={stepTitle}
                                             onChange={(event) => { this.onChangeTextData("stepTitle", event.target.value, event) }}
-                                            placeholder="Step Title"
+                                            placeholder="Task Description"
                                         />
                                     </FormGroup>
                                 </Form>
@@ -420,13 +403,26 @@ class CreateTaskTest extends React.Component {
                                     <Col className="text-center  p-1" xs="12" sm="12" lg="6" xl="6">
                                         <Button
                                             variant="contained"
+                                            disabled={taskEditable}
                                             color="primary"
                                             className="wd-150"
                                             size="medium"
                                             startIcon={<SaveAlt />}
-                                            onClick={this.onClickSaveWorkSpaceTask}
+                                            onClick={() => { this.onClickSaveWorkSpaceTask(0) }}
                                         >
-                                            Save
+                                            Save Draft
+                                        </Button>
+                                    </Col>
+                                    <Col className="text-center  p-1" xs="12" sm="12" lg="6" xl="6">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            className="wd-150"
+                                            size="medium"
+                                            startIcon={<SaveAlt />}
+                                            onClick={() => { this.onClickSaveWorkSpaceTask(1) }}
+                                        >
+                                            publish
                                         </Button>
                                     </Col>
                                 </Row>
@@ -468,7 +464,7 @@ class CreateTaskTest extends React.Component {
                         <Col className="p-1 max-dn-ht-250  hide-scroll-ind" lg="12">
                             {
                                 filtereContacts.map((users, index) => (
-                                    <Card onClick={(event) => { this.selectUsers(users.userName, users.userImage, event) }} key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
+                                    <Card onClick={() => { this.selectUsers(users.userName, users.userImage, users.userId) }} key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
                                         <Row className="d-flex align-items-center justify-content-around d-fr-direction">
                                             <Col lg="3" className="d-flex align-items-center justify-content-center">
                                                 <Avatar alt={users.userName} src={users.userImage} />
@@ -498,7 +494,7 @@ class CreateTaskTest extends React.Component {
                                                     <Col lg="1" className="d-flex align-items-center justify-content-center">
                                                         <span
                                                             className="txt-lt-dark cursor-point p-2"
-                                                            onClick={() => { this.deleteSelectedUsers(users.userName) }}
+                                                            onClick={() => { this.deleteSelectedUsers(users.userName, users.userId) }}
                                                         >
                                                             <Clear className="text-red" />
                                                         </span>
