@@ -28,4 +28,6 @@ api.use('/api/authorizeuser', userController.authorizeUser);
 api.use('/api/authorizeRegistereduser', userController.authorizeRegisteredUser);
 
 api.use('/api/authorizeuser', formDetailsController.getAllUsersData);
+
+api.use('/api/userProfile', userController.userProfile);
 module.exports = api;

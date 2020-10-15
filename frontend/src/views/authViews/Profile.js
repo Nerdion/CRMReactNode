@@ -114,7 +114,8 @@ class Profile extends React.Component {
           action: 4
         })
       });
-      const responseData = await getUserProfileData.json();
+      let response = await getUserProfileData.json();
+      let responseData = response.data
       console.log('getUserProfile--->', JSON.stringify(responseData, null, 2))
       console.log(getUserProfileData, 'getUserProfile');
 
@@ -196,6 +197,10 @@ class Profile extends React.Component {
       console.log("Error fetching data-----------", JSON.stringify(err));
       this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
     }
+  }
+
+  onComponentDidMount = () => {
+    this.getUserProfile()
   }
 
   onDismissAlert = () => {

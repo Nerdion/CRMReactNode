@@ -26,7 +26,7 @@ export const taskAction = `${DomainURL}/api/taskAction`;
 
 export const editUserProfileApi = `${DomainURL}/api/editUserProfile`;
 
-export const getUserProfileApi = `${DomainURL}/api/getUserProfile`;
+export const getUserProfileApi = `${DomainURL}/api/userProfile`;
 
 export const sendRecoveryEmail = `${DomainURL}/api/sendRecoveryEmail`;
 

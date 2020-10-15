@@ -93,3 +93,24 @@ module.exports.getMyOrganizationMembers = async function (req,res) {
         res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
     }
 }
+
+module.exports.userProfile = async function (req,res) {
+    try {
+        let bodyInfo = req.body
+        if (1) {
+            if(bodyInfo.method == 'getUserProfile') {
+                var response = await new User().getUserProfileInformation(bodyInfo);
+                res.send(response)
+            }
+
+            if(bodyInfo.method == 'setUserProfile') {
+                let response = await new User().setUserProfileInformation(bodyInfo)
+                res.send(response)
+            }
+        } else {
+            res.send({ success: true, "Error": error, "Payload": [] })
+        }
+    } catch (e) {
+        res.send({ success: false, "Error": e.toString(), "Payload": [] });
+    }
+}

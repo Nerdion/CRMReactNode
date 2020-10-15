@@ -7,7 +7,7 @@ const Mail = require('./Mail');
 const { verifyMail, inviteMail, inviteToJoin } = require('./MailTemplates');
 const siteName = require('../config').siteName
 const Organization = require('./Organization');
-const { response } = require('express');
+const { response, request } = require('express');
 const e = require('express');
 
 module.exports = class User {
@@ -343,6 +343,35 @@ module.exports = class User {
             let regexp = new RegExp(`^${name}`, 'gm')
             let data = await mongo.usacrm.collection(this.User).find({ orgName: { $regex: regexp } }).limit(5).toArray()
             return { sucess: true, userNameData: data }
+        } catch (e) {
+            return { sucess: false, error: e.toString() }
+        }
+    }
+
+    async getUserProfileInformation() {
+        try {
+            let userInfo = this.decodedInformation;
+
+            userInfo.name ? data.name = userInfo.name : ''
+            userInfo.email ? data.userEmail = userInfo.email : ''
+            userInfo.firstName ? data.firstName = userInfo.firstName : ''
+            userInfo.lastName ? data.lastName = userInfo.lastName : ''
+            userInfo.address ? data.address = userInfo.address : ''
+            userInfo.city ? data.city = userInfo.city : ''
+            userInfo.country ? data.country = userInfo.city : ''
+            userInfo.postCode ? data.postCode = userInfo.postCode : ''
+            userInfo.userProfileImage ? data.userProfileImage = userInfo.userProfileImage : ''
+
+            return { success: true, data: userInfo}
+        } catch (e) {
+            return { sucess: false, error: e.toString() }
+        }
+    }
+
+    async setUserProfileInformation(requestData) {
+        try {
+            console.log(requestData)
+            //await mongo.usacrm.collection(this.User).findOneAndUpdate()
         } catch (e) {
             return { sucess: false, error: e.toString() }
         }
