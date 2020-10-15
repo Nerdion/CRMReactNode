@@ -40,6 +40,6 @@ module.exports.manage = async (req, res) => {
 
         } else res.json(legitUser)
     } catch (e) {
-        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+        res.send({ "success": false, "Error": e.toString(), "Payload": [] });
     }
 };

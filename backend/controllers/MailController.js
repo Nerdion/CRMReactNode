@@ -12,9 +12,9 @@ module.exports.sendMail = async function (req, res) {
 
             new Mail().sendMail(options, res);
         } else {
-            res.send({ "Success": true, "Error": error, "Payload": [] })
+            res.send({ "success": true, "Error": error, "Payload": [] })
         }
     } catch (e) {
-        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+        res.send({ "success": false, "Error": e.toString(), "Payload": [] });
     }
 };
