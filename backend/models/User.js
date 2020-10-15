@@ -351,8 +351,8 @@ module.exports = class User {
     async getUserProfileInformation() {
         try {
             let userInfo = this.decodedInformation;
-
-            userInfo.name ? data.name = userInfo.name : ''
+            let data = {}
+            userInfo.name ? data.userName = userInfo.name : ''
             userInfo.email ? data.userEmail = userInfo.email : ''
             userInfo.firstName ? data.firstName = userInfo.firstName : ''
             userInfo.lastName ? data.lastName = userInfo.lastName : ''
@@ -362,7 +362,7 @@ module.exports = class User {
             userInfo.postCode ? data.postCode = userInfo.postCode : ''
             userInfo.userProfileImage ? data.userProfileImage = userInfo.userProfileImage : ''
 
-            return { success: true, data: userInfo}
+            return { success: true, data: data}
         } catch (e) {
             return { sucess: false, error: e.toString() }
         }
@@ -370,8 +370,9 @@ module.exports = class User {
 
     async setUserProfileInformation(requestData) {
         try {
-            console.log(requestData)
-            //await mongo.usacrm.collection(this.User).findOneAndUpdate()
+            let changedData = requestData.data
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({_id:this.decodedInformation._id}, { $set : changedData})
+            return { sucess: true, message: 'Profile Updated Sucessfully'}
         } catch (e) {
             return { sucess: false, error: e.toString() }
         }

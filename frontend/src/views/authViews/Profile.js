@@ -84,7 +84,7 @@ class Profile extends React.Component {
         var Base64 = await reader.result;
         title = "Note"
         message = "Please Click Save to upload the selected Image";
-        this.setState({ title, message, Alert_open_close: true, base64Image: Base64 });
+        this.setState({ title, message, Alert_open_close: true, base64Image: Base64, userProfileImage: Base64 });
         console.log("Base64 Image------>", Base64);
         this.handleCloseDialog();
       };
@@ -111,15 +111,13 @@ class Profile extends React.Component {
           'Authorization': `${crmToken}`
         },
         body: JSON.stringify({
-          action: 4
+          method: 'getUserProfile'
         })
       });
-      let response = await getUserProfileData.json();
+      let response = await getUserProfileData.json()
       let responseData = response.data
-      console.log('getUserProfile--->', JSON.stringify(responseData, null, 2))
-      console.log(getUserProfileData, 'getUserProfile');
 
-      console.log("set workspace:---", responseData.workspaceGrid);
+      console.log("set workspace:---", responseData);
       this.setState({
         userName: responseData.userName,
         userEmail: responseData.userEmail,
@@ -129,6 +127,7 @@ class Profile extends React.Component {
         city: responseData.city,
         country: responseData.country,
         postCode: responseData.postCode,
+        userProfileImage: responseData.userProfileImage
       })
 
     }
@@ -141,7 +140,7 @@ class Profile extends React.Component {
   editUserProfile = async (event) => {
     let { userName, userEmail, firstName, lastName, address, city, country, postCode, base64Image } = this.state;
     //event.preventDefault();
-    const title = "Error";
+    let title = "Error";
     let message = "";
     let crmToken = localStorage.getItem('CRM_Token_Value');
     try {
@@ -158,7 +157,18 @@ class Profile extends React.Component {
         this.setState({ title, message, Alert_open_close: true });
       }
       else if (userName !== "" && userEmail !== "") {
-        let editUserProfileData = await fetch(editUserProfileApi, {
+        let data = {
+          userName,
+          userEmail,
+          firstName,
+          lastName,
+          address,
+          city,
+          country,
+          postCode,
+          userProfileImage: base64Image
+        }
+        let editUserProfileData = await fetch(getUserProfileApi, {
           method: "POST",
           headers: {
             'Accept': 'application/json',
@@ -166,29 +176,18 @@ class Profile extends React.Component {
             'Authorization': `${crmToken}`
           },
           body: JSON.stringify({
-            userName,
-            userEmail,
-            firstName,
-            lastName,
-            address,
-            city,
-            country,
-            postCode,
-            userProfileImage: base64Image
+            data : data,
+            method : 'setUserProfile'
           })
         });
         let responseData = await editUserProfileData.json();
-        console.log(responseData, 'editUserProfileData1')
-        console.log(editUserProfileData, 'editUserProfileData');
-
-        if (responseData.success === true) {
-          const title = "Success"
-          message = "UserProfile Updated!";
+        if(responseData.success) {
+          console.log('Updated sucessfully')
+          await this.getUserProfile()
+          title = 'Changed sucessfully'
+          message = 'message'
           this.setState({ title, message, Alert_open_close: true });
-          this.handleClose();
-        }
-        else {
-          message = responseData.message;
+        } else {
           this.setState({ title, message, Alert_open_close: true });
         }
       }
@@ -199,7 +198,7 @@ class Profile extends React.Component {
     }
   }
 
-  onComponentDidMount = () => {
+  componentDidMount = async () => {
     this.getUserProfile()
   }
 
@@ -238,8 +237,8 @@ class Profile extends React.Component {
       Alert_open_close,
       setShowUsers,
       pictures,
-      base64Image,
       Alert_open_close1,
+      userProfileImage,
       editUserProfile
     } = this.state;
     const AlertError =
@@ -288,7 +287,7 @@ class Profile extends React.Component {
                           className="rounded-circle obj-cover"
                           width="190"
                           height="175"
-                          src={base64Image ? base64Image : require("../../assets/img/theme/team-4-800x800.jpg")}
+                          src={(userProfileImage) ? userProfileImage : require("../../assets/img/theme/team-4-800x800.jpg")}
                         />
                       </a>
                     </div>

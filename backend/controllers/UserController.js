@@ -96,15 +96,18 @@ module.exports.getMyOrganizationMembers = async function (req,res) {
 
 module.exports.userProfile = async function (req,res) {
     try {
+        const user = new User()
+        
+        await user.verifyUser(req.headers.authorization)
         let bodyInfo = req.body
         if (1) {
             if(bodyInfo.method == 'getUserProfile') {
-                var response = await new User().getUserProfileInformation(bodyInfo);
+                var response = await user.getUserProfileInformation(bodyInfo);
                 res.send(response)
             }
 
             if(bodyInfo.method == 'setUserProfile') {
-                let response = await new User().setUserProfileInformation(bodyInfo)
+                let response = await user.setUserProfileInformation(bodyInfo)
                 res.send(response)
             }
         } else {
