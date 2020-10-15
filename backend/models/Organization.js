@@ -55,7 +55,7 @@ class Organization {
     async searchToJoin(orgName) {
         try {
             let regexp = new RegExp(`^${orgName}`, 'gm')
-            let data = await mongo.usacrm.collection(this.organization).find({ orgName: { $regex: regexp } }).toArray()
+            let data = await mongo.usacrm.collection(this.organization).find({ orgName: { $regex: regexp } }).limit(5).toArray()
             return { sucess: true, orgNameData: data }
         } catch (e) {
             return { sucess: false, error: e.toString() }

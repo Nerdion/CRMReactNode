@@ -6,10 +6,10 @@ module.exports.login = async function (req, res) {
             var response = await new User().login(bodyInfo);
             res.send(response)
         } else {
-            res.send({ "Success": true, "Error": error, "Payload": [] })
+            res.send({ "success": true, "Error": error, "Payload": [] })
         }
     } catch (e) {
-        res.send({ "Success": false, "Error": e.toString(), "Payload": [] });
+        res.send({ "success": false, "Error": e.toString(), "Payload": [] });
     }
 };
 

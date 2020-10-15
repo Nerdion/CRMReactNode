@@ -338,4 +338,13 @@ module.exports = class User {
             return { sucess: false, error : e.toString()}
         }
     }
+    async searchToJoinUser(name) {
+        try {
+            let regexp = new RegExp(`^${name}`, 'gm')
+            let data = await mongo.usacrm.collection(this.User).find({ orgName: { $regex: regexp } }).limit(5).toArray()
+            return { sucess: true, userNameData: data }
+        } catch (e) {
+            return { sucess: false, error: e.toString() }
+        }
+    }
 }
