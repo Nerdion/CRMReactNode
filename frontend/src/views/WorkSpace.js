@@ -164,7 +164,7 @@ class WorkSpace extends React.Component {
 
     onSingleWorkSpaceClicked = (TableData) => {
         console.log("Table Data-->", TableData);
-        this.props.history.push("/admin/tasks", { WorkSpaceName: TableData.workspaceName, workSpaceId: 1 });
+        this.props.history.push("/admin/tasks", { WorkSpaceName: TableData.workspaceName, workspaceId: TableData.workspaceId });
     }
 
     onWorkSpaceChanged = (event) => {

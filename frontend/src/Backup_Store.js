@@ -1,6 +1,7 @@
 const { default: Login } = require("./views/authViews/Login")
 const { default: Profile } = require("./views/authViews/Profile")
 const { default: Register } = require("./views/authViews/Register")
+const { default: CreateTaskTest } = require("./views/CreateTaskTest")
 const { default: UserInfo } = require("./views/UserInfo")
 
 Sidebar
@@ -287,39 +288,63 @@ Login
 
 UserInfo
 
-                 // checkUserAuthResponse = async () => {
-    //     let title = "Error";
-    //     try {
-    //         // let encAuthData = await this.encryptData(authData);
-    //         const UserLoginApiCall = await fetch(AuthUserResponse, {
-    //             method: "POST",
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             // body: JSON.stringify(encAuthData)
-    //         });
-    //         const responseData = await UserLoginApiCall.json();
-    //         console.log(responseData, 'UserLoginApiCallData')
-    //         console.log(UserLoginApiCall, 'UserLoginApiCall');
-    //         if (responseData.status === 200) {
-    //             console.log("User Loggedin");
-    //             title = "Success";
-    //             const message = "User is Authorized";
-    //             this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
-    //             //localStorage.setItem('CRM_Token_Value', responseData.token);
-    //             setTimeout(() => {
-    //                 this.props.history.push("/admin/index");
-    //             }, 1000);
+// checkUserAuthResponse = async () => {
+//     let title = "Error";
+//     try {
+//         // let encAuthData = await this.encryptData(authData);
+//         const UserLoginApiCall = await fetch(AuthUserResponse, {
+//             method: "POST",
+//             headers: {
+//                 'Accept': 'application/json',
+//                 'Content-Type': 'application/json',
+//             },
+//             // body: JSON.stringify(encAuthData)
+//         });
+//         const responseData = await UserLoginApiCall.json();
+//         console.log(responseData, 'UserLoginApiCallData')
+//         console.log(UserLoginApiCall, 'UserLoginApiCall');
+//         if (responseData.status === 200) {
+//             console.log("User Loggedin");
+//             title = "Success";
+//             const message = "User is Authorized";
+//             this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
+//             //localStorage.setItem('CRM_Token_Value', responseData.token);
+//             setTimeout(() => {
+//                 this.props.history.push("/admin/index");
+//             }, 1000);
 
 
-    //         }
-    //         else {
-    //             const message = "Invalid Data";
-    //             this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
-    //         }
-    //     } catch (err) {
-    //         console.log("Error fetching data-----------", err);
-    //         this.setState({ title, message: err, Alert_open_close: true, setActivityIndicator: false });
-    //     }
-    // }
+//         }
+//         else {
+//             const message = "Invalid Data";
+//             this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
+//         }
+//     } catch (err) {
+//         console.log("Error fetching data-----------", err);
+//         this.setState({ title, message: err, Alert_open_close: true, setActivityIndicator: false });
+//     }
+// }
+
+CreateTaskTest
+{/* { <Col className="text-center mb-4" xs="6" md="3" lg="2" xl="2">
+                            <Tooltip title="Status" arrow>
+                                <ButtonDropdown className="" direction="left" isOpen={openMenu} toggle={() => this.handleopen()}>
+                                    <Col className="mb-1">
+                                        <span className="text-left text-defalut text-white-to-default mr-5">
+                                            Status
+                                        </span>
+                                    </Col>
+                                    <DropdownToggle size="md" className="br-sm outline-border">
+                                        <FiberManualRecord style={{ color: statusColor }} />
+                                        <ExpandMore style={{ color: "#d0d4d9" }} />
+                                    </DropdownToggle>
+                                    <DropdownMenu>
+                                        {
+                                            options.map((options, index) => (
+                                                <DropdownItem key={index} onClick={() => this.changeStatus(options.color, options.option)} key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
+                                            ))
+                                        }
+                                    </DropdownMenu>
+                                </ButtonDropdown>
+                            </Tooltip>
+                        </Col>} */}

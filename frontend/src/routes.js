@@ -48,12 +48,12 @@ var routes = [
     exactLink: false
   },
   {
-    path: "/CreateTaskTest",
+    path: "/CreateTaskTest/:workspaceId",
     name: "Create Task",
     icon: "ni ni-archive-2 text-red",
     component: CreateTaskTest,
     layout: "/admin",
-    showRoute: true,
+    showRoute: false,
     exactLink: false
   },
   {
