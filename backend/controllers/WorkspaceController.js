@@ -19,6 +19,6 @@ module.exports.workspaceAction = async function (req, res) {
             res.send({ "success": true, "error": error.toString(), "Payload": [] })
         }
     } catch (e) {
-        res.send({ "Success": false, "error": e.toString(), "Payload": [] });
+        res.send({ "success": false, "error": e.toString(), "Payload": [] });
     }
 };
