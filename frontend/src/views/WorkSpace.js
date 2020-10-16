@@ -34,7 +34,7 @@ import WorkSpaceTable from "../components/Tables/WorkSpaceTable.js";
 import UsersTable from '../components/Tables/UsersTable';
 
 //Api
-import { workspaceAction, setWorkSpaceApi } from './CRM_Apis';
+import { workspaceAction, organizationAPI } from './CRM_Apis';
 
 const UserData = [
     {
@@ -157,8 +157,11 @@ class WorkSpace extends React.Component {
         };
     }
 
+
     componentDidMount() {
+        this.jwtToken = localStorage.getItem('CRM_Token_Value');
         this.getWorkSpace();
+        this.getOrgUsers();
     }
 
 
@@ -172,7 +175,7 @@ class WorkSpace extends React.Component {
     }
 
     onClickOpenAddWorkSpace = () => {
-        this.setState({ setAddWorkspaceOpenClose: true });
+        this.setState({ setAddWorkspaceOpenClose: true, users:this.orgUsersData });
     }
 
     handleClose = () => {
@@ -183,9 +186,21 @@ class WorkSpace extends React.Component {
         this.setState({ [`${Name}`]: value })
     }
 
-    selectUsers = (UserName, UserImage) => {
+    selectUsers = (UserName, UserImage, UserId) => {
         //   event.preventDefault();
-        this.setState({ userObj: [...this.state.userObj, { userName: UserName, imageUrl: UserImage }] });
+        
+        let returnFlag = 0
+
+        for(let i=0; i < this.state.userObj.length; i++) {
+            if(this.state.userObj[i].userName == UserName) {
+                returnFlag = 1
+                break;
+            }
+        }
+
+        if(!returnFlag) {
+            this.setState({ userObj: [...this.state.userObj, { userName: UserName, imageUrl: UserImage, id: UserId }] });
+        }
     }
 
     onDismissAlert = () => {
@@ -206,26 +221,23 @@ class WorkSpace extends React.Component {
         this.setState({ setShowUsers: false })
     }
 
+    
+    
     getWorkSpace = async () => {
         let title = "Error";
-        let crmToken = localStorage.getItem('CRM_Token_Value');
         try {
             const getWorkSpaceData = await fetch(workspaceAction, {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Authorization': `${crmToken}`
+                    'Authorization': `${this.jwtToken}`
                 },
                 body: JSON.stringify({
                     action: 4
                 })
             });
             const responseData = await getWorkSpaceData.json();
-            console.log('getWorkSpaceData--->', JSON.stringify(responseData, null, 2))
-            console.log(getWorkSpaceData, 'getWorkSpaceData');
-
-            console.log("set workspace:---", responseData.workspaceGrid);
             this.setState({
                 workSpaceData: responseData.workspaceGrid
             })
@@ -269,6 +281,31 @@ class WorkSpace extends React.Component {
         }
     }
 
+    getOrgUsers = async () => {
+        const getAllMembers = await fetch(organizationAPI, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `${this.jwtToken}`
+            },
+            body: JSON.stringify({
+                method: 'members'
+            })
+        });
+        const response = await getAllMembers.json();
+        let responseData = await response.data
+
+        this.orgUsersData = responseData.map((data)=>{
+            let image = data.userProfileImage ? data.userProfileImage : ''
+            return {
+                userName: data.name,
+                imageUrl : image,
+                id : data._id
+            }
+        })
+    }
+
     setWorkSpaceApi = async (event) => {
         const { WorkSpaceName, userObj } = this.state;
         event.preventDefault();
@@ -289,7 +326,12 @@ class WorkSpace extends React.Component {
                 this.setState({ title, message, Alert_open_close: true });
             }
             else if (WorkSpaceName !== "" && userObj.length !== 0) {
-                let setWorkSpaceResponse = await fetch(setWorkSpaceApi, {
+                let userIds = userObj.map((val)=>val.id)
+                let workspaceData = {
+                    workspaceName: WorkSpaceName,
+                    userIds: userIds,
+                } 
+                let setWorkSpaceResponse = await fetch(workspaceAction, {
                     method: "POST",
                     headers: {
                         'Accept': 'application/json',
@@ -297,8 +339,8 @@ class WorkSpace extends React.Component {
                         'Authorization': `${crmToken}`
                     },
                     body: JSON.stringify({
-                        workspacename: WorkSpaceName,
-                        usersdata: userObj
+                        workspaceData : workspaceData,
+                        action : 1,
                     })
                 });
                 let responseData = await setWorkSpaceResponse.json();
@@ -338,7 +380,6 @@ class WorkSpace extends React.Component {
             setShowUsers
         } = this.state;
 
-        console.log("this is workspace:---", workSpaceData);
         const AlertError =
             (
                 <div>
@@ -351,7 +392,7 @@ class WorkSpace extends React.Component {
                 </div>
             );
 
-        let filtereContacts = users !== null ? users.filter(
+        let filterContacts = users !== null ? users.filter(
             (item) => {
                 return item.userName.toLowerCase().indexOf(userSearch.toLowerCase()) !== -1;
             }
@@ -412,7 +453,7 @@ class WorkSpace extends React.Component {
                                         type="text"
                                         required={false}
                                         value={WorkSpaceName}
-                                        autocomplete="section-blue shipping"
+                                        autoComplete="section-blue shipping"
                                         onChange={(e) => this.onChangeText("WorkSpaceName", e.target.value)}
                                         fullWidth
                                     />
@@ -434,8 +475,8 @@ class WorkSpace extends React.Component {
                             <Col className="shadow br-sm p-4" lg="12">
                                 <Col className="p-1 max-dn-ht-250  hide-scroll-ind" lg="12">
                                     {
-                                        filtereContacts.map((users, index) => (
-                                            <Card onClick={(event) => { this.selectUsers(users.userName, users.imageUrl, event) }} key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
+                                        filterContacts.map((users, index) => (
+                                            <Card onClick={(event) => { this.selectUsers(users.userName, users.imageUrl, users.id, event) }} key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
                                                 <Row className="d-flex align-items-center justify-content-around d-fr-direction">
                                                     <Col lg="3" className="d-flex align-items-center justify-content-center">
                                                         <Avatar alt={users.userName} src={users.imageUrl} />
@@ -449,7 +490,7 @@ class WorkSpace extends React.Component {
                                     }
                                 </Col>
                                 {
-                                    userObj.length != 0 ?
+                                    userObj != null ?
                                         <Col className="p-1 max-dn-ht-250 hide-scroll-ind" lg="12">
                                             <h3 className="txt-lt-dark"> Selected Users </h3>
                                             {
