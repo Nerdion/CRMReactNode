@@ -57,7 +57,7 @@ var routes = [
     exactLink: false
   },
   {
-    path: "/editTask/:tasks",
+    path: "/editTask/:workspaceId/:tasks",
     name: "Edit Task",
     icon: "ni ni-archive-2 text-red",
     component: EditTask,
@@ -129,7 +129,7 @@ var routes = [
     exactLink: false
   },
 
-  
+
   // Auth Login Should Stay at the last
   {
     path: "/login/:token?",

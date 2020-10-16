@@ -247,7 +247,7 @@ class WorkSpace extends React.Component {
                             <WorkSpaceTasksCard
                                 key={index}
                                 TaskCardData={data}
-                                onClickTask={() => { this.props.history.push(`/admin/editTask/${data.taskId}`) }}
+                                onClickTask={() => { this.props.history.push(`/admin/editTask/${workspaceId}/${data.taskId}`) }}
                             // onClickAvatar={() => this.props.history.push("/admin/users")}
                             />
                         ))}
