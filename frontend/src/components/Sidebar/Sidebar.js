@@ -21,6 +21,10 @@ import { NavLink as NavLinkRRD, Link } from "react-router-dom";
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
 
+//redux
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
+
 // reactstrap components
 import {
   Collapse,
@@ -45,16 +49,18 @@ import {
   Col
 } from "reactstrap";
 
+import { getUserProfileApi } from '../../views/CRM_Apis';
 var ps;
 
 class Sidebar extends React.Component {
   state = {
-    collapseOpen: false
+    collapseOpen: false,
   };
   constructor(props) {
     super(props);
     this.activeRoute.bind(this);
   }
+
   // verifies if routeName is the one active (in browser input)
   activeRoute(routeName) {
     return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
@@ -97,8 +103,9 @@ class Sidebar extends React.Component {
       )
     });
   };
+
   render() {
-    const { bgColor, routes, logo, userImage } = this.props;
+    const { bgColor, routes, logo, userImage, userName } = this.props;
     let navbarBrandProps;
     if (logo && logo.innerLink) {
       navbarBrandProps = {
@@ -156,10 +163,11 @@ class Sidebar extends React.Component {
             <UncontrolledDropdown nav>
               <DropdownToggle nav>
                 <Media className="align-items-center">
-                  <span className="avatar avatar-sm rounded-circle">
+                  <span className="avatar avatar-sm rounded-circle obj-cover">
                     <img
                       alt="..."
-                      src={userImage ? userImage : require("../../assets/img/theme/team-1-800x800.jpg")}
+                      className="navbar-brand-img ht-100p obj-cover"
+                      src={userImage != null ? userImage : require("../../assets/img/theme/team-1-800x800.jpg")}
                     />
                   </span>
                 </Media>
@@ -258,4 +266,17 @@ Sidebar.propTypes = {
   })
 };
 
-export default Sidebar;
+const mapStateToProps = state => {
+  return {
+    userImage: state.userImage,
+    userName: state.userName
+  };
+}
+
+const mapDispatcToProps = dispatch => {
+  return {
+    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatcToProps)(Sidebar);

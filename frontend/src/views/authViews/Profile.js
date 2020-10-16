@@ -38,6 +38,9 @@ import ImageUploader from 'react-images-upload';
 import UserHeader from "../../components/Headers/UserHeader.js";
 import DialogBox from '../../components/DialogBox/DialogBox';
 
+//redux
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 //Api
 import { editUserProfileApi, getUserProfileApi } from '../CRM_Apis';
@@ -63,6 +66,11 @@ class Profile extends React.Component {
       editUserProfile: false
     };
     this.onDrop = this.onDrop.bind(this);
+  }
+
+
+  componentDidMount() {
+    this.getUserProfile()
   }
 
   onDrop(picture) {
@@ -97,6 +105,7 @@ class Profile extends React.Component {
 
   onTextValueChanged = (state, text) => {
     this.setState({ [`${state}`]: text })
+    console.log("Edited UserName---->",text);
   }
 
   getUserProfile = async () => {
@@ -130,6 +139,8 @@ class Profile extends React.Component {
         userProfileImage: responseData.userProfileImage
       })
 
+      this.props.onSetUserProfile(responseData.userProfileImage, responseData.userName);
+
     }
     catch (err) {
       console.log("Error fetching data-----------", JSON.stringify(err));
@@ -157,6 +168,7 @@ class Profile extends React.Component {
         this.setState({ title, message, Alert_open_close: true });
       }
       else if (userName !== "" && userEmail !== "") {
+        console.log("UserName----->", userName);
         let data = {
           userName,
           userEmail,
@@ -176,18 +188,20 @@ class Profile extends React.Component {
             'Authorization': `${crmToken}`
           },
           body: JSON.stringify({
-            data : data,
-            method : 'setUserProfile'
+            data: data,
+            method: 'setUserProfile'
           })
         });
         let responseData = await editUserProfileData.json();
-        if(responseData.success) {
-          console.log('Updated sucessfully')
-          await this.getUserProfile()
-          title = 'Changed sucessfully'
-          message = 'message'
-          this.setState({ title, message, Alert_open_close: true });
+        if (responseData.sucess === true) {
+          console.log('Updated successfully')
+          setTimeout(() => {
+            this.componentDidMount();
+          }, 400);
+          title = "Changed successfully"
+          this.setState({ title: title, message: responseData.message, Alert_open_close: true, editUserProfile: false });
         } else {
+          message = "Error Updating User Data"
           this.setState({ title, message, Alert_open_close: true });
         }
       }
@@ -198,9 +212,6 @@ class Profile extends React.Component {
     }
   }
 
-  componentDidMount = async () => {
-    this.getUserProfile()
-  }
 
   onDismissAlert = () => {
     this.setState({ Alert_open_close: false });
@@ -224,7 +235,8 @@ class Profile extends React.Component {
   }
 
   render() {
-    let { userName,
+    let {
+      userName,
       userEmail,
       firstName,
       lastName,
@@ -267,9 +279,7 @@ class Profile extends React.Component {
     console.log("Picture Data------", pictures);
     return (
       <>
-        <UserHeader
-          userName={"Nishad Patil"}
-        />
+        <UserHeader userName={userName}/>
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
@@ -327,13 +337,13 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative txt-lt-dark disable-hover"
-                              value={userName}
                               required="true"
                               disabled={editUserProfile ? false : true}
-                              name="username"
+                              value={userName}
+                              name="userName"
                               onChange={(event) => this.onTextValueChanged("userName", event.target.value)}
                               id="input-username"
-                              placeholder="Username"
+                              placeholder="User Name"
                               type="text"
                             />
                           </FormGroup>
@@ -549,5 +559,17 @@ class Profile extends React.Component {
     );
   }
 }
+const mapStateToProps = state => {
+  return {
+    userImage: state.userImage,
+    userName: state.userName
+  };
+}
 
-export default Profile;
+const mapDispatcToProps = dispatch => {
+  return {
+    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatcToProps)(Profile);
