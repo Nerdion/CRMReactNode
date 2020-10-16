@@ -24,8 +24,6 @@ export const setWorkSpaceApi = `${DomainURL}/api/setWorkSpace`;
 
 export const taskAction = `${DomainURL}/api/taskAction`;
 
-export const editUserProfileApi = `${DomainURL}/api/editUserProfile`;
-
 export const getUserProfileApi = `${DomainURL}/api/userProfile`;
 
 export const sendRecoveryEmail = `${DomainURL}/api/sendRecoveryEmail`;
