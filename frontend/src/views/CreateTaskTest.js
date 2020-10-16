@@ -50,6 +50,7 @@ import Header from "../components/Headers/Header.js";
 import DialogBox from '../components/DialogBox/DialogBox';
 import UserTaskCard from '../components/Cards/UserTaskCard';
 import { saveCreateTaskDataApi, getUserTaskDataApi } from '../views/CRM_Apis';
+import { taskAction } from "../views/CRM_Apis";
 
 
 let linkTaskId = null;
@@ -152,8 +153,8 @@ class CreateTaskTest extends React.Component {
 
         }
         catch (err) {
-            console.log("Error fetching data-----------", JSON.stringify(err));
-            this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close: true });
         }
     }
     onClickSaveWorkSpaceTask = async (statusId) => {
@@ -180,12 +181,12 @@ class CreateTaskTest extends React.Component {
                 this.setState({ title, message, Alert_open_close: true });
             }
             else if (topicName !== "" && stepTitle !== "") {
-                const UserRegisterApiCall = await fetch(saveCreateTaskDataApi, {
+                const UserRegisterApiCall = await fetch(taskAction, {
                     method: "POST",
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        'Authentication': `${crm_token}`
+                        'Authorization': `${crm_token}`
                     },
                     body: JSON.stringify({
                         action: 1,
@@ -218,8 +219,8 @@ class CreateTaskTest extends React.Component {
             }
         }
         catch (err) {
-            console.log("Error fetching data-----------", err);
-            this.setState({ title, message: err, Alert_open_close: true });
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close: true });
         }
     }
 

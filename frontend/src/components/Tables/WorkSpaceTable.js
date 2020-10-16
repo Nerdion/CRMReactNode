@@ -119,37 +119,35 @@ export class WorkSpaceTable extends Component {
                                         <td>
                                             {Tdata.createdAt}
                                         </td>
-                                        <tb>
-                                            <td className="text-right">
-                                                <UncontrolledDropdown>
-                                                    <DropdownToggle
-                                                        className="btn-icon-only text-light"
+                                        <td className="text-right">
+                                            <UncontrolledDropdown>
+                                                <DropdownToggle
+                                                    className="btn-icon-only text-light"
 
-                                                        role="button"
-                                                        size="sm"
-                                                        color=""
-                                                        onClick={e => e.preventDefault()}
+                                                    role="button"
+                                                    size="sm"
+                                                    color=""
+                                                    onClick={e => e.preventDefault()}
+                                                >
+                                                    <i className="fas fa-ellipsis-v" />
+                                                </DropdownToggle>
+                                                <DropdownMenu className="dropdown-menu-arrow" right>
+                                                    <DropdownItem
+                                                        onClick={() => editWorkSpace(Tdata)}
                                                     >
-                                                        <i className="fas fa-ellipsis-v" />
-                                                    </DropdownToggle>
-                                                    <DropdownMenu className="dropdown-menu-arrow" right>
-                                                        <DropdownItem
-                                                            onClick={() => editWorkSpace(Tdata)}
-                                                        >
-                                                            <Edit color="primary" />
+                                                        <Edit color="primary" />
                                                             Edit
                                                         </DropdownItem>
-                                                        <DropdownItem
+                                                    <DropdownItem
 
-                                                            onClick={e => e.preventDefault()}
-                                                        >
-                                                            <Delete color="error" />
+                                                        onClick={e => e.preventDefault()}
+                                                    >
+                                                        <Delete color="error" />
                                                             Delete
                                                         </DropdownItem>
-                                                    </DropdownMenu>
-                                                </UncontrolledDropdown>
-                                            </td>
-                                        </tb>
+                                                </DropdownMenu>
+                                            </UncontrolledDropdown>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

@@ -50,7 +50,7 @@ import {
 
 //Api
 
-import { saveEditTaskDataApi, getTaskData, getUserTaskDataApi } from '../views/CRM_Apis';
+import { saveEditTaskDataApi, taskAction, getTaskData, getUserTaskDataApi } from '../views/CRM_Apis';
 
 // core components
 
@@ -235,7 +235,7 @@ class EditTask extends React.Component {
         let title = "Error";
         let crmToken = localStorage.getItem('CRM_Token_Value');
         try {
-            const getUserProfileTaskData = await fetch(getTaskData, {
+            const getUserProfileTaskData = await fetch(getUserTaskDataApi, {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
@@ -243,7 +243,7 @@ class EditTask extends React.Component {
                     'Authorization': `${crmToken}`
                 },
                 body: JSON.stringify({
-                    taskId: this.state.taskIdToEdit
+                    taskId: linkTaskId,
                 })
             });
             const responseData = await getUserProfileTaskData.json();
@@ -255,8 +255,8 @@ class EditTask extends React.Component {
 
         }
         catch (err) {
-            console.log("Error fetching data-----------", JSON.stringify(err));
-            this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close: true });
         }
     }
 
@@ -265,33 +265,34 @@ class EditTask extends React.Component {
         let title = "Error";
         let crmToken = localStorage.getItem('CRM_Token_Value');
         try {
-            const getWorkSpaceTaskData = await fetch(getUserTaskDataApi, {
+            const getWorkSpaceTaskData = await fetch(taskAction, {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                     'Authorization': `${crmToken}`
                 },
-                // body: JSON.stringify({
-                //     action: 4
-                // })
+                body: JSON.stringify({
+                    taskId:linkTaskId,
+                    action: 5
+                })
             });
             const responseData = await getWorkSpaceTaskData.json();
             console.log('getWorkSpaceTaskData--->', JSON.stringify(responseData, null, 2))
             console.log(getWorkSpaceTaskData, 'getWorkSpaceTaskData');
-            let editorRawData = htmlToDraft(responseData.task.editorRawData);
+            let editorRawData = htmlToDraft(responseData.taskData.taskDetails);
             this.setState({
-                topicName: responseData.task.topicName,
-                stepTitle: responseData.task.stepTitle,
-                userObj: responseData.task.userObj,
-                statusData: responseData.task.statusData,
+                topicName: responseData.taskData.taskName,
+                stepTitle: responseData.taskData.taskDescription,
+                userObj: responseData.taskData.userObj,
+                statusData: responseData.taskData.status,
                 editorState: editorRawData
             })
 
         }
         catch (err) {
-            console.log("Error fetching data-----------", JSON.stringify(err));
-            this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close: true });
         }
     }
 
@@ -352,8 +353,8 @@ class EditTask extends React.Component {
             }
         }
         catch (err) {
-            console.log("Error fetching data-----------", err);
-            this.setState({ title, message: err, Alert_open_close: true });
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close: true });
         }
     }
 
