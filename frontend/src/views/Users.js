@@ -144,6 +144,7 @@ class Users extends React.Component {
     }
 
     getUserData = async () => {
+        userData = []
         this.jwtToken = await localStorage.getItem('CRM_Token_Value');
 
         const getAllMembers = await fetch(organizationAPI, {
@@ -174,7 +175,7 @@ class Users extends React.Component {
                 UserName: data.name,
                 Role: isAdmin,
                 mail : data.email,
-                imageUrl: 'blank',
+                imageUrl: data.userProfileImage,
             })
         }
 
