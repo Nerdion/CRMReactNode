@@ -163,7 +163,6 @@ class Users extends React.Component {
         let responseData = response.data
 
         for (let i = 0; i < responseData.length; i++) {
-            console.log(responseData[i])
             let data = responseData[i]
             let isAdmin = 'Member'
 

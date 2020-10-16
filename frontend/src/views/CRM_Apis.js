@@ -20,8 +20,6 @@ export const VerifyEmailUser = `${DomainURL}/api/authorizeRegistereduser`;
 
 export const workspaceAction = `${DomainURL}/api/workspaceAction`;
 
-export const setWorkSpaceApi = `${DomainURL}/api/setWorkSpace`;
-
 export const taskAction = `${DomainURL}/api/taskAction`;
 
 export const getUserProfileApi = `${DomainURL}/api/userProfile`;

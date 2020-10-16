@@ -33,7 +33,6 @@ class App extends Component {
                 </Switch>
             );
         }
-        console.log("seLog---->",this.props.setLogin);
         return (
             <>
                 {routes}
