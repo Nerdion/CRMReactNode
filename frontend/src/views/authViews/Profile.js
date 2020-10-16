@@ -63,7 +63,8 @@ class Profile extends React.Component {
       pictures: null,
       setShowUsers: false,
       Alert_open_close1: false,
-      editUserProfile: false
+      editUserProfile: false,
+      alertColor: null
     };
     this.onDrop = this.onDrop.bind(this);
   }
@@ -105,7 +106,7 @@ class Profile extends React.Component {
 
   onTextValueChanged = (state, text) => {
     this.setState({ [`${state}`]: text })
-    console.log("Edited UserName---->",text);
+    console.log("Edited UserName---->", text);
   }
 
   getUserProfile = async () => {
@@ -199,7 +200,7 @@ class Profile extends React.Component {
             this.componentDidMount();
           }, 400);
           title = "Changed successfully"
-          this.setState({ title: title, message: responseData.message, Alert_open_close: true, editUserProfile: false });
+          this.setState({ title: title, message: responseData.message, Alert_open_close: true, editUserProfile: false, alertColor: "success" });
         } else {
           message = "Error Updating User Data"
           this.setState({ title, message, Alert_open_close: true });
@@ -251,12 +252,13 @@ class Profile extends React.Component {
       pictures,
       Alert_open_close1,
       userProfileImage,
-      editUserProfile
+      editUserProfile,
+      alertColor
     } = this.state;
     const AlertError =
       (
         <div className="mb-2">
-          <Alert isOpen={Alert_open_close} toggle={() => this.onDismissAlert()} color="danger" >
+          <Alert isOpen={Alert_open_close} toggle={() => this.onDismissAlert()} color={alertColor ? alertColor : "danger"} >
             <h4 className="alert-heading">
               {title}
             </h4>
@@ -279,7 +281,7 @@ class Profile extends React.Component {
     console.log("Picture Data------", pictures);
     return (
       <>
-        <UserHeader userName={userName}/>
+        <UserHeader userName={userName} />
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
