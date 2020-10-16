@@ -40,24 +40,50 @@ const { ObjectId } = require('mongodb');
 //         "statusId":0,
 //     }
 
-task={
-        "action":2,
-    "updatedTaskData":{
-        "taskId":"5f86d1d102d98a2752a69ec3",
-        "workspaceId":"5f8582bc2ee99672bac77ae4",
+task = {
+    "action": 2,
+    "updatedTaskData": {
+        "taskId": "5f86d1d102d98a2752a69ec3",
+        "workspaceId": "5f8582bc2ee99672bac77ae4",
         "taskName": 'mail generator',
         "deletedUserIds": [
             "5f7ead1a00f666150ee1b3d4",
         ],
-        "addedUserIds":[
+        "addedUserIds": [
             "5f7ead1a00f666150ee1b3d4"
         ],
-        "JSONObject":`<p>fadfasdfadsfasdfasdfadfafasf</p>
+        "JSONObject": `<p>fadfasdfadsfasdfasdfadfafasf</p>
         <img src="https://images.pexels.com/photos/255379/pexels-photo-255379.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" alt="undefined" style="height: auto;width: auto"/>
         <p></p>`,
-        "statusId":1,
+        "statusId": 1,
     }
 }
+task = {
+    "action": 1,
+    "taskData": {
+        "workspaceId": "5f8582bc2ee99672bac77ae4",
+        "taskName": 'mail generator',
+        "taskDescription": "xyz",
+        "addedUserIds": [
+            "5f7ead1a00f666150ee1b3d4"
+        ],
+        "taskDetails": "sdjfh",
+        "statusId": 1,
+    }
+}
+task = {
+    "action": 1,
+    "taskData":
+    {
+        "workspaceId": "5f840bc3ca75743262e373ab",
+        "taskName": "sample task",
+        "taskDescription": "sample des",
+        "taskDetails": "<p>hsakdfhkajshfl</p>\n<p>asjdfhajkshdfljsahdflashljfsadfsadf</p>\n<p>asfkhksjhdfkjshfkjhskjfhsaf</p>\n<p>sfslkadhfkjsahdfkjhsadkfjhasdf</p>\n",
+        "statusId": 1,
+        "addedUserIds": []
+    }
+}
+
 
 // task = {
 //     'action':1,
@@ -69,12 +95,12 @@ task={
 //         ],
 //         'JSONObject':null,
 //         'statusId':0,
-        
+
 //     }
 // }
 
 
-async function  main() {
+async function main() {
     const Org = require('./models/Organization');
     const org = await new Org()
     let orgName = await org.getOrganizationName(new ObjectId('5f8580cb9f423623786d34ca'))

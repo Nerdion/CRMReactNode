@@ -50,7 +50,7 @@ export class WorkSpaceTasksCard extends Component {
                         <Row className="align-items-center">
                             <div className="col">
                                 <h3 className="text-uppercase txt-dark disable-hover ls-1 mb-1">
-                                    {TaskCardData.header}
+                                    {TaskCardData.taskName}
                                 </h3>
                             </div>
                             <Tooltip title="More Options" arrow>
@@ -75,7 +75,7 @@ export class WorkSpaceTasksCard extends Component {
                         <CardBody>
                             {/* Chart */}
                             <div className="col">
-                                <p className="text-body font-weight-400">{TaskCardData.desc}</p>
+                                <p className="text-body font-weight-400">{TaskCardData.taskDescription}</p>
                             </div>
                             <div className="col text-right">
                                 <Badge color={TaskCardData.activityStatus === "published" ? "success" : "warning"} className="p-2" pill>{TaskCardData.activityStatus}</Badge>
