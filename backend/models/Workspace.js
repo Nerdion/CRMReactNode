@@ -8,9 +8,9 @@ class Workspace {
 
     constructor() {
         this.task = 'Tasks',
-            this.workspace = 'Workspaces',
-            this.organization = 'Organizations',
-            this.user = 'User'
+        this.workspace = 'Workspaces',
+        this.organization = 'Organizations',
+        this.user = 'User'
     }
     workspaceAction = async (bodyInfo) => {
         if (bodyInfo.action == 1) { //create a workspace
@@ -238,9 +238,7 @@ class Workspace {
         } catch (err) {
             return false
         }
-
     }
-
 }
 
 
