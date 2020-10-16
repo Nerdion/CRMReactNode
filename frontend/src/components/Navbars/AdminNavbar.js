@@ -23,35 +23,32 @@ import {
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  Form,
-  FormGroup,
-  InputGroupAddon,
-  InputGroupText,
-  Input,
-  InputGroup,
   Navbar,
   Nav,
   Container,
   Media
 } from "reactstrap";
 
+//redux
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
 
 import { getUserProfileApi } from '../../views/CRM_Apis';
 
 class AdminNavbar extends React.Component {
 
-  state =  {userName: '', userImage: ''}
+  state = { userName: '', userImage: '' }
 
   getMyProfile = async () => {
-    
+
     this.jwtToken = await localStorage.getItem('CRM_Token_Value');
     const getMyProfileCall = await fetch(getUserProfileApi, {
       method: "POST",
       headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `${this.jwtToken}`
-  
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `${this.jwtToken}`
+
       },
       body: JSON.stringify({
         method: 'userNameAndImage'
@@ -59,18 +56,18 @@ class AdminNavbar extends React.Component {
     });
     const responseData = await getMyProfileCall.json();
     if (responseData.success) {
-      await this.setState({userImage: responseData.data.userProfile, userName: responseData.data.name})
+      await this.setState({ userImage: responseData.data.userProfile, userName: responseData.data.name });
+      this.props.onSetUserProfile(responseData.data.userProfile, responseData.data.name);
     }
   }
 
   componentDidMount() {
-    this.getMyProfile()
+    this.getMyProfile();
   }
 
 
   render() {
-    let {userName, userImage } = this.state
-    let {logout } = this.props;
+    let { logout ,userName, userImage} = this.props;
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -85,9 +82,10 @@ class AdminNavbar extends React.Component {
               <UncontrolledDropdown nav>
                 <DropdownToggle className="pr-0" nav>
                   <Media className="align-items-center">
-                    <span className="avatar avatar-sm rounded-circle">
+                    <span className="avatar avatar-sm rounded-circle obj-cover">
                       <img
                         alt="..."
+                        className="navbar-brand-img ht-100p obj-cover"
                         src={userImage ? userImage : require("../../assets/img/theme/team-4-800x800.jpg")}
                       />
                     </span>
@@ -121,4 +119,17 @@ class AdminNavbar extends React.Component {
   }
 }
 
-export default AdminNavbar;
+const mapStateToProps = state => {
+  return {
+    userImage: state.userImage,
+    userName: state.userName
+  };
+}
+
+const mapDispatcToProps = dispatch => {
+  return {
+    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatcToProps)(AdminNavbar);
