@@ -21,6 +21,12 @@ import {
 //API's
 import { VerifyUserRegister } from '../CRM_Apis';
 
+//redux
+import { connect } from 'react-redux';
+
+import * as actionTypes from '../../store/actions';
+import { TheatersOutlined } from "@material-ui/icons";
+
 class Register extends React.Component {
   state = {
     UserName: '',
@@ -49,6 +55,10 @@ class Register extends React.Component {
 
   onDismissAlert = () => {
     this.setState({ Alert_open_close: false });
+  }
+
+  setLogout = () => {
+    this.props.onLogin(localStorage.removeItem('CRM_Token_Value'));
   }
 
   submitRegisterHandler = async (event) => {
@@ -144,6 +154,7 @@ class Register extends React.Component {
 
   render() {
     const { title, message, Alert_open_close, alertColor, isRegistered } = this.state;
+    let { setLogin } = this.props;
     const AlertError =
       (
         <div>
@@ -159,136 +170,175 @@ class Register extends React.Component {
       <>
         <Col lg="6" md="8">
           {AlertError}
-          {isRegistered ?
+          {setLogin ?
             <Card className="bg-secondary shadow border-0">
-              <CardBody className="px-lg-5 py-lg-5 wd-100p ht-500 d-flex justify-content-center align-items-center">
-                <Col lg="12" className="d-flex justify-content-center align-items-center">
-                  <Spinner style={{ width: '3rem', height: '3rem' }} className="align-self-center" color="primary" />
+              <CardBody className="px-lg-5 py-lg-5 wd-100p ht-300 d-flex justify-content-center align-items-center">
+                <Col lg="12" className="">
+                  <Col className="ht-160 ">
+                    <div className="text-center mb-4">
+                      <h2 className="txt-dark disable-hover">You are already logged in!</h2>
+                    </div>
+                    <div className="text-center text-muted mb-4">
+                      <small>Please Logout to Register new user</small>
+                    </div>
+                  </Col>
+                  <Col className=" d-flex justify-content-center align-items-center">
+                    <Button
+                      onClick={(event) => { this.setLogout(event) }}
+                      className="mt-4"
+                      color="primary"
+                      type="button">
+                      Logout
+                  </Button>
+                  </Col>
                 </Col>
               </CardBody>
-            </Card> :
-            <Card className="bg-secondary shadow border-0">
-              <CardBody className="px-lg-5 py-lg-5">
-                <div className="text-center mb-4">
-                  <h2 className="txt-dark disable-hover"> Register Account </h2>
-                </div>
-                <div className="text-center text-muted mb-4">
-                  <small>Or sign up with credentials</small>
-                </div>
-                <Form role="form">
-                  <FormGroup>
-                    <InputGroup className="input-group-alternative mb-3">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="ni ni-hat-3" />
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="Name"
-                        type="text"
-                        name="name"
-                        className="txt-dark"
-                        value={this.state.UserName}
-                        onChange={(event) => { this.onChange("UserName", event.target.value, event) }}
-                      />
-                    </InputGroup>
-                  </FormGroup>
-                  <FormGroup>
-                    <InputGroup className="input-group-alternative mb-3">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="ni ni-email-83" />
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="Email"
-                        type="email"
-                        name="email"
-                        autoComplete="email"
-                        className="txt-dark"
-                        value={this.state.UserEmail}
-                        onChange={(event) => { this.onChange("UserEmail", event.target.value, event) }}
-                      />
-                    </InputGroup>
-                  </FormGroup>
-                  <FormGroup>
-                    <InputGroup className="input-group-alternative">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="ni ni-lock-circle-open" />
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="Password"
-                        type="password"
-                        autoComplete="new-password"
-                        className="txt-dark"
-                        value={this.state.Password}
-                        onChange={(event) => { this.onChange("Password", event.target.value, event) }}
-                      />
-                    </InputGroup>
-                  </FormGroup>
-                  <div className="text-muted font-italic">
-                    <small>
-                      {this.state.Password.length <= 0 ?
-                        null :
-                        this.state.Password.length < 8 ?
-                          <>
-                            password strength:{" "}
-                            <span className="text-danger font-weight-700">Weak</span>
-                          </> :
-                          <>
-                            password strength:{" "}
-                            <span className="text-success font-weight-700">strong</span>
-                          </>
-                      }
-                    </small>
+            </Card>
+            :
+            isRegistered ?
+              <Card className="bg-secondary shadow border-0">
+                < CardBody className="px-lg-5 py-lg-5 wd-100p ht-500 d-flex justify-content-center align-items-center">
+                  <Col lg="12" className="d-flex justify-content-center align-items-center">
+                    <Spinner style={{ width: '3rem', height: '3rem' }} className="align-self-center" color="primary" />
+                  </Col>
+                </CardBody>
+              </Card> :
+              <Card className="bg-secondary shadow border-0">
+                <CardBody className="px-lg-5 py-lg-5">
+                  <div className="text-center mb-4">
+                    <h2 className="txt-dark disable-hover"> Register Account </h2>
                   </div>
-                  <Row className="my-4">
-                    <Col xs="12">
-                      <div className="custom-control custom-control-alternative custom-checkbox">
-                        <input
-                          className="custom-control-input"
-                          id="customCheckRegister"
-                          type="checkbox"
-                          value={this.state.PolicyCheckbox}
-                          onChange={(event) => { this.onClickPolicy(event.target.checked) }}
+                  <div className="text-center text-muted mb-4">
+                    <small>Or sign up with credentials</small>
+                  </div>
+                  <Form role="form">
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-hat-3" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          placeholder="Name"
+                          type="text"
+                          name="name"
+                          className="txt-dark"
+                          value={this.state.UserName}
+                          onChange={(event) => { this.onChange("UserName", event.target.value, event) }}
                         />
-                        <label
-                          className="custom-control-label"
-                          htmlFor="customCheckRegister"
-                        >
-                          <span className="text-muted">
-                            I agree with the{" "}
-                            <a className="txt-dark cursor-point" onClick={e => e.preventDefault()}>
-                              Privacy Policy
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative mb-3">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-email-83" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          placeholder="Email"
+                          type="email"
+                          name="email"
+                          autoComplete="email"
+                          className="txt-dark"
+                          value={this.state.UserEmail}
+                          onChange={(event) => { this.onChange("UserEmail", event.target.value, event) }}
+                        />
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-lock-circle-open" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input
+                          placeholder="Password"
+                          type="password"
+                          autoComplete="new-password"
+                          className="txt-dark"
+                          value={this.state.Password}
+                          onChange={(event) => { this.onChange("Password", event.target.value, event) }}
+                        />
+                      </InputGroup>
+                    </FormGroup>
+                    <div className="text-muted font-italic">
+                      <small>
+                        {this.state.Password.length <= 0 ?
+                          null :
+                          this.state.Password.length < 8 ?
+                            <>
+                              password strength:{" "}
+                              <span className="text-danger font-weight-700">Weak</span>
+                            </> :
+                            <>
+                              password strength:{" "}
+                              <span className="text-success font-weight-700">strong</span>
+                            </>
+                        }
+                      </small>
+                    </div>
+                    <Row className="my-4">
+                      <Col xs="12">
+                        <div className="custom-control custom-control-alternative custom-checkbox">
+                          <input
+                            className="custom-control-input"
+                            id="customCheckRegister"
+                            type="checkbox"
+                            value={this.state.PolicyCheckbox}
+                            onChange={(event) => { this.onClickPolicy(event.target.checked) }}
+                          />
+                          <label
+                            className="custom-control-label"
+                            htmlFor="customCheckRegister"
+                          >
+                            <span className="text-muted">
+                              I agree with the{" "}
+                              <a className="txt-dark cursor-point" onClick={e => e.preventDefault()}>
+                                Privacy Policy
                           </a>
-                          </span>
-                        </label>
-                      </div>
-                    </Col>
-                  </Row>
-                  <div className="text-center">
-                    <Button onClick={(event) => { this.submitRegisterHandler(event) }} className="mt-4" color="primary" type="button">
-                      Create account
+                            </span>
+                          </label>
+                        </div>
+                      </Col>
+                    </Row>
+                    <div className="text-center">
+                      <Button onClick={(event) => { this.submitRegisterHandler(event) }} className="mt-4" color="primary" type="button">
+                        Create account
                   </Button>
-                  </div>
-                  <div className="text-center mt-2 mb-0">
-                    <a
-                      className="txt-lt-dark cursor-point"
+                    </div>
+                    <div className="text-center mt-2 mb-0">
+                      <a
+                        className="txt-lt-dark cursor-point"
 
-                      onClick={() => this.props.history.push("/auth/login")}
-                    >
-                      <h5>Sign in</h5>
-                    </a>
-                  </div>
-                </Form>
-              </CardBody>
-            </Card>}
-        </Col>
+                        onClick={() => this.props.history.push("/auth/login")}
+                      >
+                        <h5>Sign in</h5>
+                      </a>
+                    </div>
+                  </Form>
+                </CardBody>
+              </Card>
+          }
+        </Col >
       </>
     );
   }
 }
 
-export default Register;
+const mapStateToProps = state => {
+  return {
+    setLogin: state.setLoginValue
+  };
+}
+
+const mapDispatcToProps = dispatch => {
+  return {
+    onLogin: (setLoginData) => dispatch({ type: actionTypes.SET_LOGIN, setLoginValue: setLoginData })
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatcToProps)(Register);
