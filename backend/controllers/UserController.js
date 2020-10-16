@@ -110,6 +110,11 @@ module.exports.userProfile = async function (req,res) {
                 let response = await user.setUserProfileInformation(bodyInfo)
                 res.send(response)
             }
+
+            if(bodyInfo.method == 'userNameAndImage') {
+                let response = await user.getMyUserNameAndImage(bodyInfo)
+                res.send(response)
+            }
         } else {
             res.send({ success: true, "Error": error, "Payload": [] })
         }

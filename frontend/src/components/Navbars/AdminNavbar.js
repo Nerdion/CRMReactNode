@@ -35,9 +35,42 @@ import {
   Media
 } from "reactstrap";
 
+
+import { getUserProfileApi } from '../../views/CRM_Apis';
+
 class AdminNavbar extends React.Component {
+
+  state =  {userName: '', userImage: ''}
+
+  getMyProfile = async () => {
+    
+    this.jwtToken = await localStorage.getItem('CRM_Token_Value');
+    const getMyProfileCall = await fetch(getUserProfileApi, {
+      method: "POST",
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `${this.jwtToken}`
+  
+      },
+      body: JSON.stringify({
+        method: 'userNameAndImage'
+      })
+    });
+    const responseData = await getMyProfileCall.json();
+    if (responseData.success) {
+      await this.setState({userImage: responseData.data.userProfile, userName: responseData.data.name})
+    }
+  }
+
+  componentDidMount() {
+    this.getMyProfile()
+  }
+
+
   render() {
-    let { userName, userImage, logout } = this.props;
+    let {userName, userImage } = this.state
+    let {logout } = this.props;
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -48,18 +81,6 @@ class AdminNavbar extends React.Component {
             >
               {this.props.brandText}
             </Link>
-            <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
-              <FormGroup className="mb-0">
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="fas fa-search" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Search" type="text" />
-                </InputGroup>
-              </FormGroup>
-            </Form>
             <Nav className="align-items-center d-none d-md-flex" navbar>
               <UncontrolledDropdown nav>
                 <DropdownToggle className="pr-0" nav>
