@@ -102,15 +102,6 @@ var routes = [
     exactLink: true
   },
   {
-    path: "/login/:token?",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: Login,
-    layout: "/auth",
-    showRoute: false,
-    exactLink: false
-  },
-  {
     path: "/forgotpass/:token?",
     name: "Forgot Password",
     icon: "ni ni-key-25 text-info",
@@ -138,5 +129,17 @@ var routes = [
     exactLink: false
   },
 
+  
+  // Auth Login Should Stay at the last
+  {
+    path: "/login/:token?",
+    name: "Login",
+    icon: "ni ni-key-25 text-info",
+    component: Login,
+    layout: "/auth",
+    showRoute: false,
+    exactLink: false
+  },
+  // Auth Login Should Stay at the last
 ];
 export default routes;
