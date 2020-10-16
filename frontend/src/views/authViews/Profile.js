@@ -144,8 +144,8 @@ class Profile extends React.Component {
 
     }
     catch (err) {
-      console.log("Error fetching data-----------", JSON.stringify(err));
-      this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+      console.log("Error fetching data-----------", err.toString());
+      this.setState({ title, message: err.toString(), Alert_open_close: true });
     }
   }
 
@@ -208,8 +208,8 @@ class Profile extends React.Component {
       }
     }
     catch (err) {
-      console.log("Error fetching data-----------", JSON.stringify(err));
-      this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+      console.log("Error fetching data-----------", err.toString());
+      this.setState({ title, message: err.toString(), Alert_open_close: true });
     }
   }
 
@@ -339,7 +339,7 @@ class Profile extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative txt-lt-dark disable-hover"
-                              required="true"
+                              required={true}
                               disabled={editUserProfile ? false : true}
                               value={userName}
                               name="userName"
@@ -364,7 +364,7 @@ class Profile extends React.Component {
                               value={userEmail}
                               disabled={editUserProfile ? false : true}
                               name="email"
-                              required="true"
+                              required={true}
                               onChange={(event) => this.onTextValueChanged("userEmail", event.target.value)}
                               placeholder="jesse@example.com"
                               type="email"
