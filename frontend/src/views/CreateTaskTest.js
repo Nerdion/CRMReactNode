@@ -153,8 +153,8 @@ class CreateTaskTest extends React.Component {
 
         }
         catch (err) {
-            console.log("Error fetching data-----------", JSON.stringify(err));
-            this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close: true });
         }
     }
     onClickSaveWorkSpaceTask = async (statusId) => {
@@ -219,8 +219,8 @@ class CreateTaskTest extends React.Component {
             }
         }
         catch (err) {
-            console.log("Error fetching data-----------", err);
-            this.setState({ title, message: err, Alert_open_close: true });
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close: true });
         }
     }
 

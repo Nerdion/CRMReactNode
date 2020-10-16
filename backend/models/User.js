@@ -295,6 +295,15 @@ module.exports = class User {
         }
     }
 
+    async getMyUserNameAndImage() {
+
+        let profileAndImage = {
+            userProfile: this.decodedInformation.userProfileImage ? this.decodedInformation.userProfileImage : '',
+            name : this.decodedInformation.name
+        }
+        return { success: true, data: profileAndImage}
+    }
+
     // this will send organization manager a mail
     async inviteToJoin(managerId) {
         try {

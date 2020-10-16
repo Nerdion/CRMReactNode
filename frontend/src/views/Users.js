@@ -134,8 +134,8 @@ class Users extends React.Component {
             }
         }
         catch (err) {
-            console.log("Error fetching data-----------", err);
-            this.setState({ title, message: err, Alert_open_close: true });
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close: true });
         }
     }
 
@@ -144,6 +144,7 @@ class Users extends React.Component {
     }
 
     getUserData = async () => {
+        userData = []
         this.jwtToken = await localStorage.getItem('CRM_Token_Value');
 
         const getAllMembers = await fetch(organizationAPI, {
@@ -174,7 +175,7 @@ class Users extends React.Component {
                 UserName: data.name,
                 Role: isAdmin,
                 mail : data.email,
-                imageUrl: 'blank',
+                imageUrl: data.userProfileImage,
             })
         }
 

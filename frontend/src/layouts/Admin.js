@@ -67,6 +67,7 @@ class Admin extends React.Component {
     }
     return "Edit Task";
   };
+
   render() {
     return (
       <>
@@ -83,7 +84,7 @@ class Admin extends React.Component {
         <div className="main-content" ref="mainContent">
           <AdminNavbar
             {...this.props}
-            userName={"Nishad Patil"}
+            //userName={"Nishad Patil"}
             //userImage
             logout={() => this.logout()}
             brandText={this.getBrandText(this.props.location.pathname)}
