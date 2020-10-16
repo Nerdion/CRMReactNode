@@ -107,9 +107,7 @@ class Register extends React.Component {
           console.log(UserRegisterApiCall, 'UserRegisterApiCall');
 
           if (responseData.success === true) {
-            console.log("User Loggedin");
-            localStorage.setItem('CRM_Token_Value', responseData.token);
-            this.props.history.push("/auth/Login");
+            this.props.history.push("/auth/login");
           }
           else {
             message = "Invalid Email & Password";

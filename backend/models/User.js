@@ -284,7 +284,7 @@ module.exports = class User {
                     projection: {
                         _id: 0,
                         name:1,
-                        imageUrl: 1
+                        userProfileImage: 1
                     }
                 })
                 users.push(userData)
@@ -338,7 +338,7 @@ module.exports = class User {
                 let orgId = this.decodedInformation.orgId
                 let newUserData = await this.verifyUser(newUserToken)
                 await this.setOrgID(orgId)
-                return { sucess: true, message: 'User added sucessfully!'}
+                return { success: true, message: 'User added sucessfully!'}
             } else {
                 return { success: false, message: 'User is not admin'}
             }
@@ -351,9 +351,9 @@ module.exports = class User {
         try {
             let regexp = new RegExp(`^${name}`, 'gm')
             let data = await mongo.usacrm.collection(this.User).find({ orgName: { $regex: regexp } }).limit(5).toArray()
-            return { sucess: true, userNameData: data }
+            return { success: true, userNameData: data }
         } catch (e) {
-            return { sucess: false, error: e.toString() }
+            return { success: false, error: e.toString() }
         }
     }
 
@@ -373,17 +373,18 @@ module.exports = class User {
 
             return { success: true, data: data}
         } catch (e) {
-            return { sucess: false, error: e.toString() }
+            return { success: false, error: e.toString() }
         }
     }
 
     async setUserProfileInformation(requestData) {
         try {
             let changedData = requestData.data
+            changedData.name = changedData.userName
             await mongo.usacrm.collection(this.User).findOneAndUpdate({_id:this.decodedInformation._id}, { $set : changedData})
-            return { sucess: true, message: 'Profile Updated Sucessfully'}
+            return { success: true, message: 'Profile Updated Sucessfully'}
         } catch (e) {
-            return { sucess: false, error: e.toString() }
+            return { success: false, error: e.toString() }
         }
     }
 }
