@@ -194,7 +194,7 @@ class Profile extends React.Component {
           })
         });
         let responseData = await editUserProfileData.json();
-        if (responseData.sucess === true) {
+        if (responseData.success === true) {
           console.log('Updated successfully')
           setTimeout(() => {
             this.componentDidMount();
