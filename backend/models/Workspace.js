@@ -54,7 +54,12 @@ class Workspace {
                     } else if (updatedWorkSpaceDataKeys[i] == 'addedUserIds') {
                         let addedIds = await this.returnObjectId(updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]])
                         for (let i = 0; i < addedIds.length; i++) {
-                            workspaceData['userIds'].push(addedIds[i])
+                            if(!workspaceData['userIds'].includes(addedIds[i])){
+                                workspaceData['userIds'].push(addedIds[i])
+                            }else{
+                                addedIds.splice(i,1)
+                                i--;
+                            }
                         }
                         await this.addUserIds(addedIds, workspaceId)
                     }
@@ -205,7 +210,11 @@ class Workspace {
                     lastModifiedDate: null
                 }
                 if (!(userIds[i] == managerId)) {
-                    await mongo.usacrm.collection(this.user).updateOne({ _id: userIds[i] }, { $push: { "workspaces": workspacesObj } })
+                    let data = await mongo.usacrm.collection(this.user).findOne({_id:userIds[i],'workspaces.workspaceId':workspace.workspaceId})
+                    if(!data){
+                        await mongo.usacrm.collection(this.user).updateOne({ _id: userIds[i] }, { $push: { "workspaces": workspacesObj } })
+                    }
+
                 }
             }
             let workspacesObj = {
@@ -213,7 +222,10 @@ class Workspace {
                 rollId: 1,
                 lastModifiedDate: null
             }
-            await mongo.usacrm.collection(this.user).updateOne({ _id: managerId }, { $push: { "workspaces": workspacesObj } })
+            let data = await mongo.usacrm.collection(this.user).findOne({_id:managerId,'workspaces.workspaceId':workspace.workspaceId})
+                    if(!data){
+                        await mongo.usacrm.collection(this.user).updateOne({ _id: managerId }, { $push: { "workspaces": workspacesObj } })
+                    }
         } catch (err) {
             return false
         }
