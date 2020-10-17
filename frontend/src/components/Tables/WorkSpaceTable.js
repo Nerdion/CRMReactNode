@@ -98,12 +98,12 @@ export class WorkSpaceTable extends Component {
                                                     Tdata.users.map((item, index) => (
                                                         <>
                                                             <a
-                                                                className="avatar avatar-sm"
+                                                                className="avatar avatar-sm overflow-h"
                                                                 id={`tooltip${index}`}
                                                             >
                                                                 <img
                                                                     // alt={item.name}
-                                                                    className="rounded-circle"
+                                                                    className="rounded-circle "
                                                                     src={item.userProfileImage}
                                                                 />
                                                             </a>
