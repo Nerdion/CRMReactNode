@@ -187,14 +187,14 @@ class WorkSpace extends React.Component {
         //     }
         // });
 
-        this.state.users.map(val => {
-            if (val.userId === userId) {
-                return;
-            }
-            else {
-                userDeleteArray.push(userId);
-            }
-        })
+        // this.state.users.map(val => {
+        //     if (val.userId === userId) {
+        //         return;
+        //     }
+        //     else {
+        //         userDeleteArray.push(userId);
+        //     }
+        // })
 
         this.setState({ editUserObj: filteredArray, editUserDeleteIds: userDeleteArray });
     }
