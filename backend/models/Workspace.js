@@ -78,19 +78,22 @@ class Workspace {
                 let tasksIds = workspaceData.tasksIds;
                 let deletedTasks = []
                 let failedDeleteTask = []
-                for (let i = 0; i < tasksIds.length; i++) {
-                    let taskBody = {
-                        action: 3,
-                        from:1,
-                        taskId: tasksIds[i]
-                    }
-                    let deleteTaskResult = await new task().taskAction(taskBody);
-                    if (deleteTaskResult.success == true) {
-                        deletedTasks.push(tasksIDs[i])
-                    } else {
-                        failedDeleteTask.push(tasksIDs[i])
+                if(!tasksIds == null){
+                    for (let i = 0; i < tasksIds.length; i++) {
+                        let taskBody = {
+                            action: 3,
+                            from:1,
+                            taskId: tasksIds[i]
+                        }
+                        let deleteTaskResult = await new task().taskAction(taskBody);
+                        if (deleteTaskResult.success == true) {
+                            deletedTasks.push(tasksIDs[i])
+                        } else {
+                            failedDeleteTask.push(tasksIDs[i])
+                        }
                     }
                 }
+                
                 if (failedDeleteTask.length == 0) {
                     let updateResult = await mongo.usacrm.collection(this.workspace).deleteOne({ "_id": workspaceId });
                     let userUpdatedResult = await mongo.usacrm.collection(this.user).updateMany(
