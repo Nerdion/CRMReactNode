@@ -417,7 +417,7 @@ class WorkSpace extends React.Component {
                                         userData={workSpaceData}
                                         tHeader={HeaderData}
                                         onRowPress={(Tdata) => this.onSingleWorkSpaceClicked(Tdata)}
-                                        onClickAvatar={() => this.OpenUsersDialog()}
+                                        onClickAvatar={(Tdata) => this.OpenUsersDialog(Tdata)}
                                         editWorkSpace={(Tdata) => this.onClickOpenAddWorkSpace(Tdata)}
                                     />
                                 </Col>
