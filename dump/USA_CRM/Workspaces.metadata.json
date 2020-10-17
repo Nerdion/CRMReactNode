@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"USA_CRM.Workspaces"}],"uuid":"9de6d8d015554eab85252fbf9cdee510"}
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"USA_CRM.Workspaces"}],"uuid":"6a1625373df942a1aad95afd1af8a41b"}
