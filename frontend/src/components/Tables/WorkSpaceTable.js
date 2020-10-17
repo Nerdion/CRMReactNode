@@ -109,7 +109,7 @@ export class WorkSpaceTable extends Component {
                                                                 delay={0}
                                                                 target={`tooltip${index}`}
                                                             >
-                                                                {item.UserName}
+                                                                {item.userName}
                                                             </UncontrolledTooltip>
                                                         </>
 

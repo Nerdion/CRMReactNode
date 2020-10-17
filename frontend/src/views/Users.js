@@ -171,7 +171,7 @@ class Users extends React.Component {
             // }
 
             userData.push({
-                UserName: data.name,
+                userName: data.name,
                 Role: data.isAdmin,
                 mail : data.email,
                 imageUrl: data.userProfileImage,

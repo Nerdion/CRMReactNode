@@ -56,10 +56,10 @@ export class UsersTable extends Component {
                                     <tr key={index}>
                                         <th scope="row">
                                             <div className="d-flex justify-content-around align-items-center">
-                                                <Avatar src={Tdata.imageUrl} alt={Tdata.UserName} />
+                                                <Avatar src={Tdata.imageUrl} alt={Tdata.userName} />
                                             </div>
                                         </th>
-                                        <td>{Tdata.UserName}</td>
+                                        <td>{Tdata.userName}</td>
                                         <td>{Tdata.mail}</td>
                                         <td>{Tdata.Role}</td>
                                         {/* <td>
