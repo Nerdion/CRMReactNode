@@ -4,7 +4,7 @@ import React from "react";
 // Editor
 import { Editor } from 'react-draft-wysiwyg';
 import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, convertFromHTML, convertFromRaw, ContentState, } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
@@ -36,7 +36,10 @@ import {
     SaveAlt,
     Edit,
     Add,
-    Clear
+    Clear,
+    Drafts,
+    Public,
+    Publish
 } from '@material-ui/icons';
 
 import {
@@ -66,13 +69,12 @@ class EditTask extends React.Component {
             editorState: EditorState.createEmpty(),
             openMenu: null,
             options: [
-                { "option": "Draft", "icon": FiberManualRecord, "color": "#bac7d4" },
-                { "option": "Pending", "icon": FiberManualRecord, "color": "#e8cd82" },
-                { "option": "Finished", "icon": FiberManualRecord, "color": "#83e67e" },
+                { "option": "Draft", "icon": FiberManualRecord, "color": "#bac7d4", "statusid": 0 },
+                { "option": "Pending", "icon": FiberManualRecord, "color": "#e8cd82", "statusid": 1 },
+                { "option": "Finished", "icon": FiberManualRecord, "color": "#83e67e", "statusid": 2 },
             ],
             statusName: "Draft",
             statusColor: "#bac7d4",
-            statusData: null,
             users: [
                 {
                     "userName": "Nishad Patil",
@@ -95,6 +97,7 @@ class EditTask extends React.Component {
             setAddUsersBol: false,
             userSearch: '',
             userObj: [],
+            addedUserIds: [],
             topicName: '',
             stepTitle: '',
             editData: [
@@ -102,10 +105,6 @@ class EditTask extends React.Component {
                     taskId: 1,
                     topicName: "This is new Topic",
                     stepTitle: "I Know this is some Task",
-                    statusData: {
-                        statusColor: "#e8cd82",
-                        statusName: "Pending"
-                    },
                     users: [
                         {
                             "userName": "Nishad Patil",
@@ -130,10 +129,6 @@ class EditTask extends React.Component {
                     taskId: 2,
                     topicName: "This is new Topic",
                     stepTitle: "I Know this is some Task",
-                    statusData: {
-                        statusColor: "#e8cd82",
-                        statusName: "Pending"
-                    },
                     users: [
                         {
                             "userName": "Nishad Patil",
@@ -147,7 +142,7 @@ class EditTask extends React.Component {
                         }
                     ]
 
-                }
+                },
             ],
             taskEditBol: false,
             taskIdToEdit: null,
@@ -156,6 +151,7 @@ class EditTask extends React.Component {
             title: '',
             message: '',
             Alert_open_close: false,
+            statusId: null
         };
     }
 
@@ -174,8 +170,8 @@ class EditTask extends React.Component {
         this.setState((prevState) => ({ openMenu: !prevState.openMenu }))
     }
 
-    changeStatus = (color, status) => {
-        this.setState({ statusName: status, statusColor: color, statusData: { statusColor: color, statusName: status } });
+    changeStatus = (color, status, id) => {
+        this.setState({ statusName: status, statusColor: color, statusId: id });
     }
 
     onChangeTextData = (state, text) => {
@@ -219,15 +215,20 @@ class EditTask extends React.Component {
         });
     };
 
-    selectUsers = (UserName, UserImage) => {
+    selectUsers = (UserName, UserImage, userId) => {
         //   event.preventDefault();
-        this.setState({ userObj: [...this.state.userObj, { userName: UserName, userImage: UserImage }] });
+        this.setState({
+            userObj: [...this.state.userObj, { userName: UserName, userImage: UserImage }],
+            addedUserIds: [...this.state.addedUserIds, userId]
+        });
     }
 
-    deleteSelectedUsers = (userName) => {
+    deleteSelectedUsers = (userName, userId) => {
         let array = [...this.state.userObj]
-        let filteredArray = array.filter(item => item.userName !== userName)
-        this.setState({ userObj: filteredArray });
+        let filteredArray = array.filter(item => item.userName !== userName);
+        let array1 = [...this.state.addedUserIds]
+        let filteredArray1 = array1.filter(item => item !== userId)
+        this.setState({ userObj: filteredArray, addedUserIds: filteredArray1 });
     }
 
 
@@ -273,20 +274,38 @@ class EditTask extends React.Component {
                     'Authorization': `${crmToken}`
                 },
                 body: JSON.stringify({
-                    taskId:linkTaskId,
+                    taskId: linkTaskId,
                     action: 5
                 })
             });
             const responseData = await getWorkSpaceTaskData.json();
             console.log('getWorkSpaceTaskData--->', JSON.stringify(responseData, null, 2))
             console.log(getWorkSpaceTaskData, 'getWorkSpaceTaskData');
-            let editorRawData = htmlToDraft(responseData.taskData.taskDetails);
+            let editorRawData = convertFromHTML(responseData.taskData.taskDetails);
+            const editorStateData = ContentState.createFromBlockArray(
+                editorRawData.contentBlocks,
+                editorRawData.entityMap,
+            );
+            console.log("html Data--->", responseData.taskData.taskDetails);
+            console.log("Raw Data--->", editorRawData);
+            let setStatusColor = null;
+            if (responseData.taskData.status === "Pending") {
+                setStatusColor = "#e8cd82"
+            }
+            else if (responseData.taskData.status === "Finished") {
+                setStatusColor = "#83e67e"
+            }
+            else if (responseData.taskData.status === "Draft") {
+                setStatusColor = "#bac7d4"
+            }
             this.setState({
                 topicName: responseData.taskData.taskName,
                 stepTitle: responseData.taskData.taskDescription,
-                userObj: responseData.taskData.userObj,
-                statusData: responseData.taskData.status,
-                editorState: editorRawData
+                // userObj: responseData.taskData.userObj,
+                statusId: responseData.taskData.statusId,
+                statusName: responseData.taskData.status,
+                statusColor: setStatusColor,
+                editorState: EditorState.createWithContent(editorStateData)
             })
 
         }
@@ -298,12 +317,14 @@ class EditTask extends React.Component {
 
 
     onClickSaveEditWorkSpaceTask = async () => {
-        const { topicName, stepTitle, userObj, statusData, editorState, taskIdToEdit } = this.state;
+        const { topicName, stepTitle, userObj, editorState, taskIdToEdit, addedUserIds, statusId } = this.state;
         let crm_token = localStorage.getItem('CRM_Token_Value');
+        let taskId = this.props.match.params.tasks;
+        let workspaceId = this.props.match.params.workspaceId;
         let title = "Error";
         let message = '';
         let editorRawData = draftToHtml(convertToRaw(editorState.getCurrentContent()))
-        console.log("data---->", { topicName, stepTitle, userObj, statusData });
+        console.log("data---->", { topicName, stepTitle, userObj });
         console.log("Editor Data--->", editorRawData);
 
         try {
@@ -328,11 +349,13 @@ class EditTask extends React.Component {
                         'Authentication': `${crm_token}`
                     },
                     body: JSON.stringify({
-                        topicName,
-                        stepTitle,
-                        userObj,
-                        statusData,
-                        editorRawData
+                        workspaceId: workspaceId,
+                        taskId: taskId,
+                        taskName: topicName,
+                        taskDescription: stepTitle,
+                        taskDetails: editorRawData,
+                        statusId: statusId,
+                        addedUserIds: addedUserIds,
                     })
                 });
                 const responseData = await UserRegisterApiCall.json();
@@ -344,7 +367,7 @@ class EditTask extends React.Component {
                     const title = "Success"
                     message = "Task Created!";
                     this.setState({ title, message, Alert_open_close: true });
-                    this.props.history.push(`/admin/editTask/${taskIdToEdit}`);
+                    this.props.history.push(`/admin/workSpace/${workspaceId}`);
                 }
                 else {
                     message = "Invalid data";
@@ -372,10 +395,10 @@ class EditTask extends React.Component {
             setAddUsersBol,
             topicName,
             stepTitle,
-            statusData,
             taskEditable,
             Alert_open_close,
             title,
+            statusId,
             message
         } = this.state;
 
@@ -407,16 +430,16 @@ class EditTask extends React.Component {
                         <Col className="" xs="12" md="6" lg="8" xl="8">
                             <Form>
                                 <FormGroup>
-                                    <Label className="text-white" for="Topic">Topic Name</Label>
+                                    <Label className="text-white" for="taskName">Task Name</Label>
                                     <Input
                                         type="text"
                                         className="txt-lt-dark"
-                                        name="TopicName"
+                                        name="taskName"
                                         disabled={taskEditable}
-                                        id="Topic"
+                                        id="taskName"
                                         value={topicName}
                                         onChange={(event) => { this.onChangeTextData("topicName", event.target.value, event) }}
-                                        placeholder="with a placeholder" />
+                                        placeholder="Enter Task Name" />
                                 </FormGroup>
                             </Form>
                         </Col>
@@ -435,7 +458,7 @@ class EditTask extends React.Component {
                                     <DropdownMenu>
                                         {
                                             options.map((options, index) => (
-                                                <DropdownItem key={index} onClick={() => this.changeStatus(options.color, options.option)} key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
+                                                <DropdownItem key={index} onClick={() => this.changeStatus(options.color, options.option, options.statusid)} key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
                                             ))
                                         }
                                     </DropdownMenu>
@@ -486,7 +509,6 @@ class EditTask extends React.Component {
                                             />
                                         ))
                                     }
-
                                 </Col>
                             </Col>
                         </Col>
@@ -494,16 +516,16 @@ class EditTask extends React.Component {
                             <Col>
                                 <Form>
                                     <FormGroup>
-                                        <Label for="StepTitle">Step Title</Label>
+                                        <Label for="taskDescription">Task Description</Label>
                                         <Input
                                             type="text"
                                             className="txt-lt-dark"
-                                            name="StepTitle"
+                                            name="taskDescription"
                                             disabled={taskEditable}
-                                            id="StepTitle"
+                                            id="taskDescription"
                                             value={stepTitle}
                                             onChange={(event) => { this.onChangeTextData("stepTitle", event.target.value, event) }}
-                                            placeholder="Step Title"
+                                            placeholder="Enter Task Description"
                                         />
                                     </FormGroup>
                                 </Form>
@@ -546,12 +568,12 @@ class EditTask extends React.Component {
                                             variant="contained"
                                             disabled={taskEditable}
                                             color="primary"
-                                            className="wd-150"
+                                            className="wd-200"
                                             size="medium"
-                                            startIcon={<SaveAlt />}
-                                            onClick={this.onClickSaveEditWorkSpaceTask}
+                                            startIcon={<Public />}
+                                            onClick={() => { this.onClickSaveEditWorkSpaceTask() }}
                                         >
-                                            Save
+                                            Publish Task
                                         </Button>
                                     </Col>
                                 </Row>
@@ -565,12 +587,10 @@ class EditTask extends React.Component {
                     fullWidth={true}
                     DialogHeader={"Manage Users and Roals"}
                     DialogContentTextData={"Configure Users assignments, Roals, Completions and Content Access for this Subjects"}
-                    DialogButtonText1={"Cancel"}
-                    DialogButtonText2={"Confirm"}
+                    DialogButtonText2={"Ok"}
                     Variant={"outlined"}
                     onClose={this.onClickCloseAddUsers}
                     onOpen={setAddUsersBol}
-                    OnClick_Bt1={this.onClickCloseAddUsers}
                     OnClick_Bt2={this.onClickCloseAddUsers}
                     B2backgroundColor={"#3773b0"}
                     B2color={"#ffffff"}
@@ -595,7 +615,7 @@ class EditTask extends React.Component {
                         <Col className="p-1 max-dn-ht-250  hide-scroll-ind" lg="12">
                             {
                                 filtereContacts.map((users, index) => (
-                                    <Card onClick={(event) => { this.selectUsers(users.userName, users.userImage, event) }} key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
+                                    <Card onClick={() => { this.selectUsers(users.userName, users.userImage, users.userId) }} key={index} className="p-2 pl-3 pr-3 mt-1 cursor-point card-hover-view">
                                         <Row className="d-flex align-items-center justify-content-around d-fr-direction">
                                             <Col lg="3" className="d-flex align-items-center justify-content-center">
                                                 <Avatar alt={users.userName} src={users.userImage} />
@@ -625,7 +645,7 @@ class EditTask extends React.Component {
                                                     <Col lg="1" className="d-flex align-items-center justify-content-center">
                                                         <span
                                                             className="txt-lt-dark cursor-point p-2"
-                                                            onClick={() => { this.deleteSelectedUsers(users.userName) }}
+                                                            onClick={() => { this.deleteSelectedUsers(users.userName, users.userId) }}
                                                         >
                                                             <Clear className="text-red" />
                                                         </span>

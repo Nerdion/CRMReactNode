@@ -196,7 +196,8 @@ class CreateTaskTest extends React.Component {
                             taskDescription: stepTitle,
                             taskDetails: editorRawData,
                             statusId: statusId,
-                            addedUserIds: userObj
+                            addedUserIds: userObj,
+                            //addedUserIds :addedUserIds
                         }
                     }
                     )
@@ -244,7 +245,7 @@ class CreateTaskTest extends React.Component {
         //   event.preventDefault();
         this.setState({
             userObj: [...this.state.userObj, { userName: UserName, userImage: UserImage }],
-            addedUserIds: [...this.state.addedUserIds], userId
+            addedUserIds: [...this.state.addedUserIds, userId]
         });
     }
 
@@ -254,7 +255,7 @@ class CreateTaskTest extends React.Component {
         let filteredArray = array.filter(item => item.userName !== userName)
         let array1 = [...this.state.addedUserIds]
         let filteredArray1 = array1.filter(item => item !== userId)
-        this.setState({ userObj: filteredArray, userId: filteredArray1 });
+        this.setState({ userObj: filteredArray, addedUserIds: filteredArray1 });
     }
 
 
@@ -308,7 +309,6 @@ class CreateTaskTest extends React.Component {
                                         type="text"
                                         className="txt-lt-dark"
                                         name="TaskName"
-
                                         id="TaskName"
                                         value={topicName}
                                         onChange={(event) => { this.onChangeTextData("topicName", event.target.value, event) }}

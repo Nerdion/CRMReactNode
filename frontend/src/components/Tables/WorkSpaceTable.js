@@ -90,7 +90,7 @@ export class WorkSpaceTable extends Component {
                                             </div>
                                         </td>
                                         <td>
-                                            <div onClick={onClickAvatar} className="avatar-group">
+                                            <div  onClick={() => onClickAvatar(Tdata)} className="avatar-group">
                                                 {Tdata.users.length === 0 || Tdata.users === undefined ?
                                                     <span className=" text-default">No User Assigned</span> :
                                                     Tdata.users.map((item, index) => (
