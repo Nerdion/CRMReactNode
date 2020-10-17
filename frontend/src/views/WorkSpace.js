@@ -167,10 +167,34 @@ class WorkSpace extends React.Component {
     editDeleteSelectedUsers = (userName, userId) => {
         let array = [...this.state.editUserObj]
         let filteredArray = array.filter(item => item.userName !== userName)
-        let array1 = [...this.state.upcomingUsers];
-        let filteredArray1 = array1.filter(item => item.userId !== userId)
-        console.log("deletedSelectedIds----->", filteredArray1);
-        this.setState({ editUserObj: filteredArray, editUserDeleteIds: filteredArray1 });
+        // let array1 = [...this.state.upcomingUsers];
+        // let filteredArray1 = array1.filter(item => item.userId !== userId)
+        let userDeleteArray = [];
+        // this.state.upcomingUsers.map(val => {
+        //     if (val.userId === userId) {
+        //         if (this.state.editUserDeleteIds.length !== 0) {
+        //             this.state.editUserDeleteIds.map(val => {
+        //                 if (val === userId) {
+        //                     return;
+        //                 }
+        //                 else {
+        //                     userDeleteArray.push(userId);
+        //                 }
+        //             })
+        //         }
+        //     }
+        // });
+
+        this.state.users.map(val => {
+            if (val.userId === userId) {
+                return;
+            }
+            else {
+                userDeleteArray.push(userId);
+            }
+        })
+
+        this.setState({ editUserObj: filteredArray, editUserDeleteIds: userDeleteArray });
     }
 
     selectUsers = (UserName, UserImage, UserId) => {
@@ -294,7 +318,7 @@ class WorkSpace extends React.Component {
                         'Authorization': `${crmToken}`
                     },
                     body: JSON.stringify({
-                        updatedWorkspaceData: workspaceData,
+                        updatedWorkSpaceData: workspaceData,
                         action: 2,
                     })
                 });
