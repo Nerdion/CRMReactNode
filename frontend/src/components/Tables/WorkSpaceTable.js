@@ -36,7 +36,9 @@ export class WorkSpaceTable extends Component {
             IconName,
             onRowPress,
             onClickAvatar,
-            editWorkSpace } = this.props;
+            editWorkSpace,
+            deleteWorkSpace
+        } = this.props;
         return (
             <div>
                 <Col className="mb-12 mb-xl-0" md='12' xl="12">
@@ -90,7 +92,7 @@ export class WorkSpaceTable extends Component {
                                             </div>
                                         </td>
                                         <td>
-                                            <div  onClick={() => onClickAvatar(Tdata)} className="avatar-group">
+                                            <div onClick={() => onClickAvatar(Tdata)} className="avatar-group">
                                                 {Tdata.users.length === 0 || Tdata.users === undefined ?
                                                     <span className=" text-default">No User Assigned</span> :
                                                     Tdata.users.map((item, index) => (
@@ -140,7 +142,7 @@ export class WorkSpaceTable extends Component {
                                                         </DropdownItem>
                                                     <DropdownItem
 
-                                                        onClick={e => e.preventDefault()}
+                                                        onClick={() => deleteWorkSpace(Tdata)}
                                                     >
                                                         <Delete color="error" />
                                                             Delete
