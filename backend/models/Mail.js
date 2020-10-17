@@ -1,23 +1,21 @@
 var nodemailer = require('nodemailer');
 
+let credentials = require('../config')
 //var smtpTransport = require('nodemailer-smtp-transport');
 
 class Mail {
 
     constructor() {
-        this.auth = {
-            user: 'shriyashshingare@yahoo.com',
-            pass: 'wdsurjybgdcdypct',
-        }
-        this.host = 'smtp.mail.yahoo.com'
-        this.service = 'yahoo'
-        this.port = 465
+        this.auth = credentials.auth
+        this.host = credentials.mailHost
+        this.service = credentials.mailService
+        this.port = credentials.mailPort
     }
 
     sendMail = (options) => {
 
         const mailOptions = {
-            from: '"Smart Note" <shriyashshingare@yahoo.com>',
+            from: `"Smart Note" <${this.auth.user}> `,
             to: options.toMail,
             subject: options.subject,
             html: options.html,

@@ -10,8 +10,8 @@ const formDetailsController = require('../controllers/FormDetailsController')
 //mail api's
 api.use('/api/sendmail', mailcontroller.sendMail);
 
-api.use('/auth/login', userController.login);
-api.use('/auth/register', userController.register);
+api.use('/api/login', userController.login);
+api.use('/api/register', userController.register);
 
 api.use('/api/organisation', organizationController.manage);
 
