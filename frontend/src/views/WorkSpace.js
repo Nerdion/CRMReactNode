@@ -157,7 +157,6 @@ class WorkSpace extends React.Component {
 
 
     onSingleWorkSpaceClicked = (TableData) => {
-        console.log("Table Data-->", TableData);
         this.props.history.push("/admin/tasks", { WorkSpaceName: TableData.workspaceName, workspaceId: TableData.workspaceId });
     }
 
@@ -167,6 +166,28 @@ class WorkSpace extends React.Component {
 
     onClickOpenAddWorkSpace = () => {
         this.setState({ setAddWorkspaceOpenClose: true, users:this.orgUsersData });
+    }
+
+    onClickOpenUpdateWorkSpace = (data) => {
+        let workspaceMembers = data.users;
+
+        this.setState({userObj : workspaceMembers})
+        //this.orgUsersData = workspaceMembers
+
+        //this.setState({users:this.orgUsersData})
+
+        let usersToDisplayInOrganization = []
+        console.log("My users", data.users.length)
+
+        for(let i=0;i<data.users.length; i++) {
+            for(let j=0;j<this.orgUsersData.length; i++) {
+                if(data.users[i].userId !== this.orgUsersData[j].id) {
+                    usersToDisplayInOrganization.push(this.orgUsersData[j])
+                }
+            }
+        }
+
+        this.setState({ setAddWorkspaceOpenClose: true, users:usersToDisplayInOrganization });
     }
 
     handleClose = () => {
@@ -205,15 +226,12 @@ class WorkSpace extends React.Component {
     }
 
     OpenUsersDialog = (data) => {
-        console.log(data)
-        this.setState({ setShowUsers: true })
+        this.setState({ setShowUsers: true , UserData: data})
     }
 
     handleCloseDialog = () => {
         this.setState({ setShowUsers: false })
     }
-
-    
     
     getWorkSpace = async () => {
         let title = "Error";
@@ -258,10 +276,7 @@ class WorkSpace extends React.Component {
                 })
             });
             const responseData = await editWorkSpace.json();
-            console.log('editWorkSpace--->', JSON.stringify(responseData, null, 2))
-            console.log(editWorkSpace, 'editWorkSpace');
 
-            console.log("set workspace:---", responseData.workspaceGrid);
             this.setState({
                 workSpaceData: responseData.workspaceGrid
             })
@@ -336,8 +351,6 @@ class WorkSpace extends React.Component {
                     })
                 });
                 let responseData = await setWorkSpaceResponse.json();
-                console.log(responseData, 'setWorkSpaceResponseData')
-                console.log(setWorkSpaceResponse, 'setWorkSpaceResponse');
 
                 if (responseData.success === true) {
                     const title = "Success"
@@ -370,7 +383,8 @@ class WorkSpace extends React.Component {
             users,
             userObj,
             userSearch,
-            setShowUsers
+            setShowUsers,
+            UserData
         } = this.state;
 
         const AlertError =
@@ -410,8 +424,8 @@ class WorkSpace extends React.Component {
                                         userData={workSpaceData}
                                         tHeader={HeaderData}
                                         onRowPress={(Tdata) => this.onSingleWorkSpaceClicked(Tdata)}
-                                        onClickAvatar={(Tdata) => this.OpenUsersDialog(Tdata)}
-                                        editWorkSpace={(Tdata) => this.onClickOpenAddWorkSpace(Tdata)}
+                                        onClickAvatar={(Tdata) => this.OpenUsersDialog(Tdata.users)}
+                                        editWorkSpace={(Tdata) => this.onClickOpenUpdateWorkSpace(Tdata)}
                                     />
                                 </Col>
                             </Row>
