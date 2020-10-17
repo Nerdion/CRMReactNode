@@ -24,6 +24,11 @@ import AdminNavbar from "../components/Navbars/AdminNavbar";
 import AdminFooter from "../components/Footers/AdminFooter";
 import Sidebar from "../components/Sidebar/Sidebar";
 
+//redux
+import { connect } from 'react-redux';
+
+import * as actionTypes from '../store/actions';
+
 import routes from "../routes.js";
 
 class Admin extends React.Component {
@@ -37,7 +42,7 @@ class Admin extends React.Component {
   }
 
   logout = (e) => {
-    localStorage.removeItem('CRM_Token_Value');
+    this.props.onLogin(localStorage.removeItem('CRM_Token_Value'))
     this.setState({ logoutBol: true })
   }
   getRoutes = routes => {
@@ -107,4 +112,16 @@ class Admin extends React.Component {
   }
 }
 
-export default Admin;
+const mapStateToProps = state => {
+  return {
+    setLogin: state.setLoginValue
+  };
+}
+
+const mapDispatcToProps = dispatch => {
+  return {
+    onLogin: (setLoginData) => dispatch({ type: actionTypes.SET_LOGIN, setLoginValue: setLoginData })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatcToProps)(Admin);

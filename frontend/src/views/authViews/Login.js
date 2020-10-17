@@ -41,6 +41,7 @@ class Login extends React.Component {
     token = this.props.match.params.token;
     console.log(token)
     if (token) {
+      // this.props.onLogin(localStorage.removeItem('CRM_Token_Value'));
       let originalToken = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
       console.log(token);
       let crmToken = await this.decryptData(originalToken);
@@ -134,17 +135,14 @@ class Login extends React.Component {
     console.log(UserLoginApiCall, 'UserLoginApiCall');
     if (responseData.success === true) {
       console.log("User Loggedin");
-      localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
+      localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token)
       console.log("this is orgId---->", responseData.orgID);
       if (responseData.orgID) {
-        this.props.onLogin(localStorage.getItem('CRM_Token_Value'));
-        setTimeout(() => {
-          this.props.history.push("/admin/workSpace");
-        }, 500);
+        await this.props.onLogin(localStorage.getItem('CRM_Token_Value'));
+        await this.props.history.push("/admin/workSpace");
       } else {
-        setTimeout(() => {
-          this.props.history.push("/auth/joininviteorg");
-        }, 500);
+        await this.props.onLogin(localStorage.getItem('CRM_Token_Value'));
+        await this.props.history.push("/auth/joininviteorg");
       }
     }
     else {
