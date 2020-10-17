@@ -348,3 +348,13 @@ CreateTaskTest
                                 </ButtonDropdown>
                             </Tooltip>
                         </Col>} */}
+
+                                // let idModified = usersToDisplayInOrganization.map(
+        //     obj => {
+        //         return {
+        //             "userId" : obj._id,
+        //             "image":obj.image,
+        //             "name":obj.name
+        //         }
+        //     }
+        // );
