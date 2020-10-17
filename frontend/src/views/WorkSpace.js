@@ -177,15 +177,24 @@ class WorkSpace extends React.Component {
         //this.setState({users:this.orgUsersData})
 
         let usersToDisplayInOrganization = []
-        console.log("My users", data.users.length)
-
+        console.log("My users", this.orgUsersData)
+        
         for(let i=0;i<data.users.length; i++) {
-            for(let j=0;j<this.orgUsersData.length; i++) {
+            for(let j=0;j<this.orgUsersData.length; j++) {
                 if(data.users[i].userId !== this.orgUsersData[j].id) {
                     usersToDisplayInOrganization.push(this.orgUsersData[j])
                 }
             }
         }
+        // let idModified = usersToDisplayInOrganization.map(
+        //     obj => {
+        //         return {
+        //             "userId" : obj._id,
+        //             "image":obj.image,
+        //             "name":obj.name
+        //         }
+        //     }
+        // );
 
         this.setState({ setAddWorkspaceOpenClose: true, users:usersToDisplayInOrganization });
     }
