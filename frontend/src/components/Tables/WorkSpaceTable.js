@@ -102,14 +102,14 @@ export class WorkSpaceTable extends Component {
                                                                 <img
                                                                     // alt={item.name}
                                                                     className="rounded-circle"
-                                                                    src={item.imageUrl}
+                                                                    src={item.userProfileImage}
                                                                 />
                                                             </a>
                                                             <UncontrolledTooltip
                                                                 delay={0}
                                                                 target={`tooltip${index}`}
                                                             >
-                                                                {item.name}
+                                                                {item.UserName}
                                                             </UncontrolledTooltip>
                                                         </>
 
