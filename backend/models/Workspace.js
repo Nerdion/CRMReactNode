@@ -103,7 +103,17 @@ class Workspace {
         } else if (bodyInfo.action == 4) { //grid data workspace
             try {
                 let workspaceGrid = []
-                let workspaceData = await mongo.usacrm.collection(this.workspace).find({}).toArray();
+                let workspaceData;
+                if(bodyInfo.isAdmin){
+                    workspaceData = await mongo.usacrm.collection(this.workspace).find({}).toArray();
+                }else {
+                    let workspaceIds = await mongo.usacrm.collection(this.user).aggregate([
+                        { "$match": { "_id": bodyInfo.userId } },
+                        { "$project": { "workspaceIds": "$workspaces.workspaceId", "_id": 0 } }
+                    ]).toArray()
+
+                    workspaceData = await mongo.usacrm.collection(this.workspace).find({_id:{$in:workspaceIds[0]['workspaceIds']}}).toArray()
+                }
                 for (let i = 0; i < workspaceData.length; i++) {
                     let fData = {};
                     fData['workspaceName'] = workspaceData[i].workspaceName
