@@ -164,15 +164,15 @@ class Users extends React.Component {
 
         for (let i = 0; i < responseData.length; i++) {
             let data = responseData[i]
-            let isAdmin = 'Member'
+            // let isAdmin = 'Member'
 
-            if(data.orgRoleId) {
-                isAdmin = 'Admin'
-            }
+            // if(data.orgRoleId) {
+            //     isAdmin = 'Admin'
+            // }
 
             userData.push({
                 UserName: data.name,
-                Role: isAdmin,
+                Role: data.isAdmin,
                 mail : data.email,
                 imageUrl: data.userProfileImage,
             })
