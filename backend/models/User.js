@@ -158,7 +158,7 @@ module.exports = class User {
             let decoded = await jwt.verify(token, tokenKey)
             this.decodedInformation = await mongo.usacrm.collection(this.User).findOne({ _id: new ObjectId(decoded.userid) }, {
                 projection: {
-                    password:0,
+                    password: 0,
                     workspaces: 0
                 }
             })
@@ -220,7 +220,7 @@ module.exports = class User {
             let name = authData.name
             await mongo.usacrm.collection(this.User).updateOne({ "email": this.decodedInformation.email },
                 {
-                    $set: { name: name, password: password, statusId: 1, orgRoleId: 0}
+                    $set: { name: name, password: password, statusId: 1, orgRoleId: 0 }
                 })
 
             let userData = this.decodedInformation
@@ -252,8 +252,20 @@ module.exports = class User {
     // returns all the members in the organization
     async getMyOrganizationMembers() {
         try {
-            let data = await mongo.usacrm.collection(this.User).find({ orgId: this.decodedInformation.orgId }).project({ orgId: 0, password: 0, statusId: 0 }).toArray()
+            let data = await mongo.usacrm.collection(this.User).find({ orgId: this.decodedInformation.orgId }).project({ orgId: 0, password: 0, statusId: 0, workspaces: 0 }).toArray()
             //console.log(data)
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].orgRoleId == 1) {
+                    data[i]['isAdmin'] = 'Admin'
+                } else {
+                    let checkUser = await mongo.usacrm.collection(this.User).findOne({ _id: data[i]._id, 'workspaces.rollId': 1 })
+                    if (checkUser) {
+                        data[i]['isAdmin'] = 'Manager'
+                    } else {
+                        data[i]['isAdmin'] = 'Member'
+                    }
+                }
+            }
             return { success: true, message: 'Users inside this organization', data: data }
         } catch (e) {
             return { success: false, message: '', error: e.toString() }
@@ -283,7 +295,7 @@ module.exports = class User {
                 let userData = await mongo.usacrm.collection(this.User).findOne({ _id: userIds[i] }, {
                     projection: {
                         _id: 0,
-                        name:1,
+                        name: 1,
                         userProfileImage: 1
                     }
                 })
@@ -299,9 +311,9 @@ module.exports = class User {
 
         let profileAndImage = {
             userProfile: this.decodedInformation.userProfileImage ? this.decodedInformation.userProfileImage : '',
-            name : this.decodedInformation.name
+            name: this.decodedInformation.name
         }
-        return { success: true, data: profileAndImage}
+        return { success: true, data: profileAndImage }
     }
 
     // this will send organization manager a mail
@@ -309,8 +321,8 @@ module.exports = class User {
         try {
             let loggedInUser = this.decodedInformation
 
-            let managerInfo = await mongo.usacrm.collection(this.User).findOne({ _id: managerId }, {projection: {email:1, _id:0}})
-    
+            let managerInfo = await mongo.usacrm.collection(this.User).findOne({ _id: managerId }, { projection: { email: 1, _id: 0 } })
+
             let inviteToken = await this.generatetoken(loggedInUser.email, loggedInUser._id)
             let link = `${siteName}/admin/joinUser/${inviteToken.Token}`
             let html = await inviteToJoin(loggedInUser.name, loggedInUser.email, link)
@@ -323,10 +335,10 @@ module.exports = class User {
 
             await new Mail().sendMail(mailOptions)
 
-            return { success: true, message: 'Invite sent successfully.'}
+            return { success: true, message: 'Invite sent successfully.' }
 
         } catch (e) {
-            return { success: false, error: e.toString()}
+            return { success: false, error: e.toString() }
         }
     }
 
@@ -334,17 +346,17 @@ module.exports = class User {
         try {
             let managerId = await new Organization().getMyManager(this.decodedInformation.orgId)
 
-            if(managerId.message.toString() == this.decodedInformation._id.toString()) {
+            if (managerId.message.toString() == this.decodedInformation._id.toString()) {
                 let orgId = this.decodedInformation.orgId
                 let newUserData = await this.verifyUser(newUserToken)
                 await this.setOrgID(orgId)
-                return { success: true, message: 'User added sucessfully!'}
+                return { success: true, message: 'User added sucessfully!' }
             } else {
-                return { success: false, message: 'User is not admin'}
+                return { success: false, message: 'User is not admin' }
             }
 
         } catch (e) {
-            return { sucess: false, error : e.toString()}
+            return { sucess: false, error: e.toString() }
         }
     }
     async searchToJoinUser(name) {
@@ -371,7 +383,7 @@ module.exports = class User {
             userInfo.postCode ? data.postCode = userInfo.postCode : ''
             userInfo.userProfileImage ? data.userProfileImage = userInfo.userProfileImage : ''
 
-            return { success: true, data: data}
+            return { success: true, data: data }
         } catch (e) {
             return { success: false, error: e.toString() }
         }
@@ -381,8 +393,8 @@ module.exports = class User {
         try {
             let changedData = requestData.data
             changedData.name = changedData.userName
-            await mongo.usacrm.collection(this.User).findOneAndUpdate({_id:this.decodedInformation._id}, { $set : changedData})
-            return { success: true, message: 'Profile Updated Sucessfully'}
+            await mongo.usacrm.collection(this.User).findOneAndUpdate({ _id: this.decodedInformation._id }, { $set: changedData })
+            return { success: true, message: 'Profile Updated Sucessfully' }
         } catch (e) {
             return { success: false, error: e.toString() }
         }
