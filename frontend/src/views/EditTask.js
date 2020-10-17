@@ -162,7 +162,7 @@ class EditTask extends React.Component {
             this.setState({ taskEditBol: true, taskIdToEdit: linkTaskId, taskEditable: true })
             this.getTaskData();
         }
-        this.getUserProfile();
+        //this.getUserProfile();
 
     }
 
@@ -341,21 +341,25 @@ class EditTask extends React.Component {
                 this.setState({ title, message, Alert_open_close: true });
             }
             else if (topicName !== "" && stepTitle !== "") {
-                const UserRegisterApiCall = await fetch(saveEditTaskDataApi, {
+                const UserRegisterApiCall = await fetch(taskAction, {
                     method: "POST",
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        'Authentication': `${crm_token}`
+                        'Authorization': `${crm_token}`
                     },
                     body: JSON.stringify({
-                        workspaceId: workspaceId,
-                        taskId: taskId,
-                        taskName: topicName,
-                        taskDescription: stepTitle,
-                        taskDetails: editorRawData,
-                        statusId: statusId,
-                        addedUserIds: addedUserIds,
+                        action:2,
+                        updatedTaskData: {
+                            taskId: taskId,
+                            workspaceId: workspaceId,
+                            taskName: topicName,
+                            taskDescription: stepTitle,
+                            deletedUserIds: [],
+                            addedUserIds: addedUserIds,
+                            taskDetails: editorRawData,
+                            statusId: statusId
+                        }
                     })
                 });
                 const responseData = await UserRegisterApiCall.json();
