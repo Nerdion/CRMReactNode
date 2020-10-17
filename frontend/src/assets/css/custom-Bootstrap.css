@@ -1,5 +1,4 @@
 /* Custom Bootstrap 
-    border-radius
 */
 
 .br-xs{
@@ -306,18 +305,6 @@ color: #e8cd82
     cursor: pointer !important;
 }
 
-/* .zindex-1{
-    z-index: 1 !important;
-}
-
-.zindex-100{
-    z-index: 100 !important;
-} */
-
-/* .card-hover-view{
-    background-color: #161f2e4f !important;
-} */
-
 .card-hover-view:hover{
     background-color: #c1cfe74f !important;
 }
@@ -377,9 +364,7 @@ color: #e8cd82
 }
 
 .min-dn-ht{
-    /* height: fit-content; */
     max-height: 347px;
-    /* min-height: 45vh; */
     overflow:scroll;
 }
 
@@ -397,13 +382,6 @@ color: #e8cd82
     max-height: 500px;
     overflow:scroll;
 }
-
-/* .min-dn-ht{
-    height: auto;
-    height: 347px;
-    min-height: 45vh;
-    overflow:scroll;
-} */
 
 
 .hide-scroll-ind::-webkit-scrollbar {

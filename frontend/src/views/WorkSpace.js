@@ -85,7 +85,9 @@ class WorkSpace extends React.Component {
             upcomingUsers: [],
             workSpaceId: null,
             isCreatedWorkspace: false,
-            isEditWorkSpace: false
+            isEditWorkSpace: false,
+            Alert_open_close2: false,
+            alertColor2: null
         };
     }
 
@@ -167,10 +169,18 @@ class WorkSpace extends React.Component {
     editDeleteSelectedUsers = (userName, userId) => {
         let array = [...this.state.editUserObj]
         let filteredArray = array.filter(item => item.userName !== userName)
-        let array1 = [...this.state.upcomingUsers];
-        let filteredArray1 = array1.filter(item => item.userId !== userId)
-        console.log("deletedSelectedIds----->", filteredArray1);
-        this.setState({ editUserObj: filteredArray, editUserDeleteIds: filteredArray1 });
+        let userDeleteArray = [];
+        // userDeleteArray.push(userId)
+
+        for(let i=0;i< this.state.users.length; i++){
+            for(let j=0;j< this.state.editUserDeleteIds.length; j++){
+                if(this.state.users[i].userId !== this.state.editUserDeleteIds[j]){
+                    userDeleteArray.push(userId);
+                }
+            }
+        }
+
+        this.setState({ editUserObj: filteredArray, editUserDeleteIds: userDeleteArray });
     }
 
     selectUsers = (UserName, UserImage, UserId) => {
@@ -207,6 +217,10 @@ class WorkSpace extends React.Component {
         this.setState({ Alert_open_close1: false });
     }
 
+    onDismissAlert2 = () => {
+        this.setState({ Alert_open_close2: false });
+    }
+
     OpenUsersDialog = (data) => {
         this.setState({ setShowUsers: true, UserData: data })
     }
@@ -241,7 +255,7 @@ class WorkSpace extends React.Component {
         }
     }
 
-    editWorkSpace = async () => {
+    editWorkSpace = async (data) => {
         const { WorkSpaceName, editUserObj, editUserDeleteIds, workSpaceId } = this.state;
         const title = "Error";
         let message = "";
@@ -294,7 +308,7 @@ class WorkSpace extends React.Component {
                         'Authorization': `${crmToken}`
                     },
                     body: JSON.stringify({
-                        updatedWorkspaceData: workspaceData,
+                        updatedWorkSpaceData: workspaceData,
                         action: 2,
                     })
                 });
@@ -405,6 +419,44 @@ class WorkSpace extends React.Component {
     }
 
 
+    deleteWorkSpace = async (data) => {
+        let title = "Error";
+        let message = "";
+        let crmToken = localStorage.getItem('CRM_Token_Value');
+        try {
+            let deleteWorkspaceResponse = await fetch(workspaceAction, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `${crmToken}`
+                },
+                body: JSON.stringify({
+                    workspaceId: data.workspaceId,
+                    action: 3,
+                })
+            });
+            let responseData = await deleteWorkspaceResponse.json();
+
+            if (responseData.success === true) {
+                title = "Success"
+                message = "WorkSpace Deleted!";
+                this.setState({ title, message, Alert_open_close2: true, alertColor2: "success" });
+                this.getWorkSpace();
+            }
+            else {
+                message = responseData.error;
+                this.setState({ title, message, Alert_open_close2: true });
+            }
+        }
+        catch (err) {
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close2: true });
+        }
+
+    }
+
+
     render() {
         let {
             Alert_open_close,
@@ -422,7 +474,9 @@ class WorkSpace extends React.Component {
             Alert_open_close1,
             editUserObj,
             isCreatedWorkspace,
-            isEditWorkSpace
+            isEditWorkSpace,
+            alertColor2,
+            Alert_open_close2
         } = this.state;
 
         const AlertError =
@@ -448,6 +502,17 @@ class WorkSpace extends React.Component {
                     </Alert>
                 </div>
             );
+        const AlertError2 =
+            (
+                <div>
+                    <Alert isOpen={Alert_open_close2} toggle={() => this.onDismissAlert2()} color={alertColor2 ? alertColor2 : "danger"} >
+                        <h4 className="alert-heading">
+                            {title}
+                        </h4>
+                        {message}
+                    </Alert>
+                </div>
+            );
         let filterContacts = users !== null ? users.filter(
             (item) => {
                 return item.userName.toLowerCase().indexOf(userSearch.toLowerCase()) !== -1;
@@ -458,6 +523,7 @@ class WorkSpace extends React.Component {
                 <Header />
                 {/* Page content */}
                 <Container className="mt--7" fluid>
+                    {AlertError2}
                     {workSpaceData === null ?
                         <Card className="bg-transparent shadow border-0">
                             < CardBody className="px-lg-5 py-lg-5 wd-100p ht-500 d-flex justify-content-center align-items-center">
@@ -478,6 +544,7 @@ class WorkSpace extends React.Component {
                                     onRowPress={(Tdata) => this.onSingleWorkSpaceClicked(Tdata)}
                                     onClickAvatar={(Tdata) => this.OpenUsersDialog(Tdata.users)}
                                     editWorkSpace={(Tdata) => this.onClickOpenUpdateWorkSpace(Tdata)}
+                                    deleteWorkSpace={(Tdata) => this.deleteWorkSpace(Tdata)}
                                 />
                             </Col>
                         </Row>}
