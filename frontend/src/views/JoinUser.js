@@ -2,6 +2,11 @@ import React from "react";
 //API's
 import { organizationAPI } from './CRM_Apis';
 
+//redux
+import { connect } from 'react-redux';
+
+import * as actionTypes from '../store/actions';
+
 import {
     Card,
     CardBody,
@@ -26,7 +31,7 @@ class JoinUser extends React.Component {
         let message = '';
         let title = "Error";
         let joinLink = this.props.match.params.joinLink;
-        this.jwtToken = await localStorage.getItem('CRM_Token_Value');
+        this.jwtToken = this.props.setLogin;
         try {
             const UserRegisterApiCall = await fetch(organizationAPI, {
                 method: "POST",
@@ -88,6 +93,16 @@ class JoinUser extends React.Component {
 
 }
 
+const mapStateToProps = state => {
+    return {
+        setLogin: state.setLoginValue
+    };
+}
 
+const mapDispatcToProps = dispatch => {
+    return {
+        onLogin: (setLoginData) => dispatch({ type: actionTypes.SET_LOGIN, setLoginValue: setLoginData })
+    }
+}
 
-export default JoinUser;
+export default connect(mapStateToProps, mapDispatcToProps)(JoinUser);

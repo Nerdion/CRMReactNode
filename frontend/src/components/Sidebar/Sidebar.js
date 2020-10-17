@@ -79,7 +79,7 @@ class Sidebar extends React.Component {
   };
 
   logout = (e) => {
-    localStorage.removeItem('CRM_Token_Value');
+    this.props.onLogin(localStorage.removeItem('CRM_Token_Value'));
     this.props.history.push("/auth/login");
   }
   // creates the links that appear in the left menu / Sidebar
@@ -269,13 +269,15 @@ Sidebar.propTypes = {
 const mapStateToProps = state => {
   return {
     userImage: state.userImage,
-    userName: state.userName
+    userName: state.userName,
+    setLogin: state.setLoginValue
   };
 }
 
 const mapDispatcToProps = dispatch => {
   return {
-    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName })
+    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName }),
+    onLogin: (setLoginData) => dispatch({ type: actionTypes.SET_LOGIN, setLoginValue: setLoginData })
   }
 }
 
