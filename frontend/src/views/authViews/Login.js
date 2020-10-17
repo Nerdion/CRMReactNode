@@ -25,7 +25,7 @@ import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions';
 
 let token = null;
-
+const emailExpression = /(?!.*\.{2})^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([\t]*\r\n)?[\t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([\t]*\r\n)?[\t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
 class Login extends React.Component {
 
   state = {
@@ -60,6 +60,10 @@ class Login extends React.Component {
     this.setState({ Alert_open_close: false });
   }
 
+  emailValidation = (email) => {
+    return emailExpression.test(String(email).toLowerCase());
+  }
+
   submitLoginHandler = async (event) => {
     //event.preventDefault();
     let title = "Error";
@@ -77,14 +81,19 @@ class Login extends React.Component {
         this.setState({ title, message, Alert_open_close: true });
       }
       else if (this.state.UserEmail !== "" && this.state.Password !== "") {
+        if (this.emailValidation(this.state.UserEmail)) {
+          let authData = {
+            useremail: this.state.UserEmail,
+            password: this.state.Password,
+          }
+          let encAuthData = await this.encryptData(authData);
 
-        let authData = {
-          useremail: this.state.UserEmail,
-          password: this.state.Password,
+          await this.getLoggedIn(VerifyUserLogin, encAuthData);
         }
-        let encAuthData = await this.encryptData(authData);
-
-        await this.getLoggedIn(VerifyUserLogin, encAuthData)
+        else {
+          const message = "Invalid Email";
+          this.setState({ title, message, Alert_open_close: true });
+        }
       } else {
         const message = "Please Enter Email & Password";
         this.setState({ title, message, Alert_open_close: true });
@@ -146,7 +155,7 @@ class Login extends React.Component {
       }
     }
     else {
-      this.setState({ title: "Error", message: responseData.message, Alert_open_close: true });
+      this.setState({ title: "Error", message: responseData.Error, Alert_open_close: true });
     }
   }
 
