@@ -23,20 +23,51 @@ import {
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  Form,
-  FormGroup,
-  InputGroupAddon,
-  InputGroupText,
-  Input,
-  InputGroup,
   Navbar,
   Nav,
   Container,
   Media
 } from "reactstrap";
 
+//redux
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
+
+import { getUserProfileApi } from '../../views/CRM_Apis';
+
 class AdminNavbar extends React.Component {
+
+  state = { userName: '', userImage: '' }
+
+  getMyProfile = async () => {
+
+    this.jwtToken = await localStorage.getItem('CRM_Token_Value');
+    const getMyProfileCall = await fetch(getUserProfileApi, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `${this.jwtToken}`
+
+      },
+      body: JSON.stringify({
+        method: 'userNameAndImage'
+      })
+    });
+    const responseData = await getMyProfileCall.json();
+    if (responseData.success) {
+      await this.setState({ userImage: responseData.data.userProfile, userName: responseData.data.name });
+      this.props.onSetUserProfile(responseData.data.userProfile, responseData.data.name);
+    }
+  }
+
+  componentDidMount() {
+    this.getMyProfile();
+  }
+
+
   render() {
+    let { logout ,userName, userImage} = this.props;
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -47,31 +78,20 @@ class AdminNavbar extends React.Component {
             >
               {this.props.brandText}
             </Link>
-            <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
-              <FormGroup className="mb-0">
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="fas fa-search" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Search" type="text" />
-                </InputGroup>
-              </FormGroup>
-            </Form>
             <Nav className="align-items-center d-none d-md-flex" navbar>
               <UncontrolledDropdown nav>
                 <DropdownToggle className="pr-0" nav>
                   <Media className="align-items-center">
-                    <span className="avatar avatar-sm rounded-circle">
+                    <span className="avatar avatar-sm rounded-circle obj-cover">
                       <img
                         alt="..."
-                        src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                        className="navbar-brand-img ht-100p obj-cover"
+                        src={userImage ? userImage : require("../../assets/img/theme/team-4-800x800.jpg")}
                       />
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
                       <span className="mb-0 text-sm font-weight-bold">
-                        Jessica Jones
+                        {userName}
                       </span>
                     </Media>
                   </Media>
@@ -84,20 +104,8 @@ class AdminNavbar extends React.Component {
                     <i className="ni ni-single-02" />
                     <span>My profile</span>
                   </DropdownItem>
-                  <DropdownItem to="/admin/user-profile" tag={Link}>
-                    <i className="ni ni-settings-gear-65" />
-                    <span>Settings</span>
-                  </DropdownItem>
-                  <DropdownItem to="/admin/user-profile" tag={Link}>
-                    <i className="ni ni-calendar-grid-58" />
-                    <span>Activity</span>
-                  </DropdownItem>
-                  <DropdownItem to="/admin/user-profile" tag={Link}>
-                    <i className="ni ni-support-16" />
-                    <span>Support</span>
-                  </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                  <DropdownItem onClick={logout}>
                     <i className="ni ni-user-run" />
                     <span>Logout</span>
                   </DropdownItem>
@@ -111,4 +119,17 @@ class AdminNavbar extends React.Component {
   }
 }
 
-export default AdminNavbar;
+const mapStateToProps = state => {
+  return {
+    userImage: state.userImage,
+    userName: state.userName
+  };
+}
+
+const mapDispatcToProps = dispatch => {
+  return {
+    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatcToProps)(AdminNavbar);

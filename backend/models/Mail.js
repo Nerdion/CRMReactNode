@@ -1,49 +1,40 @@
 var nodemailer = require('nodemailer');
+
+let credentials = require('../config')
+//var smtpTransport = require('nodemailer-smtp-transport');
+
 class Mail {
 
-    constructor() { }
+    constructor() {
+        this.auth = credentials.auth
+        this.host = credentials.mailHost
+        this.service = credentials.mailService
+        this.port = credentials.mailPort
+    }
 
-    sendMail = async () => {
-        // Generate test SMTP service account from ethereal.email
-        // Only needed if you don't have a real mail account for testing
-        // create reusable transporter object using the default SMTP transport
-        let transporter = nodemailer.createTransport({
-            host: "smtp.mail.yahoo.com",
-            service: 'yahoo',
-            secure: false,
-            port: 465,
-            auth: {
-                user: 'shriyashshingare@yahoo.com', // generated ethereal user
-                pass: 'ricbssvuwttkubxt', // generated ethereal password
-            },
-            debug: true,
-            logger: true
-        });
-
-
-        // send mail with defined transport object
-        let info = await transporter.sendMail({
-            from: '"Shriyash Shingare" <devlinklabs@gmail.com>', // sender address
-            to: "neel99khalade@gmail.com, shriyashshingare@gmail.com", // list of receivers
-            subject: "Hello ✔", // Subject line
-            text: "Hello world?", // plain text body
-            html: "<b>Hello world?</b>", // html body
-        });
+    sendMail = (options) => {
 
         const mailOptions = {
-            from: 'ShriyashShingare <shriyashshingare@yahoo.com>',
-            to: 'neel99khalade@gmail.com, shriyashshingare@gmail.com',
-            subject: 'Invoices due',
-            text: 'Dudes, we really need your money.'
+            from: `"Smart Note" <${this.auth.user}> `,
+            to: options.toMail,
+            subject: options.subject,
+            html: options.html,
         };
 
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
-        });
+        return new Promise((resolve,reject)=> {
+            this.transporter = nodemailer.createTransport({
+                host: this.host,
+                service: this.service,
+                secure: false,
+                port: this.port,
+                auth: this.auth,
+            });
+
+            this.transporter.sendMail(mailOptions, function(error, info){
+                if (error) resolve(false);
+                else resolve(true);
+            })
+        })
     }
 }
 
