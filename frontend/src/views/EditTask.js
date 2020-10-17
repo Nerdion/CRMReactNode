@@ -358,7 +358,7 @@ class EditTask extends React.Component {
                             deletedUserIds: [],
                             addedUserIds: addedUserIds,
                             taskDetails: editorRawData,
-                            statusId: 1
+                            statusId: statusId
                         }
                     })
                 });
