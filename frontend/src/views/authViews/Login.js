@@ -13,7 +13,8 @@ import {
   InputGroupText,
   InputGroup,
   Col,
-  Alert
+  Alert,
+  Spinner
 } from "reactstrap";
 
 //API's
@@ -34,7 +35,8 @@ class Login extends React.Component {
     Alert_open_close: false,
     title: '',
     message: '',
-    setRedirect: ''
+    setRedirect: '',
+    isSignned: false
   }
 
   async componentDidMount() {
@@ -68,17 +70,16 @@ class Login extends React.Component {
     //event.preventDefault();
     let title = "Error";
     let token = this.props.match.params.token;
-
-
+    this.setState({ isSignned: true });
     console.log("Signed in:-", this.state.UserEmail, this.state.Password);
     try {
       if (this.state.UserEmail === "") {
         const message = "Please Enter Your Email Address";
-        this.setState({ title, message, Alert_open_close: true });
+        this.setState({ title, message, Alert_open_close: true, isSignned: false });
       }
       else if (this.state.Password === "") {
         const message = "Please Enter Your Password";
-        this.setState({ title, message, Alert_open_close: true });
+        this.setState({ title, message, Alert_open_close: true, isSignned: false });
       }
       else if (this.state.UserEmail !== "" && this.state.Password !== "") {
         if (this.emailValidation(this.state.UserEmail)) {
@@ -92,18 +93,19 @@ class Login extends React.Component {
         }
         else {
           const message = "Invalid Email";
-          this.setState({ title, message, Alert_open_close: true });
+          this.setState({ title, message, Alert_open_close: true, isSignned: false });
         }
       } else {
         const message = "Please Enter Email & Password";
-        this.setState({ title, message, Alert_open_close: true });
+        this.setState({ title, message, Alert_open_close: true, isSignned: false });
       }
     }
     catch (err) {
       console.log("Error fetching data-----------", err);
-      this.setState({ title, message: err.toString(), Alert_open_close: true });
+      this.setState({ title, message: err.toString(), Alert_open_close: true, isSignned: false });
     }
   }
+
   encryptData = async (data) => {
     try {
       let tokenKey = 'crmfrontendbackend'
@@ -161,7 +163,7 @@ class Login extends React.Component {
 
 
   render() {
-    const { title, message, Alert_open_close, setRedirect } = this.state;
+    const { title, message, Alert_open_close, setRedirect, isSignned } = this.state;
     const AlertError =
       (
         <div>
@@ -176,90 +178,87 @@ class Login extends React.Component {
 
     return (
       <>
-        {/* {setRedirect === "workSpace" ?
-          <Switch>
-            <Redirect from="/" to="/admin/workSpace" />
-          </Switch> :
-          setRedirect === "joininviteorg" ?
-            <Switch>
-              <Redirect from="/" to="/admin/joininviteorg" />
-            </Switch> : localStorage.getItem('CRM_Token_Value') ?
-              <Redirect from="/" to="/admin/workSpace" /> :
-              null
-        } */}
         <Col lg="5" md="7">
           {AlertError}
-          <Card className="bg-secondary shadow border-0">
-            <CardBody className="px-lg-5 py-lg-5">
-              <div className="text-center mb-4">
-                <h2 className="txt-dark disable-hover"> Sign in </h2>
-              </div>
-              <Form role="form">
-                <FormGroup className="mb-3">
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-email-83" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="Email"
-                      type="email"
-                      name="email"
-                      className="txt-dark"
-                      value={this.state.UserEmail}
-                      onChange={(event) => { this.onChange("UserEmail", event.target.value, event) }}
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <FormGroup>
-                  <InputGroup className="input-group-alternative">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                        <i className="ni ni-lock-circle-open" />
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input
-                      placeholder="Password"
-                      type="password"
-                      value={this.state.Password}
-                      className="txt-dark"
-                      onChange={(event) => { this.onChange("Password", event.target.value) }}
-                      autoComplete="new-password"
-                    />
-                  </InputGroup>
-                </FormGroup>
-                <div className="text-center">
-                  <Button
-                    className="my-4 pl-6 pr-6 br-lg"
-                    color="primary"
-                    type="button"
-                    onClick={(event) => { this.submitLoginHandler(event) }}
-                  >
-                    Sign in
+          {isSignned ?
+            <Card className="bg-secondary shadow border-0">
+              < CardBody className="px-lg-5 py-lg-5 wd-100p ht-500 d-flex justify-content-center align-items-center">
+                <Col lg="12" className="d-flex justify-content-center align-items-center">
+                  <Spinner style={{ width: '3rem', height: '3rem' }} className="align-self-center" color="primary" />
+                </Col>
+              </CardBody>
+            </Card> :
+            <Card className="bg-secondary shadow border-0">
+              <CardBody className="px-lg-5 py-lg-5">
+                <div className="text-center mb-4">
+                  <h2 className="txt-dark disable-hover"> Sign in </h2>
+                </div>
+                <Form role="form">
+                  <FormGroup className="mb-3">
+                    <InputGroup className="input-group-alternative">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ni ni-email-83" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        placeholder="Email"
+                        type="email"
+                        name="email"
+                        className="txt-dark"
+                        value={this.state.UserEmail}
+                        onChange={(event) => { this.onChange("UserEmail", event.target.value, event) }}
+                      />
+                    </InputGroup>
+                  </FormGroup>
+                  <FormGroup>
+                    <InputGroup className="input-group-alternative">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ni ni-lock-circle-open" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        placeholder="Password"
+                        type="password"
+                        value={this.state.Password}
+                        className="txt-dark"
+                        onChange={(event) => { this.onChange("Password", event.target.value) }}
+                        autoComplete="new-password"
+                      />
+                    </InputGroup>
+                  </FormGroup>
+                  <div className="text-center">
+                    <Button
+                      className="my-4 pl-6 pr-6 br-lg"
+                      color="primary"
+                      type="button"
+                      onClick={(event) => { this.submitLoginHandler(event) }}
+                    >
+                      Sign in
                   </Button>
-                </div>
-                <div className="text-center">
-                  <a
-                    className="txt-lt-dark cursor-point"
+                  </div>
+                  <div className="text-center">
+                    <a
+                      className="txt-lt-dark cursor-point"
 
-                    onClick={() => { this.props.history.push("/auth/forgotpass") }}
-                  >
-                    <small>Forgot password?</small>
-                  </a>
-                </div>
-                <div className="text-center mt-2">
-                  <a
-                    className="txt-lt-dark cursor-point"
+                      onClick={() => { this.props.history.push("/auth/forgotpass") }}
+                    >
+                      <small>Forgot password?</small>
+                    </a>
+                  </div>
+                  <div className="text-center mt-2">
+                    <a
+                      className="txt-lt-dark cursor-point"
 
-                    onClick={() => { this.props.history.push("/auth/register") }}
-                  >
-                    <h5>Sign up</h5>
-                  </a>
-                </div>
-              </Form>
-            </CardBody>
-          </Card>
+                      onClick={() => { this.props.history.push("/auth/register") }}
+                    >
+                      <h5>Sign up</h5>
+                    </a>
+                  </div>
+                </Form>
+              </CardBody>
+            </Card>}
         </Col>
       </>
     );

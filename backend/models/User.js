@@ -258,7 +258,7 @@ module.exports = class User {
                 if (data[i].orgRoleId == 1) {
                     data[i]['isAdmin'] = 'Admin'
                 } else {
-                    let checkUser = await mongo.usacrm.collection(this.User).findOne({ _id: data[i]._id, 'workspaces.rollId': 1 })
+                    let checkUser = await mongo.usacrm.collection(this.User).findOne({ _id: data[i]._id, 'workspaces.roleId': 1 })
                     if (checkUser) {
                         data[i]['isAdmin'] = 'Manager'
                     } else {
@@ -300,7 +300,7 @@ module.exports = class User {
                 if (userData.orgRoleId == 1) {
                     userData['isAdmin'] = 'Admin'
                 } else {
-                    userData.workspaces.rollId ? userData['isAdmin'] = 'Manager' : userData['isAdmin'] = 'Member'
+                    userData.workspaces.roleId ? userData['isAdmin'] = 'Manager' : userData['isAdmin'] = 'Member'
                 }
 
                 users.push({

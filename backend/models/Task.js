@@ -187,7 +187,7 @@ class Task {
             for (let i = 0; i < userIds.length; i++) {
                 let taskObj = {
                     taskId: task.taskId,
-                    rollId: 0,
+                    roleId: 0,
                     lastModifiedDate: null
                 }
                 if (!(userIds[i] == managerId)) {
@@ -199,7 +199,7 @@ class Task {
             }
             let taskObj = {
                 taskId: task.taskId,
-                rollId: 1,
+                roleId: 1,
                 lastModifiedDate: null
             }
             await mongo.usacrm.collection(this.user).updateOne(
@@ -241,7 +241,7 @@ class Task {
             for (let i = 0; i < addedUserIds.length; i++) {
                 let taskObj = {
                     taskId: taskId,
-                    rollId: 0,
+                    roleId: 0,
                     lastModifiedDate: null
                 }
                 await mongo.usacrm.collection(this.user).updateOne(
