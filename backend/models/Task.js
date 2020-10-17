@@ -48,7 +48,7 @@ class Task {
                 let workspaceId = await this.returnObjectId(bodyInfo.updatedTaskData.workspaceId)
                 let updatedTaskData = bodyInfo.updatedTaskData;
                 let updatedTaskDataKeys = Object.keys(updatedTaskData);
-                let nKeysArray = ['taskId', 'deletedUserIds', 'addedUserIds', 'workspaceId']
+                let nKeysArray = ['taskId', 'deletedUserIds', 'addedUserIds']
                 let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: new ObjectId(taskId) })
                 for (let i = 0; i < updatedTaskDataKeys.length; i++) {
                     taskData[updatedTaskDataKeys[i]] = updatedTaskData[i];
