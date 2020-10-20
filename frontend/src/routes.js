@@ -89,7 +89,7 @@ var routes = [
     icon: "ni ni-single-02 text-yellow",
     component: Profile,
     layout: "/admin",
-    showRoute: false,
+    showRoute: true,
     exactLink: false
   },
   {

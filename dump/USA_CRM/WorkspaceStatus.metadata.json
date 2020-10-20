@@ -1,1 +1,0 @@
-{"options":{"autoIndexId":true},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"USA_CRM.WorkspaceStatus"}],"uuid":"63d41ae2e4ea47b98a297845061bb2d2"}
