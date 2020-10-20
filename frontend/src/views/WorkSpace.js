@@ -82,7 +82,6 @@ class WorkSpace extends React.Component {
             editUserObj: [],
             editUserDeleteIds: [],
             editAddedUserIds: [],
-            upcomingUsers: [],
             workSpaceId: null,
             isCreatedWorkspace: false,
             isEditWorkSpace: false,
@@ -127,25 +126,24 @@ class WorkSpace extends React.Component {
         });
         console.log("userData->", workspaceMembers);
 
-        let usersToDisplayInOrganization = []
-     //   console.log("My users", this.orgUsersData)
+        let NewData = [...this.orgUsersData];
 
-        for (let i = 0; i < data.users.length; i++) {
-            for (let j = 0; j < this.orgUsersData.length; j++) {
-                if (data.users[i].userId !== this.orgUsersData[j].id) {
-                    usersToDisplayInOrganization.push(this.orgUsersData[j])
+        for (var i = NewData.length - 1; i >= 0; i--) {
+            for (var j = 0; j < workspaceMembers.length; j++) {
+                if (NewData[i] && (NewData[i].id === workspaceMembers[j].id)) {
+                    NewData.splice(i, 1);
                 }
             }
         }
-        console.log("My users--------", this.orgUsersData)
+
+        console.log("this is new Daat--------", NewData)
 
         this.setState({
             setEditWorkspaceOpenClose: true,
-            users: usersToDisplayInOrganization,
+            users: NewData,
             userBackup: this.orgUsersData,
             editUserObj: workspaceMembers,
             WorkSpaceName: data.workspaceName,
-            upcomingUsers: workspaceMembers,
             workSpaceId: data.workspaceId
         });
     }
@@ -220,7 +218,7 @@ class WorkSpace extends React.Component {
         } else {
             for (let i = 0; i < this.state.userBackup.length; i++) {
                 for (let j = 0; j < this.state.editUserDeleteIds.length; j++) {
-                    if (this.state.userBackup[i].userId === this.state.editUserDeleteIds[j]) {
+                    if (this.state.userBackup[i].id === this.state.editUserDeleteIds[j]) {
                         returnFlag = 1;
                         break;
                     } else {
@@ -230,7 +228,7 @@ class WorkSpace extends React.Component {
             }
             for (let i = 0; i < this.state.editUserObj.length; i++) {
                 for (let j = 0; j < this.state.editUserDeleteIds.length; j++) {
-                    if (this.state.editUserObj[i].userId === this.state.editUserDeleteIds[j]) {
+                    if (this.state.editUserObj[i].id === this.state.editUserDeleteIds[j]) {
                         returnFlag = 1;
                         break;
                     } else {
@@ -299,6 +297,7 @@ class WorkSpace extends React.Component {
 
     getWorkSpace = async () => {
         let title = "Error";
+        this.setState({ users: [], userBackup: [] ,deletedUserIds:[]});
         try {
             const getWorkSpaceData = await fetch(workspaceAction, {
                 method: "POST",
