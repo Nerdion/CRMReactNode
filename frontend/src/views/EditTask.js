@@ -69,7 +69,6 @@ class EditTask extends React.Component {
             editorState: EditorState.createEmpty(),
             openMenu: null,
             options: [
-                { "option": "Draft", "icon": FiberManualRecord, "color": "#bac7d4", "statusid": 0 },
                 { "option": "Pending", "icon": FiberManualRecord, "color": "#e8cd82", "statusid": 1 },
                 { "option": "Finished", "icon": FiberManualRecord, "color": "#83e67e", "statusid": 2 },
             ],
@@ -232,34 +231,34 @@ class EditTask extends React.Component {
     }
 
 
-    getUserProfile = async () => {
-        let title = "Error";
-        let crmToken = localStorage.getItem('CRM_Token_Value');
-        try {
-            const getUserProfileTaskData = await fetch(getUserTaskDataApi, {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `${crmToken}`
-                },
-                body: JSON.stringify({
-                    taskId: linkTaskId,
-                })
-            });
-            const responseData = await getUserProfileTaskData.json();
-            console.log('getUserProfileTaskData--->', JSON.stringify(responseData, null, 2))
-            console.log(getUserProfileTaskData, 'getUserProfileTaskData');
-            this.setState({
-                users: responseData.userData
-            })
+    // getUserProfile = async () => {
+    //     let title = "Error";
+    //     let crmToken = localStorage.getItem('CRM_Token_Value');
+    //     try {
+    //         const getUserProfileTaskData = await fetch(getUserTaskDataApi, {
+    //             method: "POST",
+    //             headers: {
+    //                 'Accept': 'application/json',
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `${crmToken}`
+    //             },
+    //             body: JSON.stringify({
+    //                 taskId: linkTaskId,
+    //             })
+    //         });
+    //         const responseData = await getUserProfileTaskData.json();
+    //         console.log('getUserProfileTaskData--->', JSON.stringify(responseData, null, 2))
+    //         console.log(getUserProfileTaskData, 'getUserProfileTaskData');
+    //         this.setState({
+    //             users: responseData.userData
+    //         })
 
-        }
-        catch (err) {
-            console.log("Error fetching data-----------", err.toString());
-            this.setState({ title, message: err.toString(), Alert_open_close: true });
-        }
-    }
+    //     }
+    //     catch (err) {
+    //         console.log("Error fetching data-----------", err.toString());
+    //         this.setState({ title, message: err.toString(), Alert_open_close: true });
+    //     }
+    // }
 
 
     getTaskData = async () => {

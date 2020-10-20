@@ -49,7 +49,6 @@ import {
 import Header from "../components/Headers/Header.js";
 import DialogBox from '../components/DialogBox/DialogBox';
 import UserTaskCard from '../components/Cards/UserTaskCard';
-import { saveCreateTaskDataApi, getUserTaskDataApi } from '../views/CRM_Apis';
 import { taskAction } from "../views/CRM_Apis";
 
 
@@ -100,7 +99,7 @@ class CreateTaskTest extends React.Component {
     }
 
     componentDidMount = () => {
-        this.getUserProfile();
+        //this.getUserProfile();
         console.log("check status--->", this.state.statusName, this.state.statusColor);
     }
     onChangeTextData = (state, text) => {
@@ -129,34 +128,6 @@ class CreateTaskTest extends React.Component {
         this.setState({ Alert_open_close: false });
     }
 
-    getUserProfile = async () => {
-        let title = "Error";
-        let crmToken = localStorage.getItem('CRM_Token_Value');
-        try {
-            const getUserProfileTaskData = await fetch(getUserTaskDataApi, {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `${crmToken}`
-                },
-                // body: JSON.stringify({
-                //     action: 4
-                // })
-            });
-            const responseData = await getUserProfileTaskData.json();
-            console.log('getUserProfileTaskData--->', JSON.stringify(responseData, null, 2))
-            console.log(getUserProfileTaskData, 'getUserProfileTaskData');
-            this.setState({
-                users: responseData.userData
-            })
-
-        }
-        catch (err) {
-            console.log("Error fetching data-----------", err.toString());
-            this.setState({ title, message: err.toString(), Alert_open_close: true });
-        }
-    }
     onClickSaveWorkSpaceTask = async (statusId) => {
         const { topicName, stepTitle, userObj, statusData, editorState } = this.state;
         let workspaceId = this.props.match.params.workspaceId;

@@ -46,6 +46,7 @@ class Task {
                 //single update
                 let taskId = await this.returnObjectId(bodyInfo.updatedTaskData.taskId);
                 let workspaceId = await this.returnObjectId(bodyInfo.updatedTaskData.workspaceId)
+                bodyInfo.updatedTaskData.workspaceId = workspaceId
                 let updatedTaskData = bodyInfo.updatedTaskData;
                 let updatedTaskDataKeys = Object.keys(updatedTaskData);
                 let nKeysArray = ['taskId', 'deletedUserIds', 'addedUserIds']
