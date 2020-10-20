@@ -209,7 +209,7 @@ class Workspace {
             for (let i = 0; i < userIds.length; i++) {
                 let workspacesObj = {
                     workspaceId: workspace.workspaceId,
-                    rollId: 0,
+                    roleId: 0,
                     lastModifiedDate: null
                 }
                 if (!(userIds[i] == managerId)) {
@@ -222,7 +222,7 @@ class Workspace {
             }
             let workspacesObj = {
                 workspaceId: workspace.workspaceId,
-                rollId: 1,
+                roleId: 1,
                 lastModifiedDate: null
             }
             let data = await mongo.usacrm.collection(this.user).findOne({_id:managerId,'workspaces.workspaceId':workspace.workspaceId})
@@ -254,7 +254,7 @@ class Workspace {
             for (let i = 0; i < addedUserIds.length; i++) {
                 let workspacesObj = {
                     workspaceId: workspaceId,
-                    rollId: 0,
+                    roleId: 0,
                     lastModifiedDate: null
                 }
                 await mongo.usacrm.collection(this.user).updateOne({ _id: addedUserIds[i] }, { $push: { "workspaces": workspacesObj } })

@@ -69,6 +69,7 @@ class EditTask extends React.Component {
             editorState: EditorState.createEmpty(),
             openMenu: null,
             options: [
+                { "option": "Draft", "icon": FiberManualRecord, "color": "#bac7d4", "statusid": 0 },
                 { "option": "Pending", "icon": FiberManualRecord, "color": "#e8cd82", "statusid": 1 },
                 { "option": "Finished", "icon": FiberManualRecord, "color": "#83e67e", "statusid": 2 },
             ],
@@ -231,34 +232,34 @@ class EditTask extends React.Component {
     }
 
 
-    // getUserProfile = async () => {
-    //     let title = "Error";
-    //     let crmToken = localStorage.getItem('CRM_Token_Value');
-    //     try {
-    //         const getUserProfileTaskData = await fetch(getUserTaskDataApi, {
-    //             method: "POST",
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `${crmToken}`
-    //             },
-    //             body: JSON.stringify({
-    //                 taskId: linkTaskId,
-    //             })
-    //         });
-    //         const responseData = await getUserProfileTaskData.json();
-    //         console.log('getUserProfileTaskData--->', JSON.stringify(responseData, null, 2))
-    //         console.log(getUserProfileTaskData, 'getUserProfileTaskData');
-    //         this.setState({
-    //             users: responseData.userData
-    //         })
+    getUserProfile = async () => {
+        let title = "Error";
+        let crmToken = localStorage.getItem('CRM_Token_Value');
+        try {
+            const getUserProfileTaskData = await fetch(getUserTaskDataApi, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `${crmToken}`
+                },
+                body: JSON.stringify({
+                    taskId: linkTaskId,
+                })
+            });
+            const responseData = await getUserProfileTaskData.json();
+            console.log('getUserProfileTaskData--->', JSON.stringify(responseData, null, 2))
+            console.log(getUserProfileTaskData, 'getUserProfileTaskData');
+            this.setState({
+                users: responseData.userData
+            })
 
-    //     }
-    //     catch (err) {
-    //         console.log("Error fetching data-----------", err.toString());
-    //         this.setState({ title, message: err.toString(), Alert_open_close: true });
-    //     }
-    // }
+        }
+        catch (err) {
+            console.log("Error fetching data-----------", err.toString());
+            this.setState({ title, message: err.toString(), Alert_open_close: true });
+        }
+    }
 
 
     getTaskData = async () => {
@@ -348,7 +349,7 @@ class EditTask extends React.Component {
                         'Authorization': `${crm_token}`
                     },
                     body: JSON.stringify({
-                        action:2,
+                        action: 2,
                         updatedTaskData: {
                             taskId: taskId,
                             workspaceId: workspaceId,
@@ -468,53 +469,8 @@ class EditTask extends React.Component {
                                 </ButtonDropdown>
                             </Tooltip>
                         </Col>
-                        <Col className="text-center mt-1" xs="6" md="3" lg="2" xl="2">
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                size="medium"
-                                disabled={taskEditable}
-                                startIcon={<Telegram />}
-                                onClick={this.onClickOpenAddWorkSpace}
-                            >
-                                Notify Team
-                            </Button>
-                        </Col>
                     </Row>
                     <Row >
-                        <Col xs="12" sm="12" md="12" lg="3" xl="3">
-                            <Col className=" br-sm  bg-white card-shadow-lt-white p-2">
-                                <div className="pt-2 pr-2 pl-2 pb-1 text-center ">
-                                    <PeopleAlt style={{ fontSize: 60 }} />
-                                </div>
-                                <div className="text-center">
-                                    <span className="txt-lt-dark font-weight-400">
-                                        Team Members
-                                    </span>
-                                </div>
-                                <Col className="mb-2 min-dn-ht hide-scroll-ind">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="medium"
-                                        disabled={taskEditable}
-                                        className="wd-100p mt-2"
-                                        startIcon={<Add />}
-                                        onClick={this.onClickOpenAddUsers}
-                                    >
-                                        Add Users
-                                        </Button>
-                                    {
-                                        userObj.map((item, index) => (
-                                            <UserTaskCard
-                                                userName={item.userName}
-                                                imageUrl={item.userImage}
-                                            />
-                                        ))
-                                    }
-                                </Col>
-                            </Col>
-                        </Col>
                         <Col className="mb-5 mb-xl-0" xs="12" sm="12" lg="9" xl="9">
                             <Col>
                                 <Form>

@@ -41,8 +41,7 @@ export class WorkSpaceTasksCard extends Component {
     render() {
         const { openMenu, options } = this.state;
         const { TaskCardData, onClickAvatar, onClickTask } = this.props;
-        let Users = TaskCardData.users;
-        // console.log("usersData---", TaskCardData.users);
+        let createdAt = TaskCardData.createdAt;
         return (
             <Col className="mar-b-2 mb-xl-0" xs="12" md="12" lg="6" xl="6">
                 <Card className="bg-gradient-white card-shadow-white">
@@ -95,33 +94,14 @@ export class WorkSpaceTasksCard extends Component {
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 mt-1 text-right">
-                                    <span className="text-muted">Users:- </span>
+                                    <span className="text-muted">Created at:- </span>
                                     <div onClick={onClickAvatar} className="avatar-group">
-                                        {Users.length === 0 || Users === undefined ?
+                                        {createdAt === null || createdAt === undefined ?
                                             <span className=" text-default">No User Assigned</span> :
-                                            Users.map((item, index) => (
-
-                                                <>
-                                                    <a
-                                                        className="avatar avatar-sm"
-                                                        id={`tooltip${index}`}
-                                                    >
-                                                        <img
-                                                            alt={item.userName}
-                                                            className="rounded-circle"
-                                                            src={item.imageUrl}
-                                                        />
-                                                    </a>
-                                                    <UncontrolledTooltip
-                                                        delay={0}
-                                                        target={`tooltip${index}`}
-                                                    >
-                                                        {item.userName}
-                                                    </UncontrolledTooltip>
-                                                </>
-
-                                            ))}
+                                        <span className=" text-default">{TaskCardData.createdAt}</span>
+                                            }
                                     </div>
+
                                 </div>
                             </Row>
                         </CardFooter>

@@ -287,53 +287,8 @@ class CreateTaskTest extends React.Component {
                                 </FormGroup>
                             </Form>
                         </Col>
-                        <Col className="text-center mt-1" xs="6" md="3" lg="2" xl="2">
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                size="medium"
-                                disabled={taskEditable}
-                                startIcon={<Telegram />}
-                                onClick={this.onClickOpenAddWorkSpace}
-                            >
-                                Notify Team
-                            </Button>
-                        </Col>
                     </Row>
                     <Row >
-                        <Col xs="12" sm="12" md="12" lg="3" xl="3">
-                            <Col className=" br-sm  bg-white card-shadow-lt-white p-2">
-                                <div className="pt-2 pr-2 pl-2 pb-1 text-center ">
-                                    <PeopleAlt style={{ fontSize: 60 }} />
-                                </div>
-                                <div className="text-center">
-                                    <span className="txt-lt-dark font-weight-400">
-                                        Team Members
-                                    </span>
-                                </div>
-                                <Col className="mb-2 min-dn-ht hide-scroll-ind">
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        size="medium"
-
-                                        className="wd-100p mt-2"
-                                        startIcon={<Add />}
-                                        onClick={this.onClickOpenAddUsers}
-                                    >
-                                        Add Users
-                                        </Button>
-                                    {
-                                        userObj.map((item, index) => (
-                                            <UserTaskCard
-                                                userName={item.userName}
-                                                imageUrl={item.userImage}
-                                            />
-                                        ))
-                                    }
-                                </Col>
-                            </Col>
-                        </Col>
                         <Col className="mb-5 mb-xl-0" xs="12" sm="12" lg="9" xl="9">
                             <Col>
                                 <Form>

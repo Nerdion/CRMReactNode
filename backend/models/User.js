@@ -287,7 +287,7 @@ module.exports = class User {
             for (let i = 0; i < userIds.length; i++) {
                 let userData = await mongo.usacrm.collection(this.User).findOne({ _id: userIds[i] }, {
                     projection: {
-                        password : 0,
+                        password: 0,
                     }
                 })
                 if (userData.orgRoleId == 1) {
@@ -297,11 +297,11 @@ module.exports = class User {
                 }
 
                 users.push({
-                    userId : userData._id,
-                    userProfileImage : userData.userProfileImage,
-                    userName : userData.name,
-                    mail : userData.email,
-                    Role : userData.isAdmin
+                    userId: userData._id,
+                    userProfileImage: userData.userProfileImage,
+                    userName: userData.name,
+                    mail: userData.email,
+                    Role: userData.isAdmin
                 })
             }
             return users
