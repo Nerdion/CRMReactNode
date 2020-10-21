@@ -13,31 +13,35 @@ const e = require('express');
 module.exports = class User {
     constructor() {
         this.User = 'User',
-        this.workspace = 'Workspaces',
-        this.task = 'Task'
+            this.workspace = 'Workspaces',
+            this.task = 'Task'
     }
 
     // Login Authentication function
     async login(bodyInfo) {
-        let authData = await this.decryptData(bodyInfo)
-        let email = authData.useremail;
-        let password = authData.password;
+        try {
+            let authData = await this.decryptData(bodyInfo)
+            let email = authData.useremail;
+            let password = authData.password;
 
-        let checkUser = await mongo.usacrm.collection(this.User).findOne({ 'email': email })
-        if (checkUser.email) {
-            if (checkUser.statusId == 1) {
-                if (password == checkUser.password) {
-                    let jwtData = await this.generatetoken(email, checkUser._id.toString());
-                    let myOrganization = checkUser.orgId;
-                    return { 'success': true, 'message': "User is authenticated Successfully", jwtData, orgID: myOrganization }
-                };
-            } else {
-                return { 'success': false, 'message': "to login please verify your email first" };
+            let checkUser = await mongo.usacrm.collection(this.User).findOne({ 'email': email })
+            if (checkUser.email) {
+                if (checkUser.statusId == 1) {
+                    if (password == checkUser.password) {
+                        let jwtData = await this.generatetoken(email, checkUser._id.toString());
+                        let myOrganization = checkUser.orgId;
+                        return { 'success': true, 'message': "User is authenticated Successfully", jwtData, orgID: myOrganization }
+                    } else {
+                        return { 'success': true, 'message': "User is authenticated Un-successfully" }
+                    }
+                } else {
+                    return { 'success': false, 'message': "To login please verify your email first" };
+                }
             }
-
-        } else {
-            return { 'success': false, 'message': "User is authenticated Un-successfully" };
+        } catch (e) {
+            return { 'success': false, 'message': "User doesn't exists please register" };
         }
+
     }
 
     // Registeration of the new user
