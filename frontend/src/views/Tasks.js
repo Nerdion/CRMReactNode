@@ -154,7 +154,7 @@ class WorkSpace extends React.Component {
                                             className="wd-150"
                                             size="medium"
                                             startIcon={<Add />}
-                                            onClick={() => { this.props.history.push(`/admin/CreateTaskTest/${workspaceId}`, { workSpaceName: WorkSpaceName }) }}
+                                            onClick={() => { this.props.history.push(`/admin/CreateTaskTest/${workspaceId}`, { workSpaceName: WorkSpaceName, workspaceId: workspaceId }) }}
                                         >
                                             Add Task
                                         </Button>
@@ -168,7 +168,7 @@ class WorkSpace extends React.Component {
                             <WorkSpaceTasksCard
                                 key={index}
                                 TaskCardData={data}
-                                onClickTask={() => { this.props.history.push(`/admin/editTask/${workspaceId}/${data.taskId}`, { workSpaceName: WorkSpaceName }) }}
+                                onClickTask={() => { this.props.history.push(`/admin/editTask/${workspaceId}/${data.taskId}`, { workSpaceName: WorkSpaceName, workspaceId: workspaceId }) }}
                             />
                         ))}
                     </Row>

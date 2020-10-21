@@ -260,6 +260,9 @@ class EditTask extends React.Component {
     getTaskUsers = async () => {
         let title = "Error";
         let crmToken = localStorage.getItem('CRM_Token_Value');
+        const {
+            workspaceId
+        } = this.props.location.state;
         try {
             const getAllMembers = await fetch(organizationAPI, {
                 method: "POST",
@@ -269,7 +272,8 @@ class EditTask extends React.Component {
                     'Authorization': `${crmToken}`
                 },
                 body: JSON.stringify({
-                    method: 'members'
+                    method : "workspaceMembers",
+                    workspaceId: workspaceId
                 })
             });
             const response = await getAllMembers.json();

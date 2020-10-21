@@ -100,10 +100,10 @@ export class WorkSpaceTable extends Component {
                                                     <AvatarGroup max={4}>
                                                         {Tdata.users.map((item, index) => (
                                                             <>
-                                                                < Avatar alt={item.userName} src={item.userProfileImage} id={`tooltip${index}`} />
+                                                                < Avatar alt={item.userName} src={item.userProfileImage} id={`tooltip${item.userId}`} />
                                                                 <UncontrolledTooltip
                                                                     delay={0}
-                                                                    target={`tooltip${index}`}
+                                                                    target={`tooltip${item.userId}`}
                                                                 >
                                                                     {item.userName}
                                                                 </UncontrolledTooltip>
