@@ -202,20 +202,22 @@ class Task {
     }
     async getCompletionPercentage(taskIds) {
         try {
+            let totalCount;
+            totalCount = taskIds.length;
+            let statusIdCount = 0;
             if (!taskIds) {
                 return 0
             } else {
                 for (let i = 0; i < taskIds.length; i++) {
-                    let statusIdCount = 0;
-                    totalCount = taskIds.length;
                     let statusId = await mongo.usacrm.collection(this.task).findOne({ _id: taskIds[i] }, {
                         projection: {
                             _id: 0,
-                            status: 1
+                            statusId: 1
 
                         }
                     })
-                    if (statusId == 3) {
+                    statusId = statusId.statusId
+                    if (statusId == 2) {
                         statusIdCount++;
                     }
 
