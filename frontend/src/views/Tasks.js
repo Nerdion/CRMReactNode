@@ -142,10 +142,6 @@ class WorkSpace extends React.Component {
             });
 
             const responseData = await getWorkSpaceTasks.json();
-            console.log('getWorkSpaceData--->', JSON.stringify(responseData, null, 2))
-            console.log(getWorkSpaceTasks, 'getWorkSpaceData');
-
-            console.log("set workspace:---", responseData.taskCardData);
             if (responseData.success === true) {
                 this.setState({
                     taskCardData: responseData.taskCardData,

@@ -22,7 +22,6 @@ import {
 } from "reactstrap";
 
 import {
-    FiberManualRecord,
     Public,
     PeopleAlt,
     SaveAlt,
@@ -54,11 +53,6 @@ class CreateTaskTest extends React.Component {
         this.state = {
             editorState: EditorState.createEmpty(),
             openMenu: null,
-            options: [
-                // { "option": "Draft", "icon": FiberManualRecord, "color": "#bac7d4", "statusId":  },
-                { "option": "Pending", "icon": FiberManualRecord, "color": "#e8cd82", "statusId": 1 },
-                { "option": "Finished", "icon": FiberManualRecord, "color": "#83e67e", "statusId": 2 },
-            ],
             statusName: "Pending",
             statusColor: "#e8cd82",
             statusData: null,
@@ -81,7 +75,6 @@ class CreateTaskTest extends React.Component {
 
     componentDidMount = () => {
         this.getOrgUsers();
-        console.log("check status--->", this.state.statusName, this.state.statusColor);
     }
     onChangeTextData = (state, text) => {
         this.setState({ [`${state}`]: text })
@@ -119,9 +112,6 @@ class CreateTaskTest extends React.Component {
             workspaceId
         } = this.props.location.state;
         let editorRawData = draftToHtml(convertToRaw(editorState.getCurrentContent()))
-        console.log("data---->", { topicName, stepTitle, userObj, statusData });
-        console.log("Editor Data--->", editorState);
-
         try {
             if (topicName === "" && stepTitle === "") {
                 message = "Please Enter Topic Name and Step Title";
@@ -153,17 +143,13 @@ class CreateTaskTest extends React.Component {
                             taskDetails: editorRawData,
                             statusId: statusId,
                             addedUserIds: userIds,
-                            //addedUserIds :addedUserIds
                         }
                     }
                     )
                 });
                 const responseData = await UserRegisterApiCall.json();
-                console.log(responseData, 'UserRegisterApiCallData')
-                console.log(UserRegisterApiCall, 'UserRegisterApiCall');
 
                 if (responseData.success === true) {
-                    console.log("Task Added!");
                     const title = "Success"
                     message = "Task Created!";
                     this.setState({
@@ -185,7 +171,6 @@ class CreateTaskTest extends React.Component {
             }
         }
         catch (err) {
-            console.log("Error fetching data-----------", err.toString());
             this.setState({ title, message: err.toString(), Alert_open_close: true, alertColorSuccess: false });
         }
     }
@@ -207,7 +192,6 @@ class CreateTaskTest extends React.Component {
 
     getOrgUsers = async () => {
         const {
-            workSpaceName,
             workspaceId
         } = this.props.location.state;
 
@@ -256,8 +240,6 @@ class CreateTaskTest extends React.Component {
             });
         }
 
-        console.log("userObj==>", this.state.userObj);
-
     }
 
     deleteSelectedUsers = (userName, userId) => {
@@ -266,8 +248,6 @@ class CreateTaskTest extends React.Component {
         let array1 = [...this.state.userBackup]
         let filteredArray1 = array1.filter(item => item.id === userId)
         this.setState((prevState) => ({ userObj: filteredArray, users: [...prevState.users, filteredArray1[0]] }));
-        console.log("UsersAfterDelete---->", filteredArray1);
-        // console.log("DeletedId====>", this.state.editUserDeleteIds);
     }
 
 

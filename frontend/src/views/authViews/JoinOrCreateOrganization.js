@@ -49,7 +49,6 @@ class JoinOrCreateOrganization extends Component {
 
     onPressJoinOrg = async (event) => {
         event.preventDefault();
-        console.log("Organization in:-", this.state.orgNameObj[0].id);
         this.setState({ isClicked: true })
         const inviteToJoin = await fetch(organizationAPI, {
             method: "POST",
@@ -66,7 +65,6 @@ class JoinOrCreateOrganization extends Component {
 
         try {
             let response = await inviteToJoin.json()
-            console.log(response);
             if (response.success === true) {
                 this.setState({ title: "Success", message: response.message, Alert_open_close: true, alertColor: "success", isClicked: false });
             }
@@ -84,7 +82,7 @@ class JoinOrCreateOrganization extends Component {
             return { data: strenc }
 
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 
@@ -96,12 +94,11 @@ class JoinOrCreateOrganization extends Component {
 
             return JSON.parse(originalText);
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 
     selectOrganization = (orgName, orgID, event) => {
-        //   event.preventDefault();
         this.setState({ orgNameObj: [{ orgName: orgName, id: orgID }] })
     }
 
@@ -110,7 +107,6 @@ class JoinOrCreateOrganization extends Component {
     }
 
     createNewOrganization = async (event) => {
-        console.log('Org created with name-', this.state.orgName)
         this.setState({ isClicked: true });
         const createNewOrganizationCall = await fetch(organizationAPI, {
             method: "POST",
@@ -129,7 +125,6 @@ class JoinOrCreateOrganization extends Component {
 
         try {
             if (responseData.success) {
-                console.log('Created successfully')
                 this.props.history.push("/admin/index");
             } else {
                 this.setState({ title: "Error", message: responseData.message, Alert_open_close: true, isClicked: false });

@@ -32,12 +32,6 @@ import {
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
   Media,
   NavbarBrand,
   Navbar,
@@ -49,7 +43,6 @@ import {
   Col
 } from "reactstrap";
 
-import { getUserProfileApi } from '../../views/CRM_Apis';
 var ps;
 
 class Sidebar extends React.Component {

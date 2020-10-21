@@ -95,7 +95,6 @@ class EditTask extends React.Component {
 
     componentDidMount() {
         linkTaskId = this.props.match.params.tasks;
-        console.log("linkTaskId---->", linkTaskId)
         if (linkTaskId) {
             this.setState({ taskEditBol: true, taskIdToEdit: linkTaskId, taskEditable: true })
             this.getTaskData();
@@ -191,9 +190,6 @@ class EditTask extends React.Component {
                 deletedUserIds: filteredArray1
             });
         }
-        console.log("userObj==>", this.state.userObj);
-
-
     }
 
     deleteSelectedUsers = (userName, userId) => {
@@ -312,15 +308,11 @@ class EditTask extends React.Component {
                 })
             });
             const responseData = await getWorkSpaceTaskData.json();
-            console.log('getWorkSpaceTaskData--->', JSON.stringify(responseData, null, 2))
-            console.log(getWorkSpaceTaskData, 'getWorkSpaceTaskData');
             let editorRawData = convertFromHTML(responseData.taskData.taskDetails);
             const editorStateData = this.customContentStateConverter(ContentState.createFromBlockArray(
                 editorRawData.contentBlocks,
                 editorRawData.entityMap,
             ));
-            console.log("html Data--->", responseData.taskData.taskDetails);
-            console.log("Raw Data--->", editorRawData);
             let setStatusColor = null;
             if (responseData.taskData.status === "Pending") {
                 setStatusColor = "#e8cd82"
@@ -372,8 +364,6 @@ class EditTask extends React.Component {
         } = this.props.location.state;
         let message = '';
         let editorRawData = draftToHtml(convertToRaw(editorState.getCurrentContent()))
-        //  console.log("data---->", { topicName, stepTitle, userObj });
-        // console.log("Editor Data--->", editorRawData);
         let userIds = userObj.map((val) => val.id)
         try {
             if (topicName === "" && stepTitle === "") {
@@ -412,11 +402,7 @@ class EditTask extends React.Component {
                     })
                 });
                 const responseData = await UserRegisterApiCall.json();
-                console.log(responseData, 'UserRegisterApiCallData')
-                console.log(UserRegisterApiCall, 'UserRegisterApiCall');
-
                 if (responseData.success === true) {
-                    console.log("Task Added!");
                     const title = "Success"
                     message = "Task Created!";
                     this.setState({
@@ -445,19 +431,16 @@ class EditTask extends React.Component {
         let { editorState,
             options,
             openMenu,
-            statusName,
             statusColor,
             users,
             userObj,
             userSearch,
-            enableEditor,
             setAddUsersBol,
             topicName,
             stepTitle,
             taskEditable,
             Alert_open_close,
             title,
-            statusId,
             message,
             alertColorSuccess
         } = this.state;
@@ -618,13 +601,6 @@ class EditTask extends React.Component {
 
                                     />
                                 </div>
-                                {/* <div className="bg-white align-items-centeer">
-                                    <textarea
-                                        disabled
-                                        className="col-md-12 ht-m"
-                                        value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-                                    />
-                                </div> */}
                             </div>
                             <Col className="mb-5 mb-xl-0" xl="12">
                                 <Row className="d-flex align-items-center justify-content-center">

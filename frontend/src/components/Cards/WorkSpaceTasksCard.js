@@ -18,7 +18,6 @@ import {
 import {
     MoreVert,
     Edit,
-    FileCopy,
     Delete
 } from '@material-ui/icons';
 

@@ -41,11 +41,9 @@ class Login extends React.Component {
 
   async componentDidMount() {
     token = this.props.match.params.token;
-    console.log(token)
     if (token) {
       // this.props.onLogin(localStorage.removeItem('CRM_Token_Value'));
       let originalToken = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
-      console.log(token);
       let crmToken = await this.decryptData(originalToken);
       this.jwtToken = Object.values(crmToken)[0]
       await this.getLoggedIn(VerifyEmailUser)
@@ -54,8 +52,6 @@ class Login extends React.Component {
 
   onChange = (state, text) => {
     this.setState({ [`${state}`]: text })
-    // console.log("UserEmailChange:-", [this.state.UserEmail])
-    // console.log("UserPasswordChange:-", [this.state.Password])
   }
 
   onDismissAlert = () => {
@@ -71,14 +67,13 @@ class Login extends React.Component {
     let title = "Error";
     let token = this.props.match.params.token;
     this.setState({ isSignned: true });
-    // console.log("Signed in:-", this.state.UserEmail, this.state.Password);
     try {
       if (this.state.UserEmail === "") {
-        const message = "Please Enter Your Email Address";
+        let message = "Please Enter Your Email Address";
         this.setState({ title, message, Alert_open_close: true, isSignned: false });
       }
       else if (this.state.Password === "") {
-        const message = "Please Enter Your Password";
+        let message = "Please Enter Your Password";
         this.setState({ title, message, Alert_open_close: true, isSignned: false });
       }
       else if (this.state.UserEmail !== "" && this.state.Password !== "") {
@@ -92,17 +87,17 @@ class Login extends React.Component {
           await this.getLoggedIn(VerifyUserLogin, encAuthData);
         }
         else {
-          const message = "Invalid Email";
-          this.setState({ title, message, Alert_open_close: true, isSignned: false });
+          let message = "Invalid Email";
+          this.setState({ title, message: message, Alert_open_close: true, isSignned: false });
         }
       } else {
-        const message = "Please Enter Email & Password";
-        this.setState({ title, message, Alert_open_close: true, isSignned: false });
+        let message = "Please Enter Email & Password";
+        this.setState({ title, message: message, Alert_open_close: true, isSignned: false });
       }
     }
     catch (err) {
       console.log("Error fetching data-----------", err);
-      this.setState({ title, message: "Email or Password is Incorrect", Alert_open_close: true, isSignned: false });
+      this.setState({ title, message: err.toString(), Alert_open_close: true, isSignned: false });
     }
   }
 
@@ -142,12 +137,8 @@ class Login extends React.Component {
       body: JSON.stringify(encAuthData)
     });
     const responseData = await UserLoginApiCall.json();
-    console.log(responseData, 'UserLoginApiCallData')
-    console.log(UserLoginApiCall, 'UserLoginApiCall');
     if (responseData.success === true) {
-      console.log("User Loggedin");
       localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token)
-      console.log("this is orgId---->", responseData.orgID);
       if (responseData.orgID) {
         await this.props.onLogin(localStorage.getItem('CRM_Token_Value'));
         await this.props.history.push("/admin/workSpace");
@@ -157,7 +148,8 @@ class Login extends React.Component {
       }
     }
     else {
-      this.setState({ title: "Error", message: responseData.message, Alert_open_close: true, isSignned: false });
+      let message = responseData.message;
+      this.setState({ title: "Error", message: message, Alert_open_close: true, isSignned: false });
     }
   }
 
