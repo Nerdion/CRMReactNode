@@ -30,26 +30,6 @@ import WorkSpaceTasksCard from '../components/Cards/WorkSpaceTasksCard';
 // Api
 import { taskAction } from './CRM_Apis';
 
-const WorkspaceData = [
-    {
-        "WorkspaceName": "DevLab Setup",
-        "Permissions": "Admin",
-        "Role": "Designer",
-        "Completion_Text": "60%",
-        "Completion": 60,
-        "last_active": "2 minute ago"
-    },
-    {
-        "WorkspaceName": "New Location",
-        "Permissions": "Organizer",
-        "Role": "Backend Manager",
-        "Completion_Text": "30%",
-        "Completion": 30,
-        "last_active": "5 minute ago"
-    },
-
-]
-
 const HeaderData = [
     { "Header": "WorkSpace Name" },
     { "Header": "Permissions" },

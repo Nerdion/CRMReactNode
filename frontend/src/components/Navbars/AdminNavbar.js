@@ -41,7 +41,6 @@ class AdminNavbar extends React.Component {
   state = {
     userName: '',
     userImage: '',
-    orgName: ''
   }
 
   getMyProfile = async () => {
@@ -80,8 +79,8 @@ class AdminNavbar extends React.Component {
         })
       });
       const response = await getAllMembers.json();
-      let responseData = await response.data
-      this.setState({ orgName: responseData.orgName });
+      let responseData = await response.data;
+      this.props.onSetOrgName(responseData.orgName);
     }
     catch (err) {
       console.log("Error fetching data-----------", err.toString());
@@ -95,8 +94,7 @@ class AdminNavbar extends React.Component {
 
 
   render() {
-    let { logout, userName, userImage } = this.props;
-    let { orgName } = this.state;
+    let { logout, userName, userImage, orgName } = this.props;
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -158,13 +156,15 @@ const mapStateToProps = state => {
   return {
     userImage: state.userImage,
     userName: state.userName,
-    tokenData: state.setLoginValue
+    tokenData: state.setLoginValue,
+    orgName: state.orgName
   };
 }
 
 const mapDispatcToProps = dispatch => {
   return {
-    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName })
+    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName }),
+    onSetOrgName: (orgName) => dispatch({ type: actionTypes.SET_ORGNAME, orgName: orgName })
   }
 }
 
