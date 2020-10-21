@@ -171,7 +171,7 @@ class Workspace {
                     fData['workspaceId'] = workspaceData[i]._id;
                     fData['organizationName'] = await new org().getOrganizationName(workspaceData[i].orgId)
                     fData['managerName'] = await new user().getManagerName(workspaceData[i].managerId)
-                    fData['completion'] = await new task().getCompletionPercentage(workspaceData[i].tasksIds)
+                    fData['completion'] = await new task().getCompletionPercentage(workspaceData[i].taskIds)
                     fData['completionText'] = fData.completion + '%'
                     fData['users'] = await new user().getUserNameAndImage(workspaceData[i].userIds)
                     fData['createdAt'] = await this.timeDifference(Date.now(), workspaceData[i].createdDate.getTime())
