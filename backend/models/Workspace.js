@@ -43,20 +43,42 @@ class Workspace {
                 let nKeysArray = ['workspaceId', 'deletedUserIds', 'addedUserIds']
                 let workspaceUserIds1 = [];
                 let workspaceUserIds2 = []
+
+                let updatedAddedIds = bodyInfo.updatedTaskData.addedUserIds
+                let updatedDeletedIds = bodyInfo.updatedTaskData.deletedUserIds
+
                 let workspaceData = await mongo.usacrm.collection(this.workspace).findOne({ _id: workspaceId })
+
+                let managerId = workspaceData.managerId.toString()
+
+                let index = updatedAddedIds.indexOf(managerId)
+                if (index != -1) {
+                    updatedAddedIds.splice(index, 1)
+                }
+
+                index = updatedDeletedIds.indexOf(managerId)
+                if (index != -1) {
+                    updatedDeletedIds.splice(index, 1)
+                }
                 for (let i = 0; i < updatedWorkSpaceDataKeys.length; i++) {
                     if (!nKeysArray.includes(updatedWorkSpaceDataKeys[i])) {
                         workspaceData[updatedWorkSpaceDataKeys[i]] = updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]];
                     } else if (updatedWorkSpaceDataKeys[i] == 'deletedUserIds') {
-                        let deletedIds = updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]]
+                        let deletedIds = updatedDeletedIds
                         for (let j = 0; j < workspaceData['userIds'].length; j++) {
                             workspaceUserIds1.push(workspaceData['userIds'][j].toString())
                         }
                         for (let j = 0; j < deletedIds.length; j++) {
                             let index = workspaceUserIds1.indexOf(deletedIds[j])
-                            workspaceUserIds1.splice(index, 1)
+                            if (index != -1) {
+                                workspaceUserIds1.splice(index, 1)
+                            } else {
+                                deletedIds.splice(j, 1)
+                                j--
+                            }
+
                         }
-                        deletedIds = await this.returnObjectId(updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]])
+                        deletedIds = await this.returnObjectId(deletedIds)
                         workspaceUserIds1 = await this.returnObjectId(workspaceUserIds1)
                         workspaceData['userIds'] = workspaceUserIds1
                         await this.deleteUserIds(deletedIds, workspaceId)
@@ -66,7 +88,7 @@ class Workspace {
                             workspaceUserIds2.push(workspaceData['userIds'][j].toString())
                         }
 
-                        let addedIds = updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]]
+                        let addedIds = updatedAddedIds
                         let addedIds2 = [];
                         for (let j = 0; j < addedIds.length; j++) {
                             if (!workspaceUserIds2.includes(addedIds[j])) {

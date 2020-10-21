@@ -13,7 +13,8 @@ const e = require('express');
 module.exports = class User {
     constructor() {
         this.User = 'User',
-        this.workspace = 'Workspaces'
+        this.workspace = 'Workspaces',
+        this.task = 'Task'
     }
 
     // Login Authentication function
@@ -266,24 +267,64 @@ module.exports = class User {
         }
     }
 
-    async getMyWorkSpaceMembers(workspaceId){
+    async getMyTaskMembers(taskId) {
+        try {
+            let data = []
+            let taskUserIds = await mongo.usacrm.collection(this.task).findOne({ _id: taskId }, {
+                projection: {
+                    _id: 0,
+                    userIds: 1
+                }
+            })
+            taskUserIds = taskUserIds.userIds
+
+            for (let i = 0; i < taskUserIds.length; i++) {
+                let userData = await mongo.usacrm.collection(this.User).findOne({ _id: taskUserIds[i] }, {
+                    projection: {
+                        orgId: 0,
+                        password: 0,
+                        statusId: 0,
+                        workspaces: 0
+                    }
+                })
+                data.push(userData)
+            }
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].orgRoleId == 1) {
+                    data[i]['isAdmin'] = 'Admin'
+                } else {
+                    let checkUser = await mongo.usacrm.collection(this.User).findOne({ _id: data[i]._id, 'workspaces.roleId': 1 })
+                    if (checkUser) {
+                        data[i]['isAdmin'] = 'Manager'
+                    } else {
+                        data[i]['isAdmin'] = 'Member'
+                    }
+                }
+            }
+            return data
+        } catch (e) {
+            return false
+        }
+
+    }
+    async getMyWorkSpaceMembers(workspaceId) {
         try {
             let data = []
             workspaceId = new ObjectId(workspaceId)
-            let workspaceUserIds = await mongo.usacrm.collection(this.workspace).findOne({ _id: workspaceId },{
+            let workspaceUserIds = await mongo.usacrm.collection(this.workspace).findOne({ _id: workspaceId }, {
                 projection: {
                     _id: 0,
                     userIds: 1
                 }
             })
             workspaceUserIds = workspaceUserIds.userIds
-            for(let i=0; i<workspaceUserIds.length;i++){
-                let userData =  await mongo.usacrm.collection(this.User).findOne({ _id: workspaceUserIds[i] },{
-                    projection: { 
+            for (let i = 0; i < workspaceUserIds.length; i++) {
+                let userData = await mongo.usacrm.collection(this.User).findOne({ _id: workspaceUserIds[i] }, {
+                    projection: {
                         orgId: 0,
-                        password: 0, 
-                        statusId: 0, 
-                        workspaces: 0 
+                        password: 0,
+                        statusId: 0,
+                        workspaces: 0
                     }
                 })
                 data.push(userData)
