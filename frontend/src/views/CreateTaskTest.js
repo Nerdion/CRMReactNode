@@ -27,7 +27,8 @@ import {
     PeopleAlt,
     SaveAlt,
     Add,
-    Clear
+    Clear,
+    ArrowBackIos
 } from '@material-ui/icons';
 
 import {
@@ -314,7 +315,8 @@ class CreateTaskTest extends React.Component {
         } = this.state;
 
         const {
-            workSpaceName
+            workSpaceName,
+            workspaceId
         } = this.props.location.state;
 
         const AlertError =
@@ -345,9 +347,21 @@ class CreateTaskTest extends React.Component {
                         <Col className="justify-content-center" xl="12">
                             <Card className="shadow pt-2 pb-2 pr-4 pl-4">
                                 <Row className="d-flex align-items-center justify-content-between">
-                                    <Col sm="12" md="6" lg="12" className="p-1 txt-left-to-center">
+                                    <Col sm="12" md="6" lg="6" className="p-1 txt-left-to-center">
                                         <h5 className="text-muted">WorkSpace Name:</h5>
                                         <h3 className="text-default">{workSpaceName}</h3>
+                                    </Col>
+                                    <Col className="txt-right-to-center p-1 mt-1 p-1" xs="12" sm="12" md="6" lg="6" xl="6">
+                                        <Button
+                                            variant="contained"
+                                            color={"primary"}
+                                            size="medium"
+                                            className="wd-150"
+                                            startIcon={<ArrowBackIos />}
+                                            onClick={() => { this.props.history.push("/admin/tasks", { WorkSpaceName: workSpaceName, workspaceId: workspaceId }); }}
+                                        >
+                                            Go Back
+                                        </Button>
                                     </Col>
                                 </Row>
                             </Card>

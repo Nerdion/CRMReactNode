@@ -35,6 +35,7 @@ import {
     Clear,
     Public,
     Save,
+    ArrowBackIos,
 } from '@material-ui/icons';
 
 import {
@@ -296,6 +297,31 @@ class EditTask extends React.Component {
         }
     }
 
+    customContentStateConverter = (contentState) => {
+        // changes block type of images to 'atomic'
+        const newBlockMap = contentState.getBlockMap().map((block) => {
+            const entityKey = block.getEntityAt(0);
+            if (entityKey !== null) {
+                const entityBlock = contentState.getEntity(entityKey);
+                const entityType = entityBlock.getType();
+                switch (entityType) {
+                    case 'IMAGE': {
+                        const newBlock = block.merge({
+                            type: 'atomic',
+                            text: 'img',
+                        });
+                        return newBlock;
+                    }
+                    default:
+                        return block;
+                }
+            }
+            return block;
+        });
+        const newContentState = contentState.set('blockMap', newBlockMap);
+        return newContentState;
+    }
+
 
     getTaskData = async () => {
         let title = "Error";
@@ -317,10 +343,10 @@ class EditTask extends React.Component {
             console.log('getWorkSpaceTaskData--->', JSON.stringify(responseData, null, 2))
             console.log(getWorkSpaceTaskData, 'getWorkSpaceTaskData');
             let editorRawData = convertFromHTML(responseData.taskData.taskDetails);
-            const editorStateData = ContentState.createFromBlockArray(
+            const editorStateData = this.customContentStateConverter(ContentState.createFromBlockArray(
                 editorRawData.contentBlocks,
                 editorRawData.entityMap,
-            );
+            ));
             console.log("html Data--->", responseData.taskData.taskDetails);
             console.log("Raw Data--->", editorRawData);
             let setStatusColor = null;
@@ -343,12 +369,12 @@ class EditTask extends React.Component {
             //     }
             // });
 
-        
+
 
             this.setState({
                 topicName: responseData.taskData.taskName,
                 stepTitle: responseData.taskData.taskDescription,
-               // userObj: TaskMembers,
+                // userObj: TaskMembers,
                 statusId: responseData.taskData.statusId,
                 statusName: responseData.taskData.status,
                 statusColor: setStatusColor,
@@ -458,7 +484,8 @@ class EditTask extends React.Component {
             alertColorSuccess
         } = this.state;
         const {
-            workSpaceName
+            workSpaceName,
+            workspaceId
         } = this.props.location.state;
 
         const AlertError =
@@ -489,9 +516,21 @@ class EditTask extends React.Component {
                         <Col className="justify-content-center" xl="12">
                             <Card className="shadow pt-2 pb-2 pr-4 pl-4">
                                 <Row className="d-flex align-items-center justify-content-between">
-                                    <Col sm="12" md="6" lg="12" className="p-1 txt-left-to-center">
+                                    <Col sm="12" md="6" lg="6" className="p-1 txt-left-to-center">
                                         <h5 className="text-muted">WorkSpace Name:</h5>
                                         <h3 className="text-default">{workSpaceName}</h3>
+                                    </Col>
+                                    <Col className="txt-right-to-center p-1 mt-1 p-1" xs="12" sm="12" md="6" lg="6" xl="6">
+                                        <Button
+                                            variant="contained"
+                                            color={taskEditable ? "primary" : "secondary"}
+                                            size="medium"
+                                            className="wd-150"
+                                            startIcon={<Edit />}
+                                            onClick={this.onClickEditTask}
+                                        >
+                                            Edit
+                                        </Button>
                                     </Col>
                                 </Row>
                             </Card>
@@ -597,6 +636,7 @@ class EditTask extends React.Component {
                                         wrapperClassName="br-sm text-dark"
                                         editorClassName="p-3 ht-l"
                                         onEditorStateChange={this.onEditorStateChange}
+                                        spellCheck={true}
 
                                     />
                                 </div>
@@ -613,13 +653,13 @@ class EditTask extends React.Component {
                                     <Col className="text-center p-1" xs="12" sm="12" lg="6" xl="6">
                                         <Button
                                             variant="contained"
-                                            color={taskEditable ? "primary" : "secondary"}
+                                            color={"primary"}
                                             size="medium"
                                             className="wd-150"
-                                            startIcon={<Edit />}
-                                            onClick={this.onClickEditTask}
+                                            startIcon={<ArrowBackIos />}
+                                            onClick={() => { this.props.history.push("/admin/tasks", { WorkSpaceName: workSpaceName, workspaceId: workspaceId }); }}
                                         >
-                                            Edit
+                                            Go Back
                                         </Button>
                                     </Col>
                                     <Col className="text-center  p-1" xs="12" sm="12" lg="6" xl="6">
