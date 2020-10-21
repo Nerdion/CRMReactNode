@@ -34,11 +34,15 @@ import {
 import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions';
 
-import { getUserProfileApi } from '../../views/CRM_Apis';
+import { getUserProfileApi, organizationAPI } from '../../views/CRM_Apis';
 
 class AdminNavbar extends React.Component {
 
-  state = { userName: '', userImage: '' }
+  state = {
+    userName: '',
+    userImage: '',
+    orgName: ''
+  }
 
   getMyProfile = async () => {
 
@@ -62,13 +66,37 @@ class AdminNavbar extends React.Component {
     }
   }
 
+  getOrgName = async () => {
+    try {
+      const getAllMembers = await fetch(organizationAPI, {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `${this.props.tokenData}`
+        },
+        body: JSON.stringify({
+          method: 0,
+        })
+      });
+      const response = await getAllMembers.json();
+      let responseData = await response.data
+      this.setState({ orgName: responseData.orgName });
+    }
+    catch (err) {
+      console.log("Error fetching data-----------", err.toString());
+    }
+  }
+
   componentDidMount() {
     this.getMyProfile();
+    this.getOrgName();
   }
 
 
   render() {
     let { logout, userName, userImage } = this.props;
+    let { orgName } = this.state;
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -80,7 +108,10 @@ class AdminNavbar extends React.Component {
               {this.props.brandText}
             </Link>
             <Col className="text-center">
-              <span className="text-white mb-0 h4 text-uppercase">This is my Org</span>
+              {orgName ?
+                <span className="text-white mb-0 h2">{orgName}</span> :
+                <span className="text-white mb-0 h2">Organization Name</span>
+              }
             </Col>
             <Nav className="align-items-center d-none d-md-flex" navbar>
               <UncontrolledDropdown nav>
@@ -126,7 +157,8 @@ class AdminNavbar extends React.Component {
 const mapStateToProps = state => {
   return {
     userImage: state.userImage,
-    userName: state.userName
+    userName: state.userName,
+    tokenData: state.setLoginValue
   };
 }
 

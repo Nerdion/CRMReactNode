@@ -71,7 +71,7 @@ class Login extends React.Component {
     let title = "Error";
     let token = this.props.match.params.token;
     this.setState({ isSignned: true });
-    console.log("Signed in:-", this.state.UserEmail, this.state.Password);
+    // console.log("Signed in:-", this.state.UserEmail, this.state.Password);
     try {
       if (this.state.UserEmail === "") {
         const message = "Please Enter Your Email Address";
@@ -102,7 +102,7 @@ class Login extends React.Component {
     }
     catch (err) {
       console.log("Error fetching data-----------", err);
-      this.setState({ title, message: err.toString(), Alert_open_close: true, isSignned: false });
+      this.setState({ title, message: "Email or Password is Incorrect", Alert_open_close: true, isSignned: false });
     }
   }
 
@@ -114,7 +114,7 @@ class Login extends React.Component {
       return { data: strenc }
 
     } catch (e) {
-      console.log(e);
+      console.log(e.toString());
     }
   }
 
@@ -126,7 +126,7 @@ class Login extends React.Component {
 
       return JSON.parse(originalText);
     } catch (e) {
-      console.log(e);
+      console.log(e.toString());
     }
   }
 
