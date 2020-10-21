@@ -227,7 +227,7 @@ class Task {
             }
 
         } catch (e) {
-            return false;
+            return 0;
         }
 
     }
