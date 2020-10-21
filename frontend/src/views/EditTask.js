@@ -575,7 +575,7 @@ class EditTask extends React.Component {
                                         startIcon={<Add />}
                                         onClick={this.onClickOpenAddUsers}
                                     >
-                                        Add Users
+                                        Add Members
                                         </Button>
                                     {
                                         userObj.map((item, index) => (
