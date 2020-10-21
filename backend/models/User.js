@@ -12,7 +12,8 @@ const e = require('express');
 
 module.exports = class User {
     constructor() {
-        this.User = 'User'
+        this.User = 'User',
+        this.workspace = 'Workspaces'
     }
 
     // Login Authentication function
