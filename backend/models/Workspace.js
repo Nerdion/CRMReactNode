@@ -169,7 +169,7 @@ class Workspace {
                     let fData = {};
                     fData['workspaceName'] = workspaceData[i].workspaceName
                     fData['workspaceId'] = workspaceData[i]._id;
-                    fData['organizationName'] = await new org().getOrganizationName(workspaceData[i].orgID)
+                    fData['organizationName'] = await new org().getOrganizationName(workspaceData[i].orgId)
                     fData['managerName'] = await new user().getManagerName(workspaceData[i].managerId)
                     fData['completion'] = await new task().getCompletionPercentage(workspaceData[i].tasksIds)
                     fData['completionText'] = fData.completion + '%'
