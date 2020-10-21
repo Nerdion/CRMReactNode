@@ -265,6 +265,46 @@ module.exports = class User {
         }
     }
 
+    async getMyWorkSpaceMembers(workspaceId){
+        try {
+            let data = []
+            workspaceId = new ObjectId(workspaceId)
+            let workspaceUserIds = await mongo.usacrm.collection(this.workspaces).findOne({ _id: workspaceId },{
+                projection: {
+                    _id: 0,
+                    userIds: 1
+                }
+            })
+            for(let i=0; i<workspaceUserIds.length;i++){
+                let userData =  await mongo.usacrm.collection(this.User).findOne({ _id: workspaceUserIds[i] },{
+                    projection: { 
+                        orgId: 0,
+                        password: 0, 
+                        statusId: 0, 
+                        workspaces: 0 
+                    }
+                })
+                data.push(userData)
+            }
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].orgRoleId == 1) {
+                    data[i]['isAdmin'] = 'Admin'
+                } else {
+                    let checkUser = await mongo.usacrm.collection(this.User).findOne({ _id: data[i]._id, 'workspaces.roleId': 1 })
+                    if (checkUser) {
+                        data[i]['isAdmin'] = 'Manager'
+                    } else {
+                        data[i]['isAdmin'] = 'Member'
+                    }
+                }
+            }
+            return { success: true, message: 'Users inside this workspace', data: data }
+        } catch (e) {
+            return { success: false, message: '', error: e.toString() }
+        }
+
+    }
+
     // gets the manager information of a particular organization
     async getManagerName(managerID) {
         try {
