@@ -270,12 +270,13 @@ module.exports = class User {
         try {
             let data = []
             workspaceId = new ObjectId(workspaceId)
-            let workspaceUserIds = await mongo.usacrm.collection(this.workspaces).findOne({ _id: workspaceId },{
+            let workspaceUserIds = await mongo.usacrm.collection(this.workspace).findOne({ _id: workspaceId },{
                 projection: {
                     _id: 0,
                     userIds: 1
                 }
             })
+            workspaceUserIds = workspaceUserIds.userIds
             for(let i=0; i<workspaceUserIds.length;i++){
                 let userData =  await mongo.usacrm.collection(this.User).findOne({ _id: workspaceUserIds[i] },{
                     projection: { 
