@@ -30,6 +30,15 @@ import EditTask from "./views/EditTask";
 
 var routes = [
   {
+    path: "/user-profile",
+    name: "User Profile",
+    icon: "ni ni-single-02 text-yellow",
+    component: Profile,
+    layout: "/admin",
+    showRoute: true,
+    exactLink: false
+  },
+  {
     path: "/workSpace",
     name: "WorkSpace",
     icon: "ni ni-briefcase-24 text-info",
@@ -50,6 +59,7 @@ var routes = [
   {
     path: "/CreateTaskTest/:workspaceId",
     name: "Create Task",
+    letsPath: "/CreateTaskTest",
     icon: "ni ni-archive-2 text-red",
     component: CreateTaskTest,
     layout: "/admin",
@@ -59,6 +69,7 @@ var routes = [
   {
     path: "/editTask/:workspaceId/:tasks",
     name: "Edit Task",
+    letsPath: "/editTask",
     icon: "ni ni-archive-2 text-red",
     component: EditTask,
     layout: "/admin",
@@ -81,15 +92,6 @@ var routes = [
     component: JoinUser,
     layout: "/auth",
     showRoute: false,
-    exactLink: false
-  },
-  {
-    path: "/user-profile",
-    name: "User Profile",
-    icon: "ni ni-single-02 text-yellow",
-    component: Profile,
-    layout: "/admin",
-    showRoute: true,
     exactLink: false
   },
   {

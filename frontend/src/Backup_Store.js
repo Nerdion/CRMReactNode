@@ -1,8 +1,3 @@
-const { default: Login } = require("./views/authViews/Login")
-const { default: Profile } = require("./views/authViews/Profile")
-const { default: Register } = require("./views/authViews/Register")
-const { default: CreateTaskTest } = require("./views/CreateTaskTest")
-const { default: UserInfo } = require("./views/UserInfo")
 
 Sidebar
 
@@ -286,6 +281,34 @@ Login
                 </DialogBox> */}
 
 
+Edit taskAction
+
+// try {
+//     const getUserProfileTaskData = await fetch(getUserTaskDataApi, {
+//         method: "POST",
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json',
+//             'Authorization': `${crmToken}`
+//         },
+//         body: JSON.stringify({
+//             taskId: linkTaskId,
+//         })
+//     });
+//     const responseData = await getUserProfileTaskData.json();
+//     console.log('getUserProfileTaskData--->', JSON.stringify(responseData, null, 2))
+//     console.log(getUserProfileTaskData, 'getUserProfileTaskData');
+//     this.setState({
+//         users: responseData.userData
+//     })
+
+// }
+// catch (err) {
+//     console.log("Error fetching data-----------", err.toString());
+//     this.setState({ title, message: err.toString(), Alert_open_close: true, alertColorSuccess: false });
+// }
+
+
 UserInfo
 
 // checkUserAuthResponse = async () => {
@@ -349,12 +372,35 @@ CreateTaskTest
                             </Tooltip>
                         </Col>} */}
 
-                                // let idModified = usersToDisplayInOrganization.map(
-        //     obj => {
-        //         return {
-        //             "userId" : obj._id,
-        //             "image":obj.image,
-        //             "name":obj.name
-        //         }
-        //     }
-        // );
+// let idModified = usersToDisplayInOrganization.map(
+//     obj => {
+//         return {
+//             "userId" : obj._id,
+//             "image":obj.image,
+//             "name":obj.name
+//         }
+//     }
+// );
+
+
+WorkSpaceTable
+
+{/* <div onClick={() => onClickAvatar(Tdata)} className="avatar-group">
+
+                                                         </div>
+                                                        <a
+                                                                className="avatar avatar-sm overflow-h"
+                                                                id={`tooltip${index}`}
+                                                            >
+                                                                <img
+                                                                    // alt={item.name}
+                                                                    className="rounded-circle"
+                                                                    src={item.userProfileImage}
+                                                                />
+                                                            </a>
+                                                            <UncontrolledTooltip
+                                                                delay={0}
+                                                                target={`tooltip${index}`}
+                                                            >
+                                                                {item.userName}
+                                                            </UncontrolledTooltip> */}

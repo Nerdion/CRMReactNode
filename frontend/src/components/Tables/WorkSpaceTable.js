@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 //Material UI
 import {
     Button,
+    Avatar,
 } from '@material-ui/core';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 
 import {
     Delete,
@@ -92,30 +94,23 @@ export class WorkSpaceTable extends Component {
                                             </div>
                                         </td>
                                         <td>
-                                            <div onClick={() => onClickAvatar(Tdata)} className="avatar-group">
+                                            <div onClick={() => onClickAvatar(Tdata)}>
                                                 {Tdata.users.length === 0 || Tdata.users === undefined ?
                                                     <span className=" text-default">No User Assigned</span> :
-                                                    Tdata.users.map((item, index) => (
-                                                        <>
-                                                            <a
-                                                                className="avatar avatar-sm overflow-h"
-                                                                id={`tooltip${index}`}
-                                                            >
-                                                                <img
-                                                                    // alt={item.name}
-                                                                    className="rounded-circle "
-                                                                    src={item.userProfileImage}
-                                                                />
-                                                            </a>
-                                                            <UncontrolledTooltip
-                                                                delay={0}
-                                                                target={`tooltip${index}`}
-                                                            >
-                                                                {item.userName}
-                                                            </UncontrolledTooltip>
-                                                        </>
-
-                                                    ))}
+                                                    <AvatarGroup max={4}>
+                                                        {Tdata.users.map((item, index) => (
+                                                            <>
+                                                                < Avatar alt={item.userName} src={item.userProfileImage} id={`tooltip${index}`} />
+                                                                <UncontrolledTooltip
+                                                                    delay={0}
+                                                                    target={`tooltip${index}`}
+                                                                >
+                                                                    {item.userName}
+                                                                </UncontrolledTooltip>
+                                                            </>
+                                                        ))}
+                                                    </AvatarGroup>
+                                                }
                                             </div>
                                         </td>
                                         <td>
