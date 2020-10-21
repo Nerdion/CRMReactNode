@@ -360,21 +360,21 @@ class EditTask extends React.Component {
                 setStatusColor = "#bac7d4"
             }
 
-            // let TaskMembers = responseData.taskData.users.map((data) => {
-            //     let image = data.userProfileImage ? data.userProfileImage : ''
-            //     return {
-            //         userName: data.userName,
-            //         imageUrl: image,
-            //         id: data.userId
-            //     }
-            // });
+            let TaskMembers = responseData.taskData.users.map((data) => {
+                let image = data.userProfileImage ? data.userProfileImage : ''
+                return {
+                    userName: data.name,
+                    imageUrl: image,
+                    id: data._id
+                }
+            });
 
 
 
             this.setState({
                 topicName: responseData.taskData.taskName,
                 stepTitle: responseData.taskData.taskDescription,
-                // userObj: TaskMembers,
+                userObj: TaskMembers,
                 statusId: responseData.taskData.statusId,
                 statusName: responseData.taskData.status,
                 statusColor: setStatusColor,
@@ -447,7 +447,15 @@ class EditTask extends React.Component {
                     console.log("Task Added!");
                     const title = "Success"
                     message = "Task Created!";
-                    this.setState({ title, message, Alert_open_close: true, alertColorSuccess: true });
+                    this.setState({
+                        title,
+                        message,
+                        Alert_open_close: true,
+                        alertColorSuccess: true,
+                        userObj: [],
+                        users: [],
+                        userBackup: []
+                    });
                     this.props.history.push("/admin/tasks", { WorkSpaceName: workSpaceName, workspaceId: workspaceId });
                 }
                 else {
