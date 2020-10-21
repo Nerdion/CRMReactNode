@@ -26,7 +26,8 @@ import {
   Navbar,
   Nav,
   Container,
-  Media
+  Media,
+  Col
 } from "reactstrap";
 
 //redux
@@ -67,7 +68,7 @@ class AdminNavbar extends React.Component {
 
 
   render() {
-    let { logout ,userName, userImage} = this.props;
+    let { logout, userName, userImage } = this.props;
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -78,6 +79,9 @@ class AdminNavbar extends React.Component {
             >
               {this.props.brandText}
             </Link>
+            <Col className="text-center">
+              <span className="text-white mb-0 h4 text-uppercase">This is my Org</span>
+            </Col>
             <Nav className="align-items-center d-none d-md-flex" navbar>
               <UncontrolledDropdown nav>
                 <DropdownToggle className="pr-0" nav>
