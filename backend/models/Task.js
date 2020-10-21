@@ -2,13 +2,14 @@ const { ObjectId } = require('mongodb')
 const mongo = require('./Model')
 const workspace = require('./Workspace')
 const user = require('./User')
+const User = require('./User')
 class Task {
 
     constructor() {
         this.task = 'Task'
         this.workspace = 'Workspaces',
-        this.organization = 'Organizations',
-        this.user = 'User'
+            this.organization = 'Organizations',
+            this.user = 'User'
     }
 
     taskAction = async (bodyInfo) => {
@@ -33,7 +34,7 @@ class Task {
                 let insert = await mongo.usacrm.collection(this.task).insertOne(task)
                 task['taskId'] = insert.insertedId
                 await mongo.usacrm.collection(this.workspace).updateOne(
-                    {_id:workspaceId},
+                    { _id: workspaceId },
                     { '$push': { "taskIds": insert.insertedId } })
                 let userInsert = await this.insertIntoUser(task, workspaceId)
                 return { 'success': true, 'message': "Task is created successfully" }
@@ -49,23 +50,75 @@ class Task {
                 bodyInfo.updatedTaskData.workspaceId = workspaceId
                 let updatedTaskData = bodyInfo.updatedTaskData;
                 let updatedTaskDataKeys = Object.keys(updatedTaskData);
-                let nKeysArray = ['taskId', 'deletedUserIds', 'addedUserIds']
+                let taskUserIds1 = []
+                let taskUserIds2 = []
+                
+                let updatedAddedIds = bodyInfo.updatedTaskData.addedUserIds
+                let updatedDeletedIds = bodyInfo.updatedTaskData.deletedUserIds
+                
+                let nKeysArray = ['taskId', 'deletedUserIds', 'addedUserIds', 'workspaceId']
                 let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: new ObjectId(taskId) })
+                
+                let managerId = taskData.managerId.toString()
+
+                let index = updatedAddedIds.indexOf(managerId)
+                if(index != -1){
+                    updatedAddedIds.splice(index,1)
+                }
+
+                index = updatedDeletedIds.indexOf(managerId)
+                if(index != -1){
+                    updatedDeletedIds.splice(index,1)
+                }
+
                 for (let i = 0; i < updatedTaskDataKeys.length; i++) {
-                    taskData[updatedTaskDataKeys[i]] = updatedTaskData[i];
+                    //taskData[updatedTaskDataKeys[i]] = updatedTaskData[i];
                     if (!nKeysArray.includes(updatedTaskDataKeys[i])) {
                         taskData[updatedTaskDataKeys[i]] = updatedTaskData[updatedTaskDataKeys[i]];
+
                     } else if (updatedTaskDataKeys[i] == 'deletedUserIds') {
-                        let deletedIds = await this.returnObjectId(updatedTaskData[updatedTaskDataKeys[i]])
-                        for (let i = 0; i < deletedIds.length; i++) {
-                            let userIds = taskData['userIds'].splice(taskData['userIds'].indexOf(deletedIds[i], 1))
+                        let deletedIds = updatedDeletedIds
+
+                        for (let j = 0; j < taskData['userIds'].length; j++) {
+                            taskUserIds1.push(taskData['userIds'][j].toString())
                         }
+
+                        for (let j = 0; j < deletedIds.length; j++) {
+                            let index = taskUserIds1.indexOf(deletedIds[j])
+                            if (index != -1) {
+                                taskUserIds1.splice(index, 1)
+                            } else {
+                                deletedIds.splice(j, 1)
+                                j--
+                            }
+
+                        }
+
+                        deletedIds = await this.returnObjectId(deletedIds)
+                        taskUserIds1 = await this.returnObjectId(taskUserIds1)
+                        taskData['userIds'] = taskUserIds1
                         await this.deleteUserIds(deletedIds, workspaceId, taskId)
                     } else if (updatedTaskDataKeys[i] == 'addedUserIds') {
-                        let addedIds = await this.returnObjectId(updatedTaskData[updatedTaskDataKeys[i]])
-                        for (let i = 0; i < addedIds.length; i++) {
-                            taskData['userIds'].push(addedIds[i])
+                        let addedIds = updatedAddedIds
+                        let addedIds2 = []
+                        for (let j = 0; j < taskData['userIds'].length; j++) {
+                            taskUserIds2.push(taskData['userIds'][j].toString())
                         }
+
+                        for (let j = 0; j < addedIds.length; j++) {
+
+                            if (!taskUserIds2.includes(addedIds[j])) {
+                                taskUserIds2.push(addedIds[j])
+                                addedIds2.push(addedIds[j])
+                            } else {
+                                addedIds.splice(j, 1)
+                                j--;
+                            }
+                        }
+
+                        taskUserIds2 = await this.returnObjectId(taskUserIds2)
+                        addedIds = await this.returnObjectId(addedIds2)
+                        taskData['userIds'] = taskUserIds2
                         await this.addUserIds(addedIds, workspaceId, taskId)
                     }
                 }
@@ -80,12 +133,12 @@ class Task {
             let taskId = bodyInfo.taskId;
             let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: taskId })
             await mongo.usacrm.collection(this.workspace).updateOne(
-                {_id:workspaceId},
-                {'$pull':{taskIds:taskId}}
+                { _id: workspaceId },
+                { '$pull': { taskIds: taskId } }
             )
             let userIds = taskData.userIds;
             let deletedTaskData = await mongo.usacrm.collection(this.task).deleteOne({ "_id": taskId });
-            if(!bodyInfo.from){
+            if (!bodyInfo.from) {
                 await this.deleteUserIds(userIds)
             }
             return { success: true, message: "task deleted successfully" }
@@ -119,13 +172,17 @@ class Task {
                 let taskId = await this.returnObjectId(bodyInfo.taskId)
                 let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: taskId }, {
                     projection: {
-                        _id: 0,
                         taskName: 1,
                         taskDescription: 1,
                         taskDetails: 1,
                         statusId: 1
                     }
                 })
+                // let users = []
+                // for(let i=0;i<taskData.userIds.length;i++){
+                //     let userData = await new User().getMyTaskMembers()
+                // }
+                taskData['users'] = await new User().getMyTaskMembers(taskData._id)
                 if (taskData.statusId == 0) {
                     taskData['status'] = 'Draft'
                 } else if (taskData.statusId == 1) {
@@ -257,7 +314,7 @@ class Task {
     async deleteUserIds(deletedIds, workspaceId, taskId) {
         try {
             for (let i = 0; i < deletedIds.length; i++) {
-                let updated = await mongo.usacrm.collection(this.user).update({
+                let updated = await mongo.usacrm.collection(this.user).updateOne({
                     '_id': deletedIds[i],
                     workspaces: {
                         "$elemMatch": {
