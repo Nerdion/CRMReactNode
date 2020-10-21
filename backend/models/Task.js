@@ -223,6 +223,7 @@ class Task {
 
                 }
                 let percentage = (statusIdCount / totalCount) * 100
+                percentage = Number((percentage).toFixed(2))
                 return percentage;
             }
 
