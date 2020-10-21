@@ -5,23 +5,9 @@ exports.URL = 'mongodb://localhost:27017';
 exports.key = 'crmfrontendbackend'
 //exports.siteName = 'https://smartnte.azurewebsites.net'
 exports.siteName = 'http://localhost:3000'
-//sergio@ctremax.com
-//sjuvencio@hotmail.com
-//@SmartNote2020
-
-// exports.auth = {
-//     user: 'sjuvencio@hotmail.com',
-//     pass: '@SmartNote2020',
-// }
 
 exports.auth = {
-    user: 'shriyashshingare@yahoo.com',
-    pass: 'wdsurjybgdcdypct',
+    user: 'Info@smarttrainonboard.com',
 }
 
-//exports.mailService = "hotmail"
-exports.mailService = "yahoo"
-exports.mailPort = 465
-//exports.mailPort = 587
-exports.mailHost = "smtp.mail.yahoo.com"
-//exports.mailHost = "smtp-mail.outlook.com"
+exports.SENDGRID_API_KEY = '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'

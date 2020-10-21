@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/shriyashshingare/fivver_node_sms_mail#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.3.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
@@ -24,7 +25,6 @@
     "jsonwebtoken": "^8.5.1",
     "mailparser": "^3.0.0",
     "mongodb": "^3.6.2",
-    "nodemailer": "^6.4.13",
     "promise-poller": "^1.9.1",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.9",
