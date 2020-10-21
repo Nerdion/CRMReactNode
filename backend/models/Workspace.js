@@ -19,7 +19,7 @@ class Workspace {
                 let userIds = await this.returnObjectId(workspaceData.userIds)
                 let workspace = {
                     workspaceName: workspaceData.workspaceName,
-                    orgID: workspaceData.orgId,//{backend} jwt
+                    orgId: workspaceData.orgId,//{backend} jwt
                     managerId: workspaceData.managerId,
                     createdDate: new Date(),
                     lastModified: new Date(),
@@ -159,11 +159,11 @@ class Workspace {
                     workspaceData = await mongo.usacrm.collection(this.workspace).find({ orgId: bodyInfo.orgId }).toArray();
                 } else {
                     let workspaceIds = await mongo.usacrm.collection(this.user).aggregate([
-                        { "$match": { "_id": bodyInfo.userId } },
+                        { "$match": { "_id": bodyInfo.userId, orgId:bodyInfo.orgId } },
                         { "$project": { "workspaceIds": "$workspaces.workspaceId", "_id": 0 } }
                     ]).toArray()
 
-                    workspaceData = await mongo.usacrm.collection(this.workspace).find({ _id: { $in: workspaceIds[0]['workspaceIds'] }, orgId: bodyInfo.orgId }).toArray()
+                    workspaceData = await mongo.usacrm.collection(this.workspace).find({ _id: { $in: workspaceIds[0]['workspaceIds'] } }).toArray()
                 }
                 for (let i = 0; i < workspaceData.length; i++) {
                     let fData = {};

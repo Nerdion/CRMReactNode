@@ -130,16 +130,18 @@ class Task {
 
             }
         } else if (bodyInfo.action == 3) {  //delete task
-            let taskId = this.returnObjectId(bodyInfo.taskId);
+            let taskId = await this.returnObjectId(bodyInfo.taskId);
             let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: taskId })
             let workspaceId = taskData.workspaceId
             await mongo.usacrm.collection(this.workspace).updateOne(
                 { _id: workspaceId },
                 { '$pull': { taskIds: taskId } }
             )
-            let userIds = taskData.userIds;
+
             let deletedTaskData = await mongo.usacrm.collection(this.task).deleteOne({ "_id": taskId });
             if (!bodyInfo.from) {
+                let userIds = taskData.userIds;
+                userIds.push(taskData.managerId)
                 await this.deleteUserIds(userIds, workspaceId, taskId)
             }
             return { success: true, message: "task deleted successfully" }
