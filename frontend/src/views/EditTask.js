@@ -34,6 +34,7 @@ import {
     Add,
     Clear,
     Public,
+    Save,
 } from '@material-ui/icons';
 
 import {
@@ -144,20 +145,20 @@ class EditTask extends React.Component {
 
     onClickOpenAddUsers = () => {
 
-        // let NewData = [...this.orgUsersData];
+        let NewData = [...this.orgUsersData];
 
-        // for (var i = NewData.length - 1; i >= 0; i--) {
-        //     for (var j = 0; j < this.state.userObj.length; j++) {
-        //         if (NewData[i] && (NewData[i].id === this.state.userObj[j].id)) {
-        //             NewData.splice(i, 1);
-        //         }
-        //     }
-        // }
+        for (var i = NewData.length - 1; i >= 0; i--) {
+            for (var j = 0; j < this.state.userObj.length; j++) {
+                if (NewData[i] && (NewData[i].id === this.state.userObj[j].id)) {
+                    NewData.splice(i, 1);
+                }
+            }
+        }
 
         this.setState({
             setAddUsersBol: true,
-            // userBackup: this.orgUsersData,
-            // users: NewData
+            userBackup: this.orgUsersData,
+            users: NewData
         });
     }
 
@@ -272,7 +273,7 @@ class EditTask extends React.Component {
                     'Authorization': `${crmToken}`
                 },
                 body: JSON.stringify({
-                    method : "workspaceMembers",
+                    method: "workspaceMembers",
                     workspaceId: workspaceId
                 })
             });
@@ -342,10 +343,12 @@ class EditTask extends React.Component {
             //     }
             // });
 
+        
+
             this.setState({
                 topicName: responseData.taskData.taskName,
                 stepTitle: responseData.taskData.taskDescription,
-                // userObj: TaskMembers,
+               // userObj: TaskMembers,
                 statusId: responseData.taskData.statusId,
                 statusName: responseData.taskData.status,
                 statusColor: setStatusColor,
@@ -361,16 +364,19 @@ class EditTask extends React.Component {
 
 
     onClickSaveEditWorkSpaceTask = async () => {
-        const { topicName, stepTitle, userObj, editorState, taskIdToEdit, addedUserIds, statusId } = this.state;
+        const { topicName, stepTitle, userObj, editorState, taskIdToEdit, addedUserIds, statusId, deletedUserIds } = this.state;
         let crm_token = localStorage.getItem('CRM_Token_Value');
         let taskId = this.props.match.params.tasks;
-        let workspaceId = this.props.match.params.workspaceId;
         let title = "Error";
+        const {
+            workSpaceName,
+            workspaceId
+        } = this.props.location.state;
         let message = '';
         let editorRawData = draftToHtml(convertToRaw(editorState.getCurrentContent()))
-        console.log("data---->", { topicName, stepTitle, userObj });
-        console.log("Editor Data--->", editorRawData);
-
+        //  console.log("data---->", { topicName, stepTitle, userObj });
+        // console.log("Editor Data--->", editorRawData);
+        let userIds = userObj.map((val) => val.id)
         try {
             if (topicName === "" && stepTitle === "") {
                 message = "Please Enter Topic Name and Step Title";
@@ -385,6 +391,7 @@ class EditTask extends React.Component {
                 this.setState({ title, message, Alert_open_close: true, alertColorSuccess: false });
             }
             else if (topicName !== "" && stepTitle !== "") {
+
                 const UserRegisterApiCall = await fetch(taskAction, {
                     method: "POST",
                     headers: {
@@ -399,8 +406,8 @@ class EditTask extends React.Component {
                             workspaceId: workspaceId,
                             taskName: topicName,
                             taskDescription: stepTitle,
-                            deletedUserIds: [],
-                            addedUserIds: addedUserIds,
+                            deletedUserIds: deletedUserIds,
+                            addedUserIds: userIds,
                             taskDetails: editorRawData,
                             statusId: statusId
                         }
@@ -415,7 +422,7 @@ class EditTask extends React.Component {
                     const title = "Success"
                     message = "Task Created!";
                     this.setState({ title, message, Alert_open_close: true, alertColorSuccess: true });
-                    this.props.history.push(`/admin/workSpace/${workspaceId}`);
+                    this.props.history.push("/admin/tasks", { WorkSpaceName: workSpaceName, workspaceId: workspaceId });
                 }
                 else {
                     message = "Invalid data";
@@ -622,10 +629,10 @@ class EditTask extends React.Component {
                                             color="primary"
                                             className="wd-200"
                                             size="medium"
-                                            startIcon={<Public />}
+                                            startIcon={<Save />}
                                             onClick={() => { this.onClickSaveEditWorkSpaceTask() }}
                                         >
-                                            Publish Task
+                                            Save Task
                                         </Button>
                                     </Col>
                                 </Row>

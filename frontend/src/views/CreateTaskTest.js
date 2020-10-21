@@ -144,10 +144,13 @@ class CreateTaskTest extends React.Component {
 
     onClickSaveWorkSpaceTask = async (statusId) => {
         const { topicName, stepTitle, userObj, statusData, editorState } = this.state;
-        let workspaceId = this.props.match.params.workspaceId;
         let crm_token = localStorage.getItem('CRM_Token_Value');
         let title = "Error";
         let message = '';
+        const {
+            workSpaceName,
+            workspaceId
+        } = this.props.location.state;
         let editorRawData = draftToHtml(convertToRaw(editorState.getCurrentContent()))
         console.log("data---->", { topicName, stepTitle, userObj, statusData });
         console.log("Editor Data--->", editorState);
@@ -206,8 +209,7 @@ class CreateTaskTest extends React.Component {
                         editorState: EditorState.createEmpty(),
                         alertColorSuccess: true
                     });
-                    this.componentDidMount();
-                    // this.props.history.push("/admin/CreateTaskTest");
+                    this.props.history.push("/admin/tasks", { WorkSpaceName: workSpaceName, workspaceId: workspaceId });
                 }
                 else {
                     message = "Invalid data";
