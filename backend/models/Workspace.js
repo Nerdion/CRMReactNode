@@ -78,6 +78,8 @@ class Workspace {
                             }
 
                         }
+
+                        await this.removeFromAllTasks(deletedIds, workspaceId)
                         deletedIds = await this.returnObjectId(deletedIds)
                         workspaceUserIds1 = await this.returnObjectId(workspaceUserIds1)
                         workspaceData['userIds'] = workspaceUserIds1
@@ -154,14 +156,14 @@ class Workspace {
                 let workspaceGrid = []
                 let workspaceData;
                 if (bodyInfo.isAdmin) {
-                    workspaceData = await mongo.usacrm.collection(this.workspace).find({}).toArray();
+                    workspaceData = await mongo.usacrm.collection(this.workspace).find({ orgId: bodyInfo.orgId }).toArray();
                 } else {
                     let workspaceIds = await mongo.usacrm.collection(this.user).aggregate([
                         { "$match": { "_id": bodyInfo.userId } },
                         { "$project": { "workspaceIds": "$workspaces.workspaceId", "_id": 0 } }
                     ]).toArray()
 
-                    workspaceData = await mongo.usacrm.collection(this.workspace).find({ _id: { $in: workspaceIds[0]['workspaceIds'] } }).toArray()
+                    workspaceData = await mongo.usacrm.collection(this.workspace).find({ _id: { $in: workspaceIds[0]['workspaceIds'] }, orgId: bodyInfo.orgId }).toArray()
                 }
                 for (let i = 0; i < workspaceData.length; i++) {
                     let fData = {};
@@ -303,6 +305,40 @@ class Workspace {
             }
         } catch (err) {
             return false
+        }
+    }
+
+    async removeFromAllTasks(deletedIds, workspaceId) {
+
+        for (let i = 0; i < deletedIds.length; i++) {
+            let taskFilter = [
+                {
+                    "$match": { "_id": deletedIds[i] }
+                },
+                {
+                    "$unwind": { "path": "$workspaces" }
+                },
+                {
+                    "$match": { "workspaces.workspaceId": workspaceId }
+                },
+                {
+                    "$unwind": { "path": "$workspaces.tasks" }
+                },
+                {
+                    "$group": { "_id": "$workspaces.tasks.taskId" }
+                },
+                {
+                    "$project": { "_id": 0, "taskIds": "$_id" }
+                }
+            ]
+
+            let taskIds = await mongo.usacrm.collection(this.user).aggregate(taskFilter).toArray()
+            for (let j = 0; j < tasksIds; j++) {
+                await mongo.usacrm.collection(this.task).updateOne(
+                    { _id: taskIds[j] },
+                    { '$pull': { userIds: deletedIds[i] } }
+                )
+            }
         }
     }
 }

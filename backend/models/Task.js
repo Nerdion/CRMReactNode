@@ -52,23 +52,23 @@ class Task {
                 let updatedTaskDataKeys = Object.keys(updatedTaskData);
                 let taskUserIds1 = []
                 let taskUserIds2 = []
-                
+
                 let updatedAddedIds = bodyInfo.updatedTaskData.addedUserIds
                 let updatedDeletedIds = bodyInfo.updatedTaskData.deletedUserIds
-                
+
                 let nKeysArray = ['taskId', 'deletedUserIds', 'addedUserIds', 'workspaceId']
                 let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: new ObjectId(taskId) })
-                
+
                 let managerId = taskData.managerId.toString()
 
                 let index = updatedAddedIds.indexOf(managerId)
-                if(index != -1){
-                    updatedAddedIds.splice(index,1)
+                if (index != -1) {
+                    updatedAddedIds.splice(index, 1)
                 }
 
                 index = updatedDeletedIds.indexOf(managerId)
-                if(index != -1){
-                    updatedDeletedIds.splice(index,1)
+                if (index != -1) {
+                    updatedDeletedIds.splice(index, 1)
                 }
 
                 for (let i = 0; i < updatedTaskDataKeys.length; i++) {
@@ -130,8 +130,9 @@ class Task {
 
             }
         } else if (bodyInfo.action == 3) {  //delete task
-            let taskId = bodyInfo.taskId;
+            let taskId = this.returnObjectId(bodyInfo.taskId);
             let taskData = await mongo.usacrm.collection(this.task).findOne({ _id: taskId })
+            let workspaceId = taskData.workspaceId
             await mongo.usacrm.collection(this.workspace).updateOne(
                 { _id: workspaceId },
                 { '$pull': { taskIds: taskId } }
@@ -139,7 +140,7 @@ class Task {
             let userIds = taskData.userIds;
             let deletedTaskData = await mongo.usacrm.collection(this.task).deleteOne({ "_id": taskId });
             if (!bodyInfo.from) {
-                await this.deleteUserIds(userIds)
+                await this.deleteUserIds(userIds, workspaceId, taskId)
             }
             return { success: true, message: "task deleted successfully" }
         } else if (bodyInfo.action == 4) { //all task card 
