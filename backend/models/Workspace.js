@@ -73,8 +73,8 @@ class Workspace {
                                 workspaceUserIds2.push(addedIds[j])
                                 addedIds2.push(addedIds[j])
                             } else {
-                                addedIds.splice(i, 1)
-                                i--;
+                                addedIds.splice(j, 1)
+                                j--;
                             }
                         }
                         workspaceUserIds2 = await this.returnObjectId(workspaceUserIds2)
