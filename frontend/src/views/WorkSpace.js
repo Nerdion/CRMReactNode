@@ -82,12 +82,12 @@ class WorkSpace extends React.Component {
             editUserObj: [],
             editUserDeleteIds: [],
             editAddedUserIds: [],
-            upcomingUsers: [],
             workSpaceId: null,
             isCreatedWorkspace: false,
             isEditWorkSpace: false,
             Alert_open_close2: false,
-            alertColor2: null
+            alertColor2: null,
+            userBackup: []
         };
     }
 
@@ -108,7 +108,7 @@ class WorkSpace extends React.Component {
     }
 
     onClickOpenAddWorkSpace = () => {
-        this.setState({ setAddWorkspaceOpenClose: true, users: this.orgUsersData, WorkSpaceName: '', userObj: [] });
+        this.setState({ setAddWorkspaceOpenClose: true, users: this.orgUsersData, userBackup: this.orgUsersData, WorkSpaceName: '', userObj: [] });
     }
 
     handleEditWorkSpaceClose = () => {
@@ -116,27 +116,34 @@ class WorkSpace extends React.Component {
     }
 
     onClickOpenUpdateWorkSpace = (data) => {
-        let workspaceMembers = data.users;
-        console.log("userData->", data);
+        let workspaceMembers = data.users.map((data) => {
+            let image = data.userProfileImage ? data.userProfileImage : ''
+            return {
+                userName: data.userName,
+                imageUrl: image,
+                id: data.userId
+            }
+        });
+        console.log("userData->", workspaceMembers);
 
-        let usersToDisplayInOrganization = []
-        console.log("My users", this.orgUsersData)
+        let NewData = [...this.orgUsersData];
 
-        for (let i = 0; i < data.users.length; i++) {
-            for (let j = 0; j < this.orgUsersData.length; j++) {
-                if (data.users[i].userId !== this.orgUsersData[j].id) {
-                    usersToDisplayInOrganization.push(this.orgUsersData[j])
+        for (var i = NewData.length - 1; i >= 0; i--) {
+            for (var j = 0; j < workspaceMembers.length; j++) {
+                if (NewData[i] && (NewData[i].id === workspaceMembers[j].id)) {
+                    NewData.splice(i, 1);
                 }
             }
         }
 
+        console.log("this is new Daat--------", NewData)
 
         this.setState({
             setEditWorkspaceOpenClose: true,
-            users: usersToDisplayInOrganization,
+            users: NewData,
+            userBackup: this.orgUsersData,
             editUserObj: workspaceMembers,
             WorkSpaceName: data.workspaceName,
-            upcomingUsers: workspaceMembers,
             workSpaceId: data.workspaceId
         });
     }
@@ -149,7 +156,19 @@ class WorkSpace extends React.Component {
         this.setState({ [`${Name}`]: value })
     }
 
-    editSelectUsers = (UserName, UserImage, UserId) => {
+    editSelectUsers = (UserName, UserImage, userId) => {
+        // let returnFlag = 0
+
+        // for (let i = 0; i < this.state.editUserObj.length; i++) {
+        //     if (this.state.editUserObj[i].userName == UserName) {
+        //         returnFlag = 1
+        //         break;
+        //     }
+        // }
+
+        // if (!returnFlag) {
+        //     this.setState({ editUserObj: [...this.state.editUserObj, { userName: UserName, imageUrl: UserImage, id: UserId }] });
+        // }
         let returnFlag = 0
 
         for (let i = 0; i < this.state.editUserObj.length; i++) {
@@ -160,27 +179,67 @@ class WorkSpace extends React.Component {
         }
 
         if (!returnFlag) {
-            this.setState({ editUserObj: [...this.state.editUserObj, { userName: UserName, imageUrl: UserImage, id: UserId }] });
+            let array = [...this.state.users];
+            let filteredArray = array.filter(item => item.userName !== UserName)
+            let array1 = [...this.state.editUserDeleteIds];
+            let filteredArray1 = array1.filter(item => item !== userId)
+            this.setState({
+                editUserObj: [...this.state.editUserObj,
+                { userName: UserName, imageUrl: UserImage, id: userId }],
+                users: filteredArray,
+                editUserDeleteIds: filteredArray1
+            });
         }
-
         console.log("userObj==>", this.state.editUserObj);
     }
 
     editDeleteSelectedUsers = (userName, userId) => {
-        let array = [...this.state.editUserObj]
-        let filteredArray = array.filter(item => item.userName !== userName)
-        let userDeleteArray = [];
-        // userDeleteArray.push(userId)
+        // let array = [...this.state.editUserObj]
+        // let filteredArray = array.filter(item => item.userName !== userName)
+        // let userDeleteArray = [];
+        //  userDeleteArray.push(userId)
 
-        for(let i=0;i< this.state.users.length; i++){
-            for(let j=0;j< this.state.editUserDeleteIds.length; j++){
-                if(this.state.users[i].userId !== this.state.editUserDeleteIds[j]){
-                    userDeleteArray.push(userId);
+        // for (let i = 0; i < this.state.users.length; i++) {
+        //     for (let j = 0; j < this.state.editUserDeleteIds.length; j++) {
+        //         if (this.state.users[i].userId !== this.state.editUserDeleteIds[j]) {
+        //             userDeleteArray.push(userId);
+        //         }
+        //     }
+        // }
+
+        // this.setState({ editUserObj: filteredArray, editUserDeleteIds: userDeleteArray });
+
+        let array = [...this.state.editUserObj]
+        let filteredArray = array.filter(item => item.userName !== userName);
+        let filteredArray1 = array.filter(item => item.userName === userName);
+        let returnFlag = 0;
+        if (this.state.editUserDeleteIds.length === 0) {
+            returnFlag = 0;
+        } else {
+            for (let i = 0; i < this.state.userBackup.length; i++) {
+                for (let j = 0; j < this.state.editUserDeleteIds.length; j++) {
+                    if (this.state.userBackup[i].id === this.state.editUserDeleteIds[j]) {
+                        returnFlag = 1;
+                        break;
+                    } else {
+                        returnFlag = 0;
+                    }
+                }
+            }
+            for (let i = 0; i < this.state.editUserObj.length; i++) {
+                for (let j = 0; j < this.state.editUserDeleteIds.length; j++) {
+                    if (this.state.editUserObj[i].id === this.state.editUserDeleteIds[j]) {
+                        returnFlag = 1;
+                        break;
+                    } else {
+                        returnFlag = 0;
+                    }
                 }
             }
         }
-
-        this.setState({ editUserObj: filteredArray, editUserDeleteIds: userDeleteArray });
+        if (returnFlag === 0) {
+            this.setState((prevState) => ({ editUserDeleteIds: [...prevState.editUserDeleteIds, userId], users: [...prevState.users, filteredArray1[0]], editUserObj: filteredArray }))
+        }
     }
 
     selectUsers = (UserName, UserImage, UserId) => {
@@ -195,17 +254,24 @@ class WorkSpace extends React.Component {
         }
 
         if (!returnFlag) {
-            this.setState({ userObj: [...this.state.userObj, { userName: UserName, imageUrl: UserImage, id: UserId }] });
+            let array = [...this.state.users];
+            let filteredArray = array.filter(item => item.userName !== UserName)
+            this.setState({
+                userObj: [...this.state.userObj, { userName: UserName, imageUrl: UserImage, id: UserId }],
+                users: filteredArray
+            });
         }
 
         console.log("userObj==>", this.state.userObj);
     }
 
-    deleteSelectedUsers = (userName) => {
+    deleteSelectedUsers = (userName, userId) => {
         let array = [...this.state.userObj]
         let filteredArray = array.filter(item => item.userName !== userName)
-
-        this.setState({ userObj: filteredArray });
+        let array1 = [...this.state.userBackup]
+        let filteredArray1 = array1.filter(item => item.id === userId)
+        this.setState((prevState) => ({ userObj: filteredArray, users: [...prevState.users, filteredArray1[0]] }));
+        console.log("UsersAfterDelete---->", filteredArray1);
     }
 
 
@@ -231,6 +297,7 @@ class WorkSpace extends React.Component {
 
     getWorkSpace = async () => {
         let title = "Error";
+        this.setState({ users: [], userBackup: [] ,deletedUserIds:[]});
         try {
             const getWorkSpaceData = await fetch(workspaceAction, {
                 method: "POST",
@@ -285,19 +352,19 @@ class WorkSpace extends React.Component {
                         return val.userId
                     }
                 });
-                let userDeletedIds = editUserDeleteIds.map((val) => {
-                    if (val.id) {
-                        return val.id
-                    } else {
+                // let userDeletedIds = editUserDeleteIds.map((val) => {
+                //     if (val.id) {
+                //         return val.id
+                //     } else {
 
-                        return val.userId
-                    }
-                });
-                // console.log("this is userIds---------->",userIds);
+                //         return val.userId
+                //     }
+                // });
+                console.log("this is editUserDeleteIds---------->", editUserDeleteIds);
                 let workspaceData = {
                     workspaceName: WorkSpaceName,
                     addedUserIds: userIds,
-                    deletedUserIds: userDeletedIds,
+                    deletedUserIds: editUserDeleteIds,
                     workspaceId: workSpaceId
                 }
                 let setWorkSpaceResponse = await fetch(workspaceAction, {
@@ -518,6 +585,8 @@ class WorkSpace extends React.Component {
                 return item.userName.toLowerCase().indexOf(userSearch.toLowerCase()) !== -1;
             }
         ) : '';
+
+        //  console.log("userObj==>", this.state.userObj);
         return (
             <>
                 <Header />
@@ -643,7 +712,7 @@ class WorkSpace extends React.Component {
                                                             <Col lg="1" className="d-flex align-items-center justify-content-center">
                                                                 <span
                                                                     className="txt-lt-dark cursor-point p-2"
-                                                                    onClick={() => { this.deleteSelectedUsers(users.userName) }}
+                                                                    onClick={() => { this.deleteSelectedUsers(users.userName, users.id) }}
                                                                 >
                                                                     <Clear className="text-red" />
                                                                 </span>
