@@ -8,9 +8,9 @@ class Workspace {
 
     constructor() {
         this.task = 'Tasks',
-        this.workspace = 'Workspaces',
-        this.organization = 'Organizations',
-        this.user = 'User'
+            this.workspace = 'Workspaces',
+            this.organization = 'Organizations',
+            this.user = 'User'
     }
     workspaceAction = async (bodyInfo) => {
         if (bodyInfo.action == 1) { //create a workspace
@@ -41,23 +41,31 @@ class Workspace {
                 updatedWorkSpaceData['lastModified'] = new Date()
                 let updatedWorkSpaceDataKeys = Object.keys(updatedWorkSpaceData);
                 let nKeysArray = ['workspaceId', 'deletedUserIds', 'addedUserIds']
+                let workspaceUserIds = [];
                 let workspaceData = await mongo.usacrm.collection(this.workspace).findOne({ _id: workspaceId })
                 for (let i = 0; i < updatedWorkSpaceDataKeys.length; i++) {
                     if (!nKeysArray.includes(updatedWorkSpaceDataKeys[i])) {
                         workspaceData[updatedWorkSpaceDataKeys[i]] = updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]];
                     } else if (updatedWorkSpaceDataKeys[i] == 'deletedUserIds') {
-                        let deletedIds = await this.returnObjectId(updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]])
-                        for (let i = 0; i < deletedIds.length; i++) {
-                            let userIds = workspaceData['userIds'].splice(workspaceData['userIds'].indexOf(deletedIds[i], 1))
+                        let deletedIds = updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]]
+                        for (let j = 0; j < workspaceData['userIds'].length; j++) {
+                            workspaceUserIds.push(workspaceData['userIds'][j].toString())
                         }
+                        for (let j = 0; j < deletedIds.length; j++) {
+                            let index = workspaceUserIds.indexOf(deletedIds[j])
+                            workspaceUserIds.splice(index, 1)
+                        }
+                        deletedIds = await this.returnObjectId(updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]])
+                        workspaceUserIds = await this.returnObjectId(workspaceUserIds)
+                        workspaceData['userIds'] = workspaceUserIds
                         await this.deleteUserIds(deletedIds, workspaceId)
                     } else if (updatedWorkSpaceDataKeys[i] == 'addedUserIds') {
                         let addedIds = await this.returnObjectId(updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]])
-                        for (let i = 0; i < addedIds.length; i++) {
-                            if(!workspaceData['userIds'].includes(addedIds[i])){
-                                workspaceData['userIds'].push(addedIds[i])
-                            }else{
-                                addedIds.splice(i,1)
+                        for (let j = 0; j < addedIds.length; j++) {
+                            if (!workspaceData['userIds'].includes(addedIds[j])) {
+                                workspaceData['userIds'].push(addedIds[j])
+                            } else {
+                                addedIds.splice(i, 1)
                                 i--;
                             }
                         }
@@ -78,11 +86,11 @@ class Workspace {
                 let tasksIds = workspaceData.tasksIds;
                 let deletedTasks = []
                 let failedDeleteTask = []
-                if(!tasksIds == null){
+                if (!tasksIds == null) {
                     for (let i = 0; i < tasksIds.length; i++) {
                         let taskBody = {
                             action: 3,
-                            from:1,
+                            from: 1,
                             taskId: tasksIds[i]
                         }
                         let deleteTaskResult = await new task().taskAction(taskBody);
@@ -93,7 +101,7 @@ class Workspace {
                         }
                     }
                 }
-                
+
                 if (failedDeleteTask.length == 0) {
                     let updateResult = await mongo.usacrm.collection(this.workspace).deleteOne({ "_id": workspaceId });
                     let userUpdatedResult = await mongo.usacrm.collection(this.user).updateMany(
@@ -112,15 +120,15 @@ class Workspace {
             try {
                 let workspaceGrid = []
                 let workspaceData;
-                if(bodyInfo.isAdmin){
+                if (bodyInfo.isAdmin) {
                     workspaceData = await mongo.usacrm.collection(this.workspace).find({}).toArray();
-                }else {
+                } else {
                     let workspaceIds = await mongo.usacrm.collection(this.user).aggregate([
                         { "$match": { "_id": bodyInfo.userId } },
                         { "$project": { "workspaceIds": "$workspaces.workspaceId", "_id": 0 } }
                     ]).toArray()
 
-                    workspaceData = await mongo.usacrm.collection(this.workspace).find({_id:{$in:workspaceIds[0]['workspaceIds']}}).toArray()
+                    workspaceData = await mongo.usacrm.collection(this.workspace).find({ _id: { $in: workspaceIds[0]['workspaceIds'] } }).toArray()
                 }
                 for (let i = 0; i < workspaceData.length; i++) {
                     let fData = {};
@@ -213,8 +221,8 @@ class Workspace {
                     lastModifiedDate: null
                 }
                 if (!(userIds[i] == managerId)) {
-                    let data = await mongo.usacrm.collection(this.user).findOne({_id:userIds[i],'workspaces.workspaceId':workspace.workspaceId})
-                    if(!data){
+                    let data = await mongo.usacrm.collection(this.user).findOne({ _id: userIds[i], 'workspaces.workspaceId': workspace.workspaceId })
+                    if (!data) {
                         await mongo.usacrm.collection(this.user).updateOne({ _id: userIds[i] }, { $push: { "workspaces": workspacesObj } })
                     }
 
@@ -225,10 +233,10 @@ class Workspace {
                 roleId: 1,
                 lastModifiedDate: null
             }
-            let data = await mongo.usacrm.collection(this.user).findOne({_id:managerId,'workspaces.workspaceId':workspace.workspaceId})
-                    if(!data){
-                        await mongo.usacrm.collection(this.user).updateOne({ _id: managerId }, { $push: { "workspaces": workspacesObj } })
-                    }
+            let data = await mongo.usacrm.collection(this.user).findOne({ _id: managerId, 'workspaces.workspaceId': workspace.workspaceId })
+            if (!data) {
+                await mongo.usacrm.collection(this.user).updateOne({ _id: managerId }, { $push: { "workspaces": workspacesObj } })
+            }
         } catch (err) {
             return false
         }
