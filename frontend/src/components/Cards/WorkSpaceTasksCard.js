@@ -13,7 +13,6 @@ import {
     DropdownItem,
     Badge,
     CardFooter,
-    UncontrolledTooltip
 } from "reactstrap";
 
 import {
@@ -86,15 +85,15 @@ export class WorkSpaceTasksCard extends Component {
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <div className="text-left">
                                         {TaskCardData.status === "Pending" ?
-                                            <span className="txt-bold txt-pending">Status:- {TaskCardData.status}</span> :
+                                            <span className="txt-bold txt-pending">Status: {TaskCardData.status}</span> :
                                             TaskCardData.status === "Draft" ?
-                                                <span className="txt-bold txt-draft">Status:- {TaskCardData.status}</span> :
-                                                <span className="txt-bold txt-finished">Status:- {TaskCardData.status}</span>
+                                                <span className="txt-bold txt-draft">Status: {TaskCardData.status}</span> :
+                                                <span className="txt-bold txt-finished">Status: {TaskCardData.status}</span>
                                         }
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 mt-1 text-right">
-                                    <span className="text-muted">Created at:- </span>
+                                    <span className="text-muted">Created at : </span>
                                     <div onClick={onClickAvatar} className="avatar-group">
                                         {createdAt === null || createdAt === undefined ?
                                             <span className=" text-default">No User Assigned</span> :

@@ -297,7 +297,7 @@ class WorkSpace extends React.Component {
 
     getWorkSpace = async () => {
         let title = "Error";
-        this.setState({ users: [], userBackup: [] ,deletedUserIds:[]});
+        this.setState({ users: [], userBackup: [], deletedUserIds: [] });
         try {
             const getWorkSpaceData = await fetch(workspaceAction, {
                 method: "POST",
@@ -384,7 +384,7 @@ class WorkSpace extends React.Component {
                 if (responseData.success === true) {
                     const title = "Success"
                     message = "WorkSpace Added!";
-                    this.setState({ title, message, Alert_open_close1: true, isEditWorkSpace: false, setEditWorkspaceOpenClose: false });
+                    this.setState({ title, message, Alert_open_close2: true, alertColor2: "success", isEditWorkSpace: false, setEditWorkspaceOpenClose: false });
                     this.handleClose();
                     this.getWorkSpace();
                 }
@@ -469,7 +469,7 @@ class WorkSpace extends React.Component {
                 if (responseData.success === true) {
                     const title = "Success"
                     message = "WorkSpace Added!";
-                    this.setState({ title, message, Alert_open_close: true, isCreatedWorkspace: false, setAddWorkspaceOpenClose: false });
+                    this.setState({ title, message, Alert_open_close2: true, alertColor2: "success", isCreatedWorkspace: false, setAddWorkspaceOpenClose: false });
                     this.handleClose();
                     this.getWorkSpace();
                 }
@@ -513,12 +513,12 @@ class WorkSpace extends React.Component {
             }
             else {
                 message = responseData.error;
-                this.setState({ title, message, Alert_open_close2: true });
+                this.setState({ title, message, Alert_open_close2: true , alertColor2: "danger"});
             }
         }
         catch (err) {
             console.log("Error fetching data-----------", err.toString());
-            this.setState({ title, message: err.toString(), Alert_open_close2: true });
+            this.setState({ title, message: err.toString(), Alert_open_close2: true , alertColor2: "danger"});
         }
 
     }

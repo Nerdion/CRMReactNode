@@ -299,7 +299,7 @@ class Profile extends React.Component {
                           className="rounded-circle obj-cover"
                           width="190"
                           height="175"
-                          src={(userProfileImage) ? userProfileImage : require("../../assets/img/theme/team-4-800x800.jpg")}
+                          src={(userProfileImage) ? userProfileImage : require("../../assets/img/theme/defaultUser.png")}
                         />
                       </a>
                     </div>
