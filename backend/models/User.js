@@ -32,7 +32,7 @@ module.exports = class User {
                         let myOrganization = checkUser.orgId;
                         return { 'success': true, 'message': "User is authenticated Successfully", jwtData, orgID: myOrganization }
                     } else {
-                        return { 'success': true, 'message': "User is authenticated Un-successfully" }
+                        return { 'success': false, 'message': "User is authenticated Un-successfully" }
                     }
                 } else {
                     return { 'success': false, 'message': "To login please verify your email first" };
