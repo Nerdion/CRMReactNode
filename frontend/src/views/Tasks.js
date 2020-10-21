@@ -87,6 +87,7 @@ class WorkSpace extends React.Component {
         } = this.props.location.state;
         let title = "Error";
         let message = "";
+        this.setState({ isSpinning: true });
         let crmToken = localStorage.getItem('CRM_Token_Value');
         try {
             let deleteTaskData = await fetch(taskAction, {
@@ -106,17 +107,17 @@ class WorkSpace extends React.Component {
             if (responseData.success === true) {
                 title = "Success"
                 message = "WorkSpace Deleted!";
-                this.setState({ title, message, Alert_open_close: true, altSuccessColor: true });
+                this.setState({ title, message, Alert_open_close: true, altSuccessColor: true, isSpinning: false });
                 this.getWorkSpaceTasksCall();
             }
             else {
                 message = responseData.Error;
-                this.setState({ title, message, Alert_open_close: true, altSuccessColor: false });
+                this.setState({ title, message, Alert_open_close: true, altSuccessColor: false, isSpinning: false });
             }
         }
         catch (err) {
             console.log("Error fetching data-----------", err.toString());
-            this.setState({ title, message: err.toString(), Alert_open_close: true, altSuccessColor: false });
+            this.setState({ title, message: err.toString(), Alert_open_close: true, altSuccessColor: false, isSpinning: false });
         }
     }
     getWorkSpaceTasksCall = async () => {
@@ -155,7 +156,7 @@ class WorkSpace extends React.Component {
         }
         catch (err) {
             console.log("Error fetching data-----------", JSON.stringify(err));
-            this.setState({ title, message: JSON.stringify(err), Alert_open_close: true });
+            this.setState({ title, message: JSON.stringify(err), Alert_open_close: true, isSpinning: false });
         }
     }
 

@@ -170,11 +170,6 @@ class EditTask extends React.Component {
     };
 
     selectUsers = (UserName, UserImage, userId) => {
-        //   event.preventDefault();
-        // this.setState({
-        //     userObj: [...this.state.userObj, { userName: UserName, userImage: UserImage }],
-        //     addedUserIds: [...this.state.addedUserIds, userId]
-        // });
         let returnFlag = 0
 
         for (let i = 0; i < this.state.userObj.length; i++) {
@@ -202,12 +197,6 @@ class EditTask extends React.Component {
     }
 
     deleteSelectedUsers = (userName, userId) => {
-        // let array = [...this.state.userObj]
-        // let filteredArray = array.filter(item => item.userName !== userName);
-        // let array1 = [...this.state.addedUserIds]
-        // let filteredArray1 = array1.filter(item => item !== userId)
-        // this.setState({ userObj: filteredArray, addedUserIds: filteredArray1 });
-
         let array = [...this.state.userObj]
         let filteredArray = array.filter(item => item.userName !== userName);
         let filteredArray1 = array.filter(item => item.userName === userName);
@@ -436,8 +425,6 @@ class EditTask extends React.Component {
                         Alert_open_close: true,
                         alertColorSuccess: true,
                         userObj: [],
-                        users: [],
-                        userBackup: []
                     });
                     this.props.history.push("/admin/tasks", { WorkSpaceName: workSpaceName, workspaceId: workspaceId });
                 }

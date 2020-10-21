@@ -157,18 +157,6 @@ class WorkSpace extends React.Component {
     }
 
     editSelectUsers = (UserName, UserImage, userId) => {
-        // let returnFlag = 0
-
-        // for (let i = 0; i < this.state.editUserObj.length; i++) {
-        //     if (this.state.editUserObj[i].userName == UserName) {
-        //         returnFlag = 1
-        //         break;
-        //     }
-        // }
-
-        // if (!returnFlag) {
-        //     this.setState({ editUserObj: [...this.state.editUserObj, { userName: UserName, imageUrl: UserImage, id: UserId }] });
-        // }
         let returnFlag = 0
 
         for (let i = 0; i < this.state.editUserObj.length; i++) {
@@ -194,21 +182,6 @@ class WorkSpace extends React.Component {
     }
 
     editDeleteSelectedUsers = (userName, userId) => {
-        // let array = [...this.state.editUserObj]
-        // let filteredArray = array.filter(item => item.userName !== userName)
-        // let userDeleteArray = [];
-        //  userDeleteArray.push(userId)
-
-        // for (let i = 0; i < this.state.users.length; i++) {
-        //     for (let j = 0; j < this.state.editUserDeleteIds.length; j++) {
-        //         if (this.state.users[i].userId !== this.state.editUserDeleteIds[j]) {
-        //             userDeleteArray.push(userId);
-        //         }
-        //     }
-        // }
-
-        // this.setState({ editUserObj: filteredArray, editUserDeleteIds: userDeleteArray });
-
         let array = [...this.state.editUserObj]
         let filteredArray = array.filter(item => item.userName !== userName);
         let filteredArray1 = array.filter(item => item.userName === userName);
@@ -352,14 +325,6 @@ class WorkSpace extends React.Component {
                         return val.userId
                     }
                 });
-                // let userDeletedIds = editUserDeleteIds.map((val) => {
-                //     if (val.id) {
-                //         return val.id
-                //     } else {
-
-                //         return val.userId
-                //     }
-                // });
                 console.log("this is editUserDeleteIds---------->", editUserDeleteIds);
                 let workspaceData = {
                     workspaceName: WorkSpaceName,
