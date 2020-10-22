@@ -19,6 +19,11 @@ import {
 //API's
 import { AuthUser, AuthUserResponse } from './CRM_Apis';
 
+//redux
+import { connect } from 'react-redux';
+
+import * as actionTypes from '../store/actions';
+
 class UserInfo extends React.Component {
     state = {
         name: '',
@@ -51,7 +56,7 @@ class UserInfo extends React.Component {
         let originalToken = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
         console.log(token);
         let crmToken = await this.decryptData(originalToken);
-        var jwtToken = Object.values(crmToken)[0]
+        let jwtToken = Object.values(crmToken)[0]
         let title = "Error";
         let message = "";
         let registerData = {
@@ -86,9 +91,9 @@ class UserInfo extends React.Component {
                 const responseData = await UserRegisterApiCall.json();
 
                 if (responseData.success) {
-                    localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);                    
+                    this.props.onLogin(localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token));
                     this.setState({ setActivityIndicator: true })
-                    this.props.history.push("/admin/index");
+                    this.props.history.push("/admin/workSpace");
                 }
                 else {
                     message = "Invalid Email & Password";
@@ -223,4 +228,16 @@ class UserInfo extends React.Component {
     }
 }
 
-export default UserInfo;
+const mapStateToProps = state => {
+    return {
+        setLogin: state.setLoginValue
+    };
+}
+
+const mapDispatcToProps = dispatch => {
+    return {
+        onLogin: (setLoginData) => dispatch({ type: actionTypes.SET_LOGIN, setLoginValue: setLoginData })
+    }
+}
+
+export default connect(mapStateToProps, mapDispatcToProps)(UserInfo);
