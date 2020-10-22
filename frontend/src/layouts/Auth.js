@@ -56,7 +56,7 @@ class Auth extends React.Component {
               >
                 <polygon
                   className="fill-default"
-                  points="2560 0 2560 100 0 100" //0 100 2000 2000 100 0 0
+                  points="2560 0 2560 100 0 100" 
                 />
               </svg>
             </div>

@@ -13,13 +13,11 @@ import {
     DropdownItem,
     Badge,
     CardFooter,
-    UncontrolledTooltip
 } from "reactstrap";
 
 import {
     MoreVert,
     Edit,
-    FileCopy,
     Delete
 } from '@material-ui/icons';
 
@@ -31,7 +29,6 @@ export class WorkSpaceTasksCard extends Component {
         openMenu: null,
         options: [
             { "option": "Edit", "icon": Edit, "color": "#2b5578" },
-            { "option": "Duplicate", "icon": FileCopy, "color": "#2b7872" },
             { "option": "Delete", "icon": Delete, "color": "#c4416a" },
         ]
     }
@@ -40,9 +37,8 @@ export class WorkSpaceTasksCard extends Component {
     }
     render() {
         const { openMenu, options } = this.state;
-        const { TaskCardData, onClickAvatar, onClickTask } = this.props;
-        let Users = TaskCardData.users;
-        // console.log("usersData---", TaskCardData.users);
+        const { TaskCardData, onClickAvatar, onClickTask, onClickDelete } = this.props;
+        let createdAt = TaskCardData.createdAt;
         return (
             <Col className="mar-b-2 mb-xl-0" xs="12" md="12" lg="6" xl="6">
                 <Card className="bg-gradient-white card-shadow-white">
@@ -62,7 +58,7 @@ export class WorkSpaceTasksCard extends Component {
                                         <DropdownMenu>
                                             {
                                                 options.map((options, index) => (
-                                                    <DropdownItem key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
+                                                    <DropdownItem onClick={options.option === "Edit" ? onClickTask : onClickDelete } key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
                                                 ))
                                             }
                                         </DropdownMenu>
@@ -87,41 +83,22 @@ export class WorkSpaceTasksCard extends Component {
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <div className="text-left">
                                         {TaskCardData.status === "Pending" ?
-                                            <span className="txt-bold txt-pending">Status:- {TaskCardData.status}</span> :
+                                            <span className="txt-bold txt-pending">Status: {TaskCardData.status}</span> :
                                             TaskCardData.status === "Draft" ?
-                                                <span className="txt-bold txt-draft">Status:- {TaskCardData.status}</span> :
-                                                <span className="txt-bold txt-finished">Status:- {TaskCardData.status}</span>
+                                                <span className="txt-bold txt-draft">Status: {TaskCardData.status}</span> :
+                                                <span className="txt-bold txt-finished">Status: {TaskCardData.status}</span>
                                         }
                                     </div>
                                 </div>
                                 <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 mt-1 text-right">
-                                    <span className="text-muted">Users:- </span>
+                                    <span className="text-muted">Created at : </span>
                                     <div onClick={onClickAvatar} className="avatar-group">
-                                        {Users.length === 0 || Users === undefined ?
+                                        {createdAt === null || createdAt === undefined ?
                                             <span className=" text-default">No User Assigned</span> :
-                                            Users.map((item, index) => (
-
-                                                <>
-                                                    <a
-                                                        className="avatar avatar-sm"
-                                                        id={`tooltip${index}`}
-                                                    >
-                                                        <img
-                                                            alt={item.userName}
-                                                            className="rounded-circle"
-                                                            src={item.imageUrl}
-                                                        />
-                                                    </a>
-                                                    <UncontrolledTooltip
-                                                        delay={0}
-                                                        target={`tooltip${index}`}
-                                                    >
-                                                        {item.userName}
-                                                    </UncontrolledTooltip>
-                                                </>
-
-                                            ))}
+                                            <span className=" text-default">{TaskCardData.createdAt}</span>
+                                        }
                                     </div>
+
                                 </div>
                             </Row>
                         </CardFooter>

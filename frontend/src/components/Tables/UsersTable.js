@@ -13,7 +13,6 @@ import {
     Card,
     CardHeader,
     Table,
-    Progress,
 } from "reactstrap";
 
 export class UsersTable extends Component {
@@ -56,28 +55,12 @@ export class UsersTable extends Component {
                                     <tr key={index}>
                                         <th scope="row">
                                             <div className="d-flex justify-content-around align-items-center">
-                                                <Avatar src={Tdata.imageUrl} alt={Tdata.userName} />
+                                                <Avatar src={Tdata.imageUrl ? Tdata.imageUrl : Tdata.userProfileImage} alt={Tdata.userName} />
                                             </div>
                                         </th>
                                         <td>{Tdata.userName}</td>
                                         <td>{Tdata.mail}</td>
                                         <td>{Tdata.Role}</td>
-                                        {/* <td>
-                                            <div className="d-flex align-items-center">
-                                                <span className="mr-2">{Tdata.Completion_Text}</span>
-                                                <div>
-                                                    <Progress
-                                                        max="100"
-                                                        value={Tdata.Completion}
-                                                        barClassName={
-                                                            Tdata.Completion <= 30 ? "bg-gradient-danger" :
-                                                                Tdata.Completion > 30 && Tdata.Completion <= 60 ? "bg-gradient-warning"
-                                                                    : "bg-gradient-success"
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-                                        </td> */}
                                     </tr>
                                 ))}
                             </tbody>

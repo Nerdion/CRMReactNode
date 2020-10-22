@@ -1,6 +1,8 @@
 // API's
 
-export const DomainURL = 'https://smartnte.azurewebsites.net';
+//export const DomainURL = 'https://smartnte.azurewebsites.net';
+
+export const DomainURL = 'http://localhost:3000'
 
 export const VerifyUserLogin = `${DomainURL}/api/login`;
 

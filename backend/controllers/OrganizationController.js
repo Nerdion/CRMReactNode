@@ -11,6 +11,7 @@ module.exports.manage = async (req, res) => {
         if (legitUser.success) {
             if (req.body.method == 'search') res.json(await organization.searchToJoin(req.body.orgName))
             if (req.body.method == 'members') res.json(await user.getMyOrganizationMembers())
+            if (req.body.method == 'workspaceMembers') res.json(await user.getMyWorkSpaceMembers(req.body.workspaceId))
             if (req.body.method == 'inviteToJoin') {
                 let managerIdData = await organization.getMyManager(req.body.orgId)
                 let reponse = await user.inviteToJoin(managerIdData.message)

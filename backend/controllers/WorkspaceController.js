@@ -15,6 +15,7 @@ module.exports.workspaceAction = async function (req, res) {
         if(bodyInfo.action == 4){
             bodyInfo['userId'] = legitUser.message._id
             bodyInfo['isAdmin'] = legitUser.message.orgRoleId
+            bodyInfo['orgId'] = legitUser.message.orgId
         }
         if (legitUser.success) {
             var response = await new workspace().workspaceAction(bodyInfo);

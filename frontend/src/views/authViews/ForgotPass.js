@@ -39,11 +39,9 @@ class ForgotPass extends React.Component {
 
     async componentDidMount() {
         token = this.props.match.params.token;
-        console.log("Token---->", token)
         if (token) {
             this.setState({ sendEmail: true });
             let originalToken = token.replace(/p1L2u3S/g, '+').replace(/s1L2a3S4h/g, '/').replace(/e1Q2u3A4l/g, '=');
-            console.log(token);
             let crmToken = await this.decryptData(originalToken);
             this.jwtToken = Object.values(crmToken)[0]
         } else {
@@ -82,8 +80,6 @@ class ForgotPass extends React.Component {
                     body: JSON.stringify(encAuthData)
                 });
                 const responseData = await sendChangePassword.json();
-                console.log(responseData, 'sendChangePasswordData')
-                console.log(sendChangePassword, 'sendChangePassword');
                 if (responseData.success === true) {
                     const message = "Email has been sent!";
                     this.setState({ title: "Success", message, Alert_open_close: true, emailSent: false, color: "success" });
@@ -128,10 +124,7 @@ class ForgotPass extends React.Component {
                     body: JSON.stringify(encAuthData)
                 });
                 const responseData = await confirmUserPassword.json();
-                console.log(responseData, 'confirmUserPasswordData')
-                console.log(confirmUserPassword, 'confirmUserPassword');
                 if (responseData.success === true) {
-                    console.log("Password Changed!");
                     localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token);
                     //this.props.history.push("/admin/workSpace");
                     this.setState({ setRedirect: 'workSpace' })
@@ -157,7 +150,7 @@ class ForgotPass extends React.Component {
             return { data: strenc }
 
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 
@@ -169,7 +162,7 @@ class ForgotPass extends React.Component {
 
             return JSON.parse(originalText);
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 

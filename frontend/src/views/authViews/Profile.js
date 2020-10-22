@@ -43,7 +43,7 @@ import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions';
 
 //Api
-import { editUserProfileApi, getUserProfileApi } from '../CRM_Apis';
+import { getUserProfileApi } from '../CRM_Apis';
 
 class Profile extends React.Component {
   constructor(props) {
@@ -85,7 +85,6 @@ class Profile extends React.Component {
     let title = "Error";
     let message = '';
 
-    console.log("base64 type---->", pictures[0])
     var reader = new FileReader();
     if (pictures != null) {
       reader.readAsDataURL(pictures[0]);
@@ -94,7 +93,6 @@ class Profile extends React.Component {
         title = "Note"
         message = "Please Click Save to upload the selected Image";
         this.setState({ title, message, Alert_open_close: true, base64Image: Base64, userProfileImage: Base64 });
-        console.log("Base64 Image------>", Base64);
         this.handleCloseDialog();
       };
       reader.onerror = (error) => {
@@ -106,7 +104,6 @@ class Profile extends React.Component {
 
   onTextValueChanged = (state, text) => {
     this.setState({ [`${state}`]: text })
-    console.log("Edited UserName---->", text);
   }
 
   getUserProfile = async () => {
@@ -127,7 +124,6 @@ class Profile extends React.Component {
       let response = await getUserProfileData.json()
       let responseData = response.data
 
-      console.log("set workspace:---", responseData);
       this.setState({
         userName: responseData.userName,
         userEmail: responseData.userEmail,
@@ -169,7 +165,6 @@ class Profile extends React.Component {
         this.setState({ title, message, Alert_open_close: true });
       }
       else if (userName !== "" && userEmail !== "") {
-        console.log("UserName----->", userName);
         let data = {
           userName,
           userEmail,
@@ -195,7 +190,6 @@ class Profile extends React.Component {
         });
         let responseData = await editUserProfileData.json();
         if (responseData.success === true) {
-          console.log('Updated successfully')
           setTimeout(() => {
             this.componentDidMount();
           }, 400);
@@ -277,8 +271,6 @@ class Profile extends React.Component {
           </Alert>
         </div>
       );
-
-    console.log("Picture Data------", pictures);
     return (
       <>
         <UserHeader userName={userName} />
@@ -299,7 +291,7 @@ class Profile extends React.Component {
                           className="rounded-circle obj-cover"
                           width="190"
                           height="175"
-                          src={(userProfileImage) ? userProfileImage : require("../../assets/img/theme/team-4-800x800.jpg")}
+                          src={(userProfileImage) ? userProfileImage : require("../../assets/img/theme/defaultUser.png")}
                         />
                       </a>
                     </div>

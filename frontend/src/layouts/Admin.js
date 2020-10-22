@@ -69,8 +69,13 @@ class Admin extends React.Component {
       ) {
         return routes[i].name;
       }
+      else if (this.props.location.pathname.indexOf(
+        routes[i].layout + routes[i].letsPath
+      ) !== -1) {
+        return routes[i].name;
+      }
     }
-    return "Edit Task";
+    return "WorkSpace";
   };
 
   render() {

@@ -26,18 +26,22 @@ import {
   Navbar,
   Nav,
   Container,
-  Media
+  Media,
+  Col
 } from "reactstrap";
 
 //redux
 import { connect } from 'react-redux';
 import * as actionTypes from '../../store/actions';
 
-import { getUserProfileApi } from '../../views/CRM_Apis';
+import { getUserProfileApi, organizationAPI } from '../../views/CRM_Apis';
 
 class AdminNavbar extends React.Component {
 
-  state = { userName: '', userImage: '' }
+  state = {
+    userName: '',
+    userImage: '',
+  }
 
   getMyProfile = async () => {
 
@@ -61,13 +65,36 @@ class AdminNavbar extends React.Component {
     }
   }
 
+  getOrgName = async () => {
+    try {
+      const getAllMembers = await fetch(organizationAPI, {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `${this.props.tokenData}`
+        },
+        body: JSON.stringify({
+          method: 0,
+        })
+      });
+      const response = await getAllMembers.json();
+      let responseData = await response.data;
+      this.props.onSetOrgName(responseData.orgName);
+    }
+    catch (err) {
+      console.log("Error fetching data-----------", err.toString());
+    }
+  }
+
   componentDidMount() {
     this.getMyProfile();
+    this.getOrgName();
   }
 
 
   render() {
-    let { logout ,userName, userImage} = this.props;
+    let { logout, userName, userImage, orgName } = this.props;
     return (
       <>
         <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
@@ -78,6 +105,12 @@ class AdminNavbar extends React.Component {
             >
               {this.props.brandText}
             </Link>
+            <Col className="text-center">
+              {orgName ?
+                <span className="text-white mb-0 h2">{orgName}</span> :
+                <span className="text-white mb-0 h2">Organization Name</span>
+              }
+            </Col>
             <Nav className="align-items-center d-none d-md-flex" navbar>
               <UncontrolledDropdown nav>
                 <DropdownToggle className="pr-0" nav>
@@ -86,7 +119,7 @@ class AdminNavbar extends React.Component {
                       <img
                         alt="..."
                         className="navbar-brand-img ht-100p obj-cover"
-                        src={userImage ? userImage : require("../../assets/img/theme/team-4-800x800.jpg")}
+                        src={userImage ? userImage : require("../../assets/img/theme/defaultUser.png")}
                       />
                     </span>
                     <Media className="ml-2 d-none d-lg-block">
@@ -122,13 +155,16 @@ class AdminNavbar extends React.Component {
 const mapStateToProps = state => {
   return {
     userImage: state.userImage,
-    userName: state.userName
+    userName: state.userName,
+    tokenData: state.setLoginValue,
+    orgName: state.orgName
   };
 }
 
 const mapDispatcToProps = dispatch => {
   return {
-    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName })
+    onSetUserProfile: (userImage, userName) => dispatch({ type: actionTypes.ADD_PROFILE, userImage: userImage, userName: userName }),
+    onSetOrgName: (orgName) => dispatch({ type: actionTypes.SET_ORGNAME, orgName: orgName })
   }
 }
 

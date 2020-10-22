@@ -1,7 +1,5 @@
 
 import React from "react";
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
 
 // reactstrap components
 import {
@@ -71,23 +69,17 @@ class WorkSpace extends React.Component {
             Alert_open_close1: false,
             title: '',
             message: '',
-            workSpaces: [
-                "OVERALL METHOD OF SETS",
-                "DEV LINK NEW SET",
-                "Best project",
-                "Good Project"
-            ],
             users: [],
             setEditWorkspaceOpenClose: false,
             editUserObj: [],
             editUserDeleteIds: [],
             editAddedUserIds: [],
-            upcomingUsers: [],
             workSpaceId: null,
             isCreatedWorkspace: false,
             isEditWorkSpace: false,
             Alert_open_close2: false,
-            alertColor2: null
+            alertColor2: null,
+            userBackup: []
         };
     }
 
@@ -108,7 +100,7 @@ class WorkSpace extends React.Component {
     }
 
     onClickOpenAddWorkSpace = () => {
-        this.setState({ setAddWorkspaceOpenClose: true, users: this.orgUsersData, WorkSpaceName: '', userObj: [] });
+        this.setState({ setAddWorkspaceOpenClose: true, users: this.orgUsersData, userBackup: this.orgUsersData, WorkSpaceName: '', userObj: [] });
     }
 
     handleEditWorkSpaceClose = () => {
@@ -116,27 +108,31 @@ class WorkSpace extends React.Component {
     }
 
     onClickOpenUpdateWorkSpace = (data) => {
-        let workspaceMembers = data.users;
-        console.log("userData->", data);
+        let workspaceMembers = data.users.map((data) => {
+            let image = data.userProfileImage ? data.userProfileImage : ''
+            return {
+                userName: data.userName,
+                imageUrl: image,
+                id: data.userId
+            }
+        });
 
-        let usersToDisplayInOrganization = []
-        console.log("My users", this.orgUsersData)
+        let NewData = [...this.orgUsersData];
 
-        for (let i = 0; i < data.users.length; i++) {
-            for (let j = 0; j < this.orgUsersData.length; j++) {
-                if (data.users[i].userId !== this.orgUsersData[j].id) {
-                    usersToDisplayInOrganization.push(this.orgUsersData[j])
+        for (var i = NewData.length - 1; i >= 0; i--) {
+            for (var j = 0; j < workspaceMembers.length; j++) {
+                if (NewData[i] && (NewData[i].id === workspaceMembers[j].id)) {
+                    NewData.splice(i, 1);
                 }
             }
         }
 
-
         this.setState({
             setEditWorkspaceOpenClose: true,
-            users: usersToDisplayInOrganization,
+            users: NewData,
+            userBackup: this.orgUsersData,
             editUserObj: workspaceMembers,
             WorkSpaceName: data.workspaceName,
-            upcomingUsers: workspaceMembers,
             workSpaceId: data.workspaceId
         });
     }
@@ -149,7 +145,7 @@ class WorkSpace extends React.Component {
         this.setState({ [`${Name}`]: value })
     }
 
-    editSelectUsers = (UserName, UserImage, UserId) => {
+    editSelectUsers = (UserName, UserImage, userId) => {
         let returnFlag = 0
 
         for (let i = 0; i < this.state.editUserObj.length; i++) {
@@ -160,27 +156,51 @@ class WorkSpace extends React.Component {
         }
 
         if (!returnFlag) {
-            this.setState({ editUserObj: [...this.state.editUserObj, { userName: UserName, imageUrl: UserImage, id: UserId }] });
+            let array = [...this.state.users];
+            let filteredArray = array.filter(item => item.userName !== UserName)
+            let array1 = [...this.state.editUserDeleteIds];
+            let filteredArray1 = array1.filter(item => item !== userId)
+            this.setState({
+                editUserObj: [...this.state.editUserObj,
+                { userName: UserName, imageUrl: UserImage, id: userId }],
+                users: filteredArray,
+                editUserDeleteIds: filteredArray1
+            });
         }
-
-        console.log("userObj==>", this.state.editUserObj);
     }
 
     editDeleteSelectedUsers = (userName, userId) => {
         let array = [...this.state.editUserObj]
-        let filteredArray = array.filter(item => item.userName !== userName)
-        let userDeleteArray = [];
-        // userDeleteArray.push(userId)
-
-        for(let i=0;i< this.state.users.length; i++){
-            for(let j=0;j< this.state.editUserDeleteIds.length; j++){
-                if(this.state.users[i].userId !== this.state.editUserDeleteIds[j]){
-                    userDeleteArray.push(userId);
+        let filteredArray = array.filter(item => item.userName !== userName);
+        let filteredArray1 = array.filter(item => item.userName === userName);
+        let returnFlag = 0;
+        if (this.state.editUserDeleteIds.length === 0) {
+            returnFlag = 0;
+        } else {
+            for (let i = 0; i < this.state.userBackup.length; i++) {
+                for (let j = 0; j < this.state.editUserDeleteIds.length; j++) {
+                    if (this.state.userBackup[i].id === this.state.editUserDeleteIds[j]) {
+                        returnFlag = 1;
+                        break;
+                    } else {
+                        returnFlag = 0;
+                    }
+                }
+            }
+            for (let i = 0; i < this.state.editUserObj.length; i++) {
+                for (let j = 0; j < this.state.editUserDeleteIds.length; j++) {
+                    if (this.state.editUserObj[i].id === this.state.editUserDeleteIds[j]) {
+                        returnFlag = 1;
+                        break;
+                    } else {
+                        returnFlag = 0;
+                    }
                 }
             }
         }
-
-        this.setState({ editUserObj: filteredArray, editUserDeleteIds: userDeleteArray });
+        if (returnFlag === 0) {
+            this.setState((prevState) => ({ editUserDeleteIds: [...prevState.editUserDeleteIds, userId], users: [...prevState.users, filteredArray1[0]], editUserObj: filteredArray }))
+        }
     }
 
     selectUsers = (UserName, UserImage, UserId) => {
@@ -195,17 +215,21 @@ class WorkSpace extends React.Component {
         }
 
         if (!returnFlag) {
-            this.setState({ userObj: [...this.state.userObj, { userName: UserName, imageUrl: UserImage, id: UserId }] });
+            let array = [...this.state.users];
+            let filteredArray = array.filter(item => item.userName !== UserName)
+            this.setState({
+                userObj: [...this.state.userObj, { userName: UserName, imageUrl: UserImage, id: UserId }],
+                users: filteredArray
+            });
         }
-
-        console.log("userObj==>", this.state.userObj);
     }
 
-    deleteSelectedUsers = (userName) => {
+    deleteSelectedUsers = (userName, userId) => {
         let array = [...this.state.userObj]
         let filteredArray = array.filter(item => item.userName !== userName)
-
-        this.setState({ userObj: filteredArray });
+        let array1 = [...this.state.userBackup]
+        let filteredArray1 = array1.filter(item => item.id === userId)
+        this.setState((prevState) => ({ userObj: filteredArray, users: [...prevState.users, filteredArray1[0]] }));
     }
 
 
@@ -231,6 +255,7 @@ class WorkSpace extends React.Component {
 
     getWorkSpace = async () => {
         let title = "Error";
+        this.setState({ users: [], userBackup: [], deletedUserIds: [] });
         try {
             const getWorkSpaceData = await fetch(workspaceAction, {
                 method: "POST",
@@ -261,7 +286,6 @@ class WorkSpace extends React.Component {
         let message = "";
         let crmToken = localStorage.getItem('CRM_Token_Value');
         this.setState({ isEditWorkSpace: true })
-        //   console.log("AllData======>", WorkSpaceName, editUserDeleteIds, workSpaceId);
         try {
             if (WorkSpaceName === "" && editUserObj.length === 0) {
                 message = "Please Enter WorkSpace Name And Add Users";
@@ -276,7 +300,6 @@ class WorkSpace extends React.Component {
                 this.setState({ title, message, Alert_open_close1: true, isEditWorkSpace: false });
             }
             else if (WorkSpaceName !== "" && editUserObj.length !== 0) {
-                // console.log("this is editUserOBje---------->",editUserObj);
                 let userIds = editUserObj.map((val) => {
                     if (val.id) {
                         return val.id
@@ -285,19 +308,10 @@ class WorkSpace extends React.Component {
                         return val.userId
                     }
                 });
-                let userDeletedIds = editUserDeleteIds.map((val) => {
-                    if (val.id) {
-                        return val.id
-                    } else {
-
-                        return val.userId
-                    }
-                });
-                // console.log("this is userIds---------->",userIds);
                 let workspaceData = {
                     workspaceName: WorkSpaceName,
                     addedUserIds: userIds,
-                    deletedUserIds: userDeletedIds,
+                    deletedUserIds: editUserDeleteIds,
                     workspaceId: workSpaceId
                 }
                 let setWorkSpaceResponse = await fetch(workspaceAction, {
@@ -317,7 +331,7 @@ class WorkSpace extends React.Component {
                 if (responseData.success === true) {
                     const title = "Success"
                     message = "WorkSpace Added!";
-                    this.setState({ title, message, Alert_open_close1: true, isEditWorkSpace: false, setEditWorkspaceOpenClose: false });
+                    this.setState({ title, message, Alert_open_close2: true, alertColor2: "success", isEditWorkSpace: false, setEditWorkspaceOpenClose: false });
                     this.handleClose();
                     this.getWorkSpace();
                 }
@@ -402,7 +416,7 @@ class WorkSpace extends React.Component {
                 if (responseData.success === true) {
                     const title = "Success"
                     message = "WorkSpace Added!";
-                    this.setState({ title, message, Alert_open_close: true, isCreatedWorkspace: false, setAddWorkspaceOpenClose: false });
+                    this.setState({ title, message, Alert_open_close2: true, alertColor2: "success", isCreatedWorkspace: false, setAddWorkspaceOpenClose: false });
                     this.handleClose();
                     this.getWorkSpace();
                 }
@@ -446,12 +460,12 @@ class WorkSpace extends React.Component {
             }
             else {
                 message = responseData.error;
-                this.setState({ title, message, Alert_open_close2: true });
+                this.setState({ title, message, Alert_open_close2: true , alertColor2: "danger"});
             }
         }
         catch (err) {
             console.log("Error fetching data-----------", err.toString());
-            this.setState({ title, message: err.toString(), Alert_open_close2: true });
+            this.setState({ title, message: err.toString(), Alert_open_close2: true , alertColor2: "danger"});
         }
 
     }
@@ -643,7 +657,7 @@ class WorkSpace extends React.Component {
                                                             <Col lg="1" className="d-flex align-items-center justify-content-center">
                                                                 <span
                                                                     className="txt-lt-dark cursor-point p-2"
-                                                                    onClick={() => { this.deleteSelectedUsers(users.userName) }}
+                                                                    onClick={() => { this.deleteSelectedUsers(users.userName, users.id) }}
                                                                 >
                                                                     <Clear className="text-red" />
                                                                 </span>

@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"USA_CRM.User"}],"uuid":"b377507a74244605a9a03910e6baeef7"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"80f185518c9844ceaee5b084c5b93110","collectionName":"User"}

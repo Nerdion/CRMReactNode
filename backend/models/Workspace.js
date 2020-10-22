@@ -8,9 +8,9 @@ class Workspace {
 
     constructor() {
         this.task = 'Tasks',
-        this.workspace = 'Workspaces',
-        this.organization = 'Organizations',
-        this.user = 'User'
+            this.workspace = 'Workspaces',
+            this.organization = 'Organizations',
+            this.user = 'User'
     }
     workspaceAction = async (bodyInfo) => {
         if (bodyInfo.action == 1) { //create a workspace
@@ -19,7 +19,7 @@ class Workspace {
                 let userIds = await this.returnObjectId(workspaceData.userIds)
                 let workspace = {
                     workspaceName: workspaceData.workspaceName,
-                    orgID: workspaceData.orgId,//{backend} jwt
+                    orgId: workspaceData.orgId,//{backend} jwt
                     managerId: workspaceData.managerId,
                     createdDate: new Date(),
                     lastModified: new Date(),
@@ -41,26 +41,69 @@ class Workspace {
                 updatedWorkSpaceData['lastModified'] = new Date()
                 let updatedWorkSpaceDataKeys = Object.keys(updatedWorkSpaceData);
                 let nKeysArray = ['workspaceId', 'deletedUserIds', 'addedUserIds']
+                let workspaceUserIds1 = [];
+                let workspaceUserIds2 = []
+
+                let updatedAddedIds = bodyInfo.updatedTaskData.addedUserIds
+                let updatedDeletedIds = bodyInfo.updatedTaskData.deletedUserIds
+
                 let workspaceData = await mongo.usacrm.collection(this.workspace).findOne({ _id: workspaceId })
+
+                let managerId = workspaceData.managerId.toString()
+
+                let index = updatedAddedIds.indexOf(managerId)
+                if (index != -1) {
+                    updatedAddedIds.splice(index, 1)
+                }
+
+                index = updatedDeletedIds.indexOf(managerId)
+                if (index != -1) {
+                    updatedDeletedIds.splice(index, 1)
+                }
                 for (let i = 0; i < updatedWorkSpaceDataKeys.length; i++) {
                     if (!nKeysArray.includes(updatedWorkSpaceDataKeys[i])) {
                         workspaceData[updatedWorkSpaceDataKeys[i]] = updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]];
                     } else if (updatedWorkSpaceDataKeys[i] == 'deletedUserIds') {
-                        let deletedIds = await this.returnObjectId(updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]])
-                        for (let i = 0; i < deletedIds.length; i++) {
-                            let userIds = workspaceData['userIds'].splice(workspaceData['userIds'].indexOf(deletedIds[i], 1))
+                        let deletedIds = updatedDeletedIds
+                        for (let j = 0; j < workspaceData['userIds'].length; j++) {
+                            workspaceUserIds1.push(workspaceData['userIds'][j].toString())
                         }
+                        for (let j = 0; j < deletedIds.length; j++) {
+                            let index = workspaceUserIds1.indexOf(deletedIds[j])
+                            if (index != -1) {
+                                workspaceUserIds1.splice(index, 1)
+                            } else {
+                                deletedIds.splice(j, 1)
+                                j--
+                            }
+
+                        }
+
+                        await this.removeFromAllTasks(deletedIds, workspaceId)
+                        deletedIds = await this.returnObjectId(deletedIds)
+                        workspaceUserIds1 = await this.returnObjectId(workspaceUserIds1)
+                        workspaceData['userIds'] = workspaceUserIds1
                         await this.deleteUserIds(deletedIds, workspaceId)
                     } else if (updatedWorkSpaceDataKeys[i] == 'addedUserIds') {
-                        let addedIds = await this.returnObjectId(updatedWorkSpaceData[updatedWorkSpaceDataKeys[i]])
-                        for (let i = 0; i < addedIds.length; i++) {
-                            if(!workspaceData['userIds'].includes(addedIds[i])){
-                                workspaceData['userIds'].push(addedIds[i])
-                            }else{
-                                addedIds.splice(i,1)
-                                i--;
+
+                        for (let j = 0; j < workspaceData['userIds'].length; j++) {
+                            workspaceUserIds2.push(workspaceData['userIds'][j].toString())
+                        }
+
+                        let addedIds = updatedAddedIds
+                        let addedIds2 = [];
+                        for (let j = 0; j < addedIds.length; j++) {
+                            if (!workspaceUserIds2.includes(addedIds[j])) {
+                                workspaceUserIds2.push(addedIds[j])
+                                addedIds2.push(addedIds[j])
+                            } else {
+                                addedIds.splice(j, 1)
+                                j--;
                             }
                         }
+                        workspaceUserIds2 = await this.returnObjectId(workspaceUserIds2)
+                        addedIds = await this.returnObjectId(addedIds2)
+                        workspaceData['userIds'] = workspaceUserIds2
                         await this.addUserIds(addedIds, workspaceId)
                     }
 
@@ -78,11 +121,11 @@ class Workspace {
                 let tasksIds = workspaceData.tasksIds;
                 let deletedTasks = []
                 let failedDeleteTask = []
-                if(!tasksIds == null){
+                if (!tasksIds == null) {
                     for (let i = 0; i < tasksIds.length; i++) {
                         let taskBody = {
                             action: 3,
-                            from:1,
+                            from: 1,
                             taskId: tasksIds[i]
                         }
                         let deleteTaskResult = await new task().taskAction(taskBody);
@@ -93,7 +136,7 @@ class Workspace {
                         }
                     }
                 }
-                
+
                 if (failedDeleteTask.length == 0) {
                     let updateResult = await mongo.usacrm.collection(this.workspace).deleteOne({ "_id": workspaceId });
                     let userUpdatedResult = await mongo.usacrm.collection(this.user).updateMany(
@@ -112,23 +155,23 @@ class Workspace {
             try {
                 let workspaceGrid = []
                 let workspaceData;
-                if(bodyInfo.isAdmin){
-                    workspaceData = await mongo.usacrm.collection(this.workspace).find({}).toArray();
-                }else {
+                if (bodyInfo.isAdmin) {
+                    workspaceData = await mongo.usacrm.collection(this.workspace).find({ orgId: bodyInfo.orgId }).toArray();
+                } else {
                     let workspaceIds = await mongo.usacrm.collection(this.user).aggregate([
-                        { "$match": { "_id": bodyInfo.userId } },
+                        { "$match": { "_id": bodyInfo.userId, orgId:bodyInfo.orgId } },
                         { "$project": { "workspaceIds": "$workspaces.workspaceId", "_id": 0 } }
                     ]).toArray()
 
-                    workspaceData = await mongo.usacrm.collection(this.workspace).find({_id:{$in:workspaceIds[0]['workspaceIds']}}).toArray()
+                    workspaceData = await mongo.usacrm.collection(this.workspace).find({ _id: { $in: workspaceIds[0]['workspaceIds'] } }).toArray()
                 }
                 for (let i = 0; i < workspaceData.length; i++) {
                     let fData = {};
                     fData['workspaceName'] = workspaceData[i].workspaceName
                     fData['workspaceId'] = workspaceData[i]._id;
-                    fData['organizationName'] = await new org().getOrganizationName(workspaceData[i].orgID)
+                    fData['organizationName'] = await new org().getOrganizationName(workspaceData[i].orgId)
                     fData['managerName'] = await new user().getManagerName(workspaceData[i].managerId)
-                    fData['completion'] = await new task().getCompletionPercentage(workspaceData[i].tasksIds)
+                    fData['completion'] = await new task().getCompletionPercentage(workspaceData[i].taskIds)
                     fData['completionText'] = fData.completion + '%'
                     fData['users'] = await new user().getUserNameAndImage(workspaceData[i].userIds)
                     fData['createdAt'] = await this.timeDifference(Date.now(), workspaceData[i].createdDate.getTime())
@@ -209,12 +252,12 @@ class Workspace {
             for (let i = 0; i < userIds.length; i++) {
                 let workspacesObj = {
                     workspaceId: workspace.workspaceId,
-                    rollId: 0,
+                    roleId: 0,
                     lastModifiedDate: null
                 }
                 if (!(userIds[i] == managerId)) {
-                    let data = await mongo.usacrm.collection(this.user).findOne({_id:userIds[i],'workspaces.workspaceId':workspace.workspaceId})
-                    if(!data){
+                    let data = await mongo.usacrm.collection(this.user).findOne({ _id: userIds[i], 'workspaces.workspaceId': workspace.workspaceId })
+                    if (!data) {
                         await mongo.usacrm.collection(this.user).updateOne({ _id: userIds[i] }, { $push: { "workspaces": workspacesObj } })
                     }
 
@@ -222,13 +265,13 @@ class Workspace {
             }
             let workspacesObj = {
                 workspaceId: workspace.workspaceId,
-                rollId: 1,
+                roleId: 1,
                 lastModifiedDate: null
             }
-            let data = await mongo.usacrm.collection(this.user).findOne({_id:managerId,'workspaces.workspaceId':workspace.workspaceId})
-                    if(!data){
-                        await mongo.usacrm.collection(this.user).updateOne({ _id: managerId }, { $push: { "workspaces": workspacesObj } })
-                    }
+            let data = await mongo.usacrm.collection(this.user).findOne({ _id: managerId, 'workspaces.workspaceId': workspace.workspaceId })
+            if (!data) {
+                await mongo.usacrm.collection(this.user).updateOne({ _id: managerId }, { $push: { "workspaces": workspacesObj } })
+            }
         } catch (err) {
             return false
         }
@@ -254,7 +297,7 @@ class Workspace {
             for (let i = 0; i < addedUserIds.length; i++) {
                 let workspacesObj = {
                     workspaceId: workspaceId,
-                    rollId: 0,
+                    roleId: 0,
                     lastModifiedDate: null
                 }
                 await mongo.usacrm.collection(this.user).updateOne({ _id: addedUserIds[i] }, { $push: { "workspaces": workspacesObj } })
@@ -262,6 +305,40 @@ class Workspace {
             }
         } catch (err) {
             return false
+        }
+    }
+
+    async removeFromAllTasks(deletedIds, workspaceId) {
+
+        for (let i = 0; i < deletedIds.length; i++) {
+            let taskFilter = [
+                {
+                    "$match": { "_id": deletedIds[i] }
+                },
+                {
+                    "$unwind": { "path": "$workspaces" }
+                },
+                {
+                    "$match": { "workspaces.workspaceId": workspaceId }
+                },
+                {
+                    "$unwind": { "path": "$workspaces.tasks" }
+                },
+                {
+                    "$group": { "_id": "$workspaces.tasks.taskId" }
+                },
+                {
+                    "$project": { "_id": 0, "taskIds": "$_id" }
+                }
+            ]
+
+            let taskIds = await mongo.usacrm.collection(this.user).aggregate(taskFilter).toArray()
+            for (let j = 0; j < tasksIds; j++) {
+                await mongo.usacrm.collection(this.task).updateOne(
+                    { _id: taskIds[j] },
+                    { '$pull': { userIds: deletedIds[i] } }
+                )
+            }
         }
     }
 }

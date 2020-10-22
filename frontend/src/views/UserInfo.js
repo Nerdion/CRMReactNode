@@ -32,9 +32,6 @@ class UserInfo extends React.Component {
 
     onChange = (state, text) => {
         this.setState({ [`${state}`]: text })
-        // console.log("UserEmailChange:-", [this.state.UserEmail])
-        // console.log("UserPasswordChange:-", [this.state.Password])
-
     }
 
     onClickPolicy = (event) => {
@@ -105,42 +102,6 @@ class UserInfo extends React.Component {
         }
     }
 
-    // checkUserAuthResponse = async () => {
-    //     let title = "Error";
-    //     try {
-    //         // let encAuthData = await this.encryptData(authData);
-    //         const UserLoginApiCall = await fetch(AuthUserResponse, {
-    //             method: "POST",
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             // body: JSON.stringify(encAuthData)
-    //         });
-    //         const responseData = await UserLoginApiCall.json();
-    //         console.log(responseData, 'UserLoginApiCallData')
-    //         console.log(UserLoginApiCall, 'UserLoginApiCall');
-    //         if (responseData.status === 200) {
-    //             console.log("User Loggedin");
-    //             title = "Success";
-    //             const message = "User is Authorized";
-    //             this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
-    //             //localStorage.setItem('CRM_Token_Value', responseData.token);
-    //             setTimeout(() => {
-    //                 this.props.history.push("/admin/index");
-    //             }, 1000);
-
-
-    //         }
-    //         else {
-    //             const message = "Invalid Data";
-    //             this.setState({ title, message, Alert_open_close: true, setActivityIndicator: false });
-    //         }
-    //     } catch (err) {
-    //         console.log("Error fetching data-----------", err);
-    //         this.setState({ title, message: err, Alert_open_close: true, setActivityIndicator: false });
-    //     }
-    // }
 
     encryptData = async (data) => {
         try {
@@ -149,7 +110,7 @@ class UserInfo extends React.Component {
             return { data: strenc }
 
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 
@@ -161,7 +122,7 @@ class UserInfo extends React.Component {
 
             return JSON.parse(originalText);
         } catch (e) {
-            console.log(e);
+            console.log(e.toString());
         }
     }
 

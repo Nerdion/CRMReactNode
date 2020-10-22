@@ -43,14 +43,10 @@ class Register extends React.Component {
 
   onChange = (state, text) => {
     this.setState({ [`${state}`]: text })
-    // console.log("UserEmailChange:-", [this.state.UserEmail])
-    // console.log("UserPasswordChange:-", [this.state.Password])
-
   }
 
   onClickPolicy = (event) => {
     this.setState({ PolicyCheckbox: event });
-    console.log("PrivatePolicy:-", event);
   }
 
   onDismissAlert = () => {
@@ -76,7 +72,6 @@ class Register extends React.Component {
       password: Password,
     }
     let encregisterData = await this.encryptData(registerData)
-    console.log("Signed in:-", UserEmail, Password);
     try {
       if (UserName === "" && Password !== "" && UserEmail !== "") {
         message = "Please Enter Your Name";
@@ -109,8 +104,6 @@ class Register extends React.Component {
         }
         else {
           if (this.emailValidation(UserEmail)) {
-            // const title = "Success"
-            // message = "Account Created!";
             this.setState({ isRegistered: true });
             const UserRegisterApiCall = await fetch(VerifyUserRegister, {
               method: "POST",
@@ -121,11 +114,8 @@ class Register extends React.Component {
               body: JSON.stringify(encregisterData)
             });
             const responseData = await UserRegisterApiCall.json();
-            console.log(responseData, 'UserRegisterApiCallData')
-            console.log(UserRegisterApiCall, 'UserRegisterApiCall');
 
             if (responseData.success === true) {
-              console.log("User Loggedin");
               this.setState({ title: "Success", message: responseData.message, Alert_open_close: true, alertColor: "success" });
               this.props.history.push("/auth/Login");
             }
@@ -156,7 +146,7 @@ class Register extends React.Component {
       return { data: strenc }
 
     } catch (e) {
-      console.log(e);
+      console.log(e.toString());
     }
   }
 

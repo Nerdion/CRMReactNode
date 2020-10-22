@@ -12,30 +12,36 @@ const e = require('express');
 
 module.exports = class User {
     constructor() {
-        this.User = 'User'
+        this.User = 'User',
+            this.workspace = 'Workspaces',
+            this.task = 'Task'
     }
 
     // Login Authentication function
     async login(bodyInfo) {
-        let authData = await this.decryptData(bodyInfo)
-        let email = authData.useremail;
-        let password = authData.password;
+        try {
+            let authData = await this.decryptData(bodyInfo)
+            let email = authData.useremail;
+            let password = authData.password;
 
-        let checkUser = await mongo.usacrm.collection(this.User).findOne({ 'email': email })
-        if (checkUser.email) {
-            if (checkUser.statusId == 1) {
-                if (password == checkUser.password) {
-                    let jwtData = await this.generatetoken(email, checkUser._id.toString());
-                    let myOrganization = checkUser.orgId;
-                    return { 'success': true, 'message': "User is authenticated Successfully", jwtData, orgID: myOrganization }
-                };
-            } else {
-                return { 'success': false, 'message': "to login please verify your email first" };
+            let checkUser = await mongo.usacrm.collection(this.User).findOne({ 'email': email })
+            if (checkUser.email) {
+                if (checkUser.statusId == 1) {
+                    if (password == checkUser.password) {
+                        let jwtData = await this.generatetoken(email, checkUser._id.toString());
+                        let myOrganization = checkUser.orgId;
+                        return { 'success': true, 'message': "User is authenticated Successfully", jwtData, orgID: myOrganization }
+                    } else {
+                        return { 'success': false, 'message': "User is authenticated Un-successfully" }
+                    }
+                } else {
+                    return { 'success': false, 'message': "To login please verify your email first" };
+                }
             }
-
-        } else {
-            return { 'success': false, 'message': "User is authenticated Un-successfully" };
+        } catch (e) {
+            return { 'success': false, 'message': "User doesn't exists please register" };
         }
+
     }
 
     // Registeration of the new user
@@ -265,6 +271,87 @@ module.exports = class User {
         }
     }
 
+    async getMyTaskMembers(taskId) {
+        try {
+            let data = []
+            let taskUserIds = await mongo.usacrm.collection(this.task).findOne({ _id: taskId }, {
+                projection: {
+                    _id: 0,
+                    userIds: 1
+                }
+            })
+            taskUserIds = taskUserIds.userIds
+
+            for (let i = 0; i < taskUserIds.length; i++) {
+                let userData = await mongo.usacrm.collection(this.User).findOne({ _id: taskUserIds[i] }, {
+                    projection: {
+                        orgId: 0,
+                        password: 0,
+                        statusId: 0,
+                        workspaces: 0
+                    }
+                })
+                data.push(userData)
+            }
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].orgRoleId == 1) {
+                    data[i]['isAdmin'] = 'Admin'
+                } else {
+                    let checkUser = await mongo.usacrm.collection(this.User).findOne({ _id: data[i]._id, 'workspaces.roleId': 1 })
+                    if (checkUser) {
+                        data[i]['isAdmin'] = 'Manager'
+                    } else {
+                        data[i]['isAdmin'] = 'Member'
+                    }
+                }
+            }
+            return data
+        } catch (e) {
+            return false
+        }
+
+    }
+    async getMyWorkSpaceMembers(workspaceId) {
+        try {
+            let data = []
+            workspaceId = new ObjectId(workspaceId)
+            let workspaceUserIds = await mongo.usacrm.collection(this.workspace).findOne({ _id: workspaceId }, {
+                projection: {
+                    _id: 0,
+                    userIds: 1
+                }
+            })
+            workspaceUserIds = workspaceUserIds.userIds
+            for (let i = 0; i < workspaceUserIds.length; i++) {
+                let userData = await mongo.usacrm.collection(this.User).findOne({ _id: workspaceUserIds[i] }, {
+                    projection: {
+                        orgId: 0,
+                        password: 0,
+                        statusId: 0,
+                        workspaces: 0
+                    }
+                })
+                data.push(userData)
+            }
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].orgRoleId == 1) {
+                    data[i]['isAdmin'] = 'Admin'
+                } else {
+                    let checkUser = await mongo.usacrm.collection(this.User).findOne({ _id: data[i]._id, 'workspaces.roleId': 1 })
+                    if (checkUser) {
+                        data[i]['isAdmin'] = 'Manager'
+                    } else {
+                        data[i]['isAdmin'] = 'Member'
+                    }
+                }
+            }
+            return { success: true, message: 'Users inside this workspace', data: data }
+        } catch (e) {
+            return { success: false, message: '', error: e.toString() }
+        }
+
+    }
+
     // gets the manager information of a particular organization
     async getManagerName(managerID) {
         try {
@@ -287,7 +374,7 @@ module.exports = class User {
             for (let i = 0; i < userIds.length; i++) {
                 let userData = await mongo.usacrm.collection(this.User).findOne({ _id: userIds[i] }, {
                     projection: {
-                        password : 0,
+                        password: 0,
                     }
                 })
                 if (userData.orgRoleId == 1) {
@@ -297,11 +384,11 @@ module.exports = class User {
                 }
 
                 users.push({
-                    userId : userData._id,
-                    userProfileImage : userData.userProfileImage,
-                    userName : userData.name,
-                    mail : userData.email,
-                    Role : userData.isAdmin
+                    userId: userData._id,
+                    userProfileImage: userData.userProfileImage,
+                    userName: userData.name,
+                    mail: userData.email,
+                    Role: userData.isAdmin
                 })
             }
             return users
@@ -327,7 +414,7 @@ module.exports = class User {
             let managerInfo = await mongo.usacrm.collection(this.User).findOne({ _id: managerId }, { projection: { email: 1, _id: 0 } })
 
             let inviteToken = await this.generatetoken(loggedInUser.email, loggedInUser._id)
-            let link = `${siteName}/admin/joinUser/${inviteToken.Token}`
+            let link = `${siteName}/auth/joinUser/${inviteToken.Token}`
             let html = await inviteToJoin(loggedInUser.name, loggedInUser.email, link)
 
             const mailOptions = {
