@@ -35,7 +35,6 @@ export class WorkSpaceTable extends Component {
             HeaderButtonName,
             tHeader,
             userData,
-            IconName,
             onRowPress,
             onClickAvatar,
             editWorkSpace,

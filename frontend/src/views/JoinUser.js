@@ -50,9 +50,10 @@ class JoinUser extends React.Component {
                 message = "User is Authorized!";
                 title = "Success"
                 this.setState({ title, message, Alert_open_close: true, color: "success" });
+                this.props.history.push("/admin/workspace");
             }
             else {
-                message = "Email Cannot be sent";
+                message = "User already added.";
                 this.setState({ title, message, Alert_open_close: true });
             }
         } catch (err) {

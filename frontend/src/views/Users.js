@@ -2,7 +2,6 @@ import React from "react";
 
 //Material UI
 import {
-    Button,
     TextField
 } from '@material-ui/core/';
 
@@ -80,28 +79,6 @@ class Users extends React.Component {
         }
     }
 
-    // GetUserData = async () => {
-    //     const CRM_Token = await localStorage.getItem('CRM_Token_Value');
-    //     try {
-    //         const GetAvailUser = await fetch(GetUserAvail, {
-    //             method: "POST",
-    //             headers: {
-    //                 'Accept': 'application/json',
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `JWT ${CRM_Token}`
-    //             },
-    //         });
-    //         const responseData = await GetAvailUser.json();
-    //         console.log(responseData, 'GetAvailUser')
-    //         console.log(GetAvailUser, 'GetAvailUserHeader');
-    //         this.setState({
-    //             TotalCount: responseData.count,
-    //             UserData: responseData.results.userData,
-    //         })
-    //     } catch (err) {
-    //         console.log("Error fetching data-----------", err);
-    //     }
-    // }
 
     SendInviteHandle = async () => {
         let title = "Error";
@@ -164,11 +141,6 @@ class Users extends React.Component {
 
         for (let i = 0; i < responseData.length; i++) {
             let data = responseData[i]
-            // let isAdmin = 'Member'
-
-            // if(data.orgRoleId) {
-            //     isAdmin = 'Admin'
-            // }
 
             userData.push({
                 userName: data.name,

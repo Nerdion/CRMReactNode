@@ -18,7 +18,6 @@ import {
 import {
     MoreVert,
     Edit,
-    FileCopy,
     Delete
 } from '@material-ui/icons';
 
@@ -30,7 +29,6 @@ export class WorkSpaceTasksCard extends Component {
         openMenu: null,
         options: [
             { "option": "Edit", "icon": Edit, "color": "#2b5578" },
-            { "option": "Duplicate", "icon": FileCopy, "color": "#2b7872" },
             { "option": "Delete", "icon": Delete, "color": "#c4416a" },
         ]
     }
@@ -39,7 +37,7 @@ export class WorkSpaceTasksCard extends Component {
     }
     render() {
         const { openMenu, options } = this.state;
-        const { TaskCardData, onClickAvatar, onClickTask } = this.props;
+        const { TaskCardData, onClickAvatar, onClickTask, onClickDelete } = this.props;
         let createdAt = TaskCardData.createdAt;
         return (
             <Col className="mar-b-2 mb-xl-0" xs="12" md="12" lg="6" xl="6">
@@ -60,7 +58,7 @@ export class WorkSpaceTasksCard extends Component {
                                         <DropdownMenu>
                                             {
                                                 options.map((options, index) => (
-                                                    <DropdownItem key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
+                                                    <DropdownItem onClick={options.option === "Edit" ? onClickTask : onClickDelete } key={index}>< options.icon style={{ color: options.color }} />{options.option}</DropdownItem>
                                                 ))
                                             }
                                         </DropdownMenu>
@@ -97,8 +95,8 @@ export class WorkSpaceTasksCard extends Component {
                                     <div onClick={onClickAvatar} className="avatar-group">
                                         {createdAt === null || createdAt === undefined ?
                                             <span className=" text-default">No User Assigned</span> :
-                                        <span className=" text-default">{TaskCardData.createdAt}</span>
-                                            }
+                                            <span className=" text-default">{TaskCardData.createdAt}</span>
+                                        }
                                     </div>
 
                                 </div>
