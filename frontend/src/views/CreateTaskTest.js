@@ -352,12 +352,10 @@ class CreateTaskTest extends React.Component {
                                         variant="contained"
                                         color="primary"
                                         size="medium"
-
                                         className="wd-100p mt-2"
-                                        startIcon={<Add />}
                                         onClick={this.onClickOpenAddUsers}
                                     >
-                                        Add Members
+                                        Assign Users
                                         </Button>
                                     {
                                         userObj.map((item, index) => (

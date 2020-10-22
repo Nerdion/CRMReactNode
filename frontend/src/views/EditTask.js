@@ -555,10 +555,9 @@ class EditTask extends React.Component {
                                         size="medium"
                                         disabled={taskEditable}
                                         className="wd-100p mt-2"
-                                        startIcon={<Add />}
                                         onClick={this.onClickOpenAddUsers}
                                     >
-                                        Add Members
+                                        Assign Users
                                         </Button>
                                     {
                                         userObj.map((item, index) => (
