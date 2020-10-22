@@ -414,7 +414,7 @@ module.exports = class User {
             let managerInfo = await mongo.usacrm.collection(this.User).findOne({ _id: managerId }, { projection: { email: 1, _id: 0 } })
 
             let inviteToken = await this.generatetoken(loggedInUser.email, loggedInUser._id)
-            let link = `${siteName}/admin/joinUser/${inviteToken.Token}`
+            let link = `${siteName}/auth/joinUser/${inviteToken.Token}`
             let html = await inviteToJoin(loggedInUser.name, loggedInUser.email, link)
 
             const mailOptions = {
