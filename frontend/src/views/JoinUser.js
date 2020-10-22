@@ -24,7 +24,12 @@ class JoinUser extends React.Component {
     }
 
     componentDidMount = async () => {
-        await this.addTheUser()
+        if (this.props.setLogin) {
+            await this.addTheUser()
+        }
+        else {
+            this.props.history.push("/auth/login");
+        }
     }
 
     async addTheUser() {
@@ -49,8 +54,8 @@ class JoinUser extends React.Component {
             if (responseData.success === true) {
                 message = "User is Authorized!";
                 title = "Success"
+                this.props.history.push("/admin/workSpace");
                 this.setState({ title, message, Alert_open_close: true, color: "success" });
-                this.props.history.push("/admin/workspace");
             }
             else {
                 message = "User already added.";
