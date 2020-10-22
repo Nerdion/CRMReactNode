@@ -138,7 +138,7 @@ class Login extends React.Component {
     });
     const responseData = await UserLoginApiCall.json();
     if (responseData.success === true) {
-      localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token)
+      this.props.onLogin(localStorage.setItem('CRM_Token_Value', responseData.jwtData.Token));
       if (responseData.orgID) {
         await this.props.onLogin(localStorage.getItem('CRM_Token_Value'));
         await this.props.history.push("/admin/workSpace");
