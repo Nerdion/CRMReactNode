@@ -98,7 +98,7 @@ class UserInfo extends React.Component {
         }
         catch (err) {
             console.log("Error fetching data-----------", err.toString());
-            this.setState({ title, message:err.toString(), Alert_open_close: true, setActivityIndicator: false });
+            this.setState({ title, message: err.toString(), Alert_open_close: true, setActivityIndicator: false });
         }
     }
 

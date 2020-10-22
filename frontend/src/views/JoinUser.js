@@ -49,8 +49,8 @@ class JoinUser extends React.Component {
             if (responseData.success === true) {
                 message = "User is Authorized!";
                 title = "Success"
+                this.props.history.push("/admin/workSpace");
                 this.setState({ title, message, Alert_open_close: true, color: "success" });
-                this.props.history.push("/admin/workspace");
             }
             else {
                 message = "User already added.";
