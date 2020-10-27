@@ -56,7 +56,7 @@ module.exports.authorizeUser = async function (req, res) {
             let response = await user.authorizeUser(bodyInfo);
             res.send(response)
         } else {
-            res.send({ "success": true, "Error": error, "Payload": [] })
+            res.send({ "success": true, "Error": "Response send unsuccessfully", "Payload": [] })
         }
     } catch (e) {
         res.send({ "success": false, "Error": e.toString(), "Payload": [] });

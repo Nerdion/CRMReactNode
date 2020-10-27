@@ -227,7 +227,7 @@ module.exports = class User {
 
             return { success: true, message: 'User is authorized successfully', jwtData }
         } catch (err) {
-            return { success: false, message: 'User is authorized Un-successfully' }
+            return { success: false, message: 'User is authorized Un-successfully', error:err.toString() }
         }
     }
 
