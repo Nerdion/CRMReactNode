@@ -183,6 +183,13 @@ class Workspace {
             }
 
 
+        } else if(bodyInfo.action == 5){
+            try {
+                let data = await mongo.usacrm.collection(this.user).find({}).toArray()
+                return data.length
+            } catch (e) {
+                return { success: false, error: e.toString()}
+            }
         }
 
     }

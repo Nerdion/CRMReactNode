@@ -79,6 +79,15 @@ class Organization {
         }
     }
 
+    async getOrganization(){
+        try {
+            let data = await mongo.usacrm.collection(this.organization).find({}).toArray()
+            return data
+        } catch (e) {
+            return { success: false, error: e.toString()}
+        }
+    }
+
     // returns manager id of an organization
     async getMyManager(orgId) {
         try {
