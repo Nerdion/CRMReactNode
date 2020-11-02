@@ -24,7 +24,12 @@ class JoinUser extends React.Component {
     }
 
     componentDidMount = async () => {
-        await this.addTheUser()
+        if (this.props.setLogin) {
+            await this.addTheUser()
+        }
+        else {
+            this.props.history.push("/auth/login");
+        }
     }
 
     async addTheUser() {

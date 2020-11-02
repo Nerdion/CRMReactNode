@@ -96,7 +96,7 @@ export class WorkSpaceTable extends Component {
                                             <div onClick={() => onClickAvatar(Tdata)}>
                                                 {Tdata.users.length === 0 || Tdata.users === undefined ?
                                                     <span className=" text-default">No User Assigned</span> :
-                                                    <AvatarGroup max={4}>
+                                                    <AvatarGroup max={3}>
                                                         {Tdata.users.map((item, index) => (
                                                             <>
                                                                 < Avatar alt={item.userName} src={item.userProfileImage} id={`tooltip${item.userId}`} />

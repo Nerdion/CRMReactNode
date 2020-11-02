@@ -145,7 +145,7 @@ class Sidebar extends React.Component {
                     <img
                       alt="..."
                       className="navbar-brand-img ht-100p obj-cover"
-                      src={userImage != null ? userImage : require("../../assets/img/theme/defaultUser.png")}
+                      src={userImage ? userImage : require("../../assets/img/theme/defaultUser.png")}
                     />
                   </span>
                 </Media>
